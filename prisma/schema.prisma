@@ -10,11 +10,62 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
+model Collection {
+    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    name  String
+    tasks Task[]
+
     @@index([name])
+}
+
+model Task {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    title       String
+    description String?
+    completed   Boolean         @default(false)
+    dueDate     DateTime?
+    priority    PriorityOption?
+
+    collection   Collection? @relation(fields: [collectionId], references: [id])
+    collectionId String?
+    checklist    Checklist[]
+
+    @@index([title])
+    @@index([completed])
+    @@index([dueDate])
+}
+
+model Checklist {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    text   String
+    task   Task   @relation(fields: [taskId], references: [id])
+    taskId String @unique
+
+    @@index([text])
+}
+
+model Comment {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    text       String
+    postedDate DateTime @default(now())
+
+    @@index([text])
+}
+
+enum PriorityOption {
+    URGENT_AND_IMPORTANT
+    URGENT
+    IMPORTANT
 }
