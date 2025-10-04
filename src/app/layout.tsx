@@ -1,9 +1,11 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
 
+import { ThemeProvider } from "~/components/theme/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
+import ThemeToggle from "~/components/theme/ThemeToggle";
+import SideNav from "~/components/nav/SideNav";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -11,18 +13,26 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
+    <html lang="en">
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <ThemeProvider
+            attribute={"class"}
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex h-screen overflow-hidden">
+              <SideNav />
+              <main className="flex-1">{children}</main>
+            </div>
+            <ThemeToggle />
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );
