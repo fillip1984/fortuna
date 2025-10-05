@@ -65,7 +65,6 @@ model Comment {
 }
 
 enum PriorityOption {
-    URGENT_AND_IMPORTANT
     URGENT
     IMPORTANT
 }

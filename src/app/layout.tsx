@@ -1,11 +1,10 @@
 import "~/styles/globals.css";
 
-import { type Metadata } from "next";
-
-import { ThemeProvider } from "~/components/theme/theme-provider";
-import { TRPCReactProvider } from "~/trpc/react";
-import ThemeToggle from "~/components/theme/ThemeToggle";
+import type { Metadata } from "next";
 import SideNav from "~/components/nav/SideNav";
+import { ThemeProvider } from "~/components/theme/theme-provider";
+import ThemeToggle from "~/components/theme/ThemeToggle";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,7 +16,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
           <ThemeProvider
@@ -26,7 +25,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex h-screen overflow-hidden">
+            <div className="relative flex h-screen overflow-hidden">
               <SideNav />
               <main className="flex-1">{children}</main>
             </div>
