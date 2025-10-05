@@ -7,6 +7,11 @@ export const CollectionRouter = createTRPCRouter({
       select: {
         id: true,
         name: true,
+        _count: {
+          select: {
+            tasks: { where: { completed: false } },
+          },
+        },
       },
       orderBy: {
         name: "asc",

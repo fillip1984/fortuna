@@ -5,6 +5,9 @@ import { PriorityOption } from "@prisma/client";
 export const TaskRouter = createTRPCRouter({
   findAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.task.findMany({
+      where: {
+        completed: false,
+      },
       orderBy: {
         title: "asc",
       },
@@ -14,9 +17,10 @@ export const TaskRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string(),
-        description: z.string().optional(),
+        description: z.string().nullable(),
         dueDate: z.date().nullable(),
         priority: z.nativeEnum(PriorityOption).nullable(),
+        collectionId: z.string().nullable(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -26,6 +30,7 @@ export const TaskRouter = createTRPCRouter({
           description: input.description,
           dueDate: input.dueDate,
           priority: input.priority,
+          collectionId: input.collectionId,
         },
       });
     }),
@@ -34,10 +39,11 @@ export const TaskRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         title: z.string(),
-        description: z.string().optional(),
-        completed: z.boolean().optional(),
+        description: z.string().nullable(),
+        completed: z.boolean(),
         dueDate: z.date().nullable(),
         priority: z.nativeEnum(PriorityOption).nullable(),
+        collectionId: z.string().nullable(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -49,6 +55,7 @@ export const TaskRouter = createTRPCRouter({
           completed: input.completed,
           dueDate: input.dueDate,
           priority: input.priority,
+          collectionId: input.collectionId,
         },
       });
     }),

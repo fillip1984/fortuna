@@ -3,15 +3,16 @@
 import type { PriorityOption } from "@prisma/client";
 import { Check, ChevronDownIcon } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
+import { BiCollection } from "react-icons/bi";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { useCollections } from "~/hooks/useCollections";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
-import { BiCollection } from "react-icons/bi";
 import {
   Dialog,
   DialogClose,
@@ -30,13 +31,13 @@ export default function TaskModal({
   dismiss: () => void;
   task?: TaskType;
 }) {
-  const { data: collections } = api.collection.findAll.useQuery();
+  const { collections } = useCollections();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [priority, setPriority] = useState<PriorityOption | undefined>();
-  const [collection, setCollection] = useState<string>("");
+  const [collectionName, setCollectionName] = useState<string>("");
 
   useEffect(() => {
     if (task) {
@@ -44,7 +45,7 @@ export default function TaskModal({
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
       setPriority(task.priority ?? undefined);
-      setCollection(
+      setCollectionName(
         task.collectionId
           ? (collections?.find((c) => c.id === task.collectionId)?.name ?? "")
           : "",
@@ -93,8 +94,11 @@ export default function TaskModal({
           id: task.id,
           title,
           description,
+          completed: task.completed,
           dueDate: dueDate ?? null,
           priority: priority ?? null,
+          collectionId:
+            collections?.find((c) => c.name === collectionName)?.id ?? null,
         });
       } else {
         await createTask({
@@ -102,6 +106,8 @@ export default function TaskModal({
           description: description,
           dueDate: dueDate ?? null,
           priority: priority ?? null,
+          collectionId:
+            collections?.find((c) => c.name === collectionName)?.id ?? null,
         });
       }
     }
@@ -137,6 +143,7 @@ export default function TaskModal({
                         onClick={(e) => {
                           e.stopPropagation();
                           setDueDate(undefined);
+                          setDatePickerOpen(false);
                         }}
                         className="text-muted-foreground"
                       >
@@ -186,6 +193,7 @@ export default function TaskModal({
                         onClick={(e) => {
                           e.stopPropagation();
                           setPriority(undefined);
+                          setPriorityPickerOpen(false);
                         }}
                         className="text-muted-foreground"
                       >
@@ -246,13 +254,14 @@ export default function TaskModal({
                   id="collection"
                   className="w-48 justify-between font-normal"
                 >
-                  {collection ? (
+                  {collectionName ? (
                     <>
-                      {collection}
+                      {collectionName}
                       <span
                         onClick={(e) => {
                           e.stopPropagation();
-                          setCollection("");
+                          setCollectionName("");
+                          setCollectionPickerOpen(false);
                         }}
                         className="text-muted-foreground"
                       >
@@ -276,13 +285,13 @@ export default function TaskModal({
                     <div
                       key={c.id}
                       onClick={() => {
-                        setCollection(c.name);
+                        setCollectionName(c.name);
                         setCollectionPickerOpen(false);
                       }}
                       className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
                     >
                       {c.name}
-                      {collection === c.name && (
+                      {collectionName === c.name && (
                         <Check className="text-muted-foreground" />
                       )}
                     </div>

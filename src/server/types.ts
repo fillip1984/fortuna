@@ -3,7 +3,8 @@ import type { RouterOutputs } from "~/trpc/react";
 
 export type TaskType = RouterOutputs["task"]["findAll"][number];
 export type SifterType = {
-  icon: JSX.Element;
+  id: string;
   name: string;
+  icon: JSX.Element;
   tasks: TaskType[];
 };

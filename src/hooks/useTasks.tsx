@@ -13,12 +13,17 @@ import { api } from "~/trpc/react";
 
 export const useTasks = () => {
   const [sifters, setSifters] = useState<SifterType[]>([
-    { icon: <FaInbox />, name: "Inbox", tasks: [] },
-    { icon: <FaCalendarDay />, name: "Today", tasks: [] },
-    { icon: <FaFlag />, name: "Urgent", tasks: [] },
-    { icon: <FaCalendarPlus />, name: "Unscheduled", tasks: [] },
-    { icon: <FaCalendarAlt />, name: "Scheduled", tasks: [] },
-    { icon: <LuListTodo />, name: "All", tasks: [] },
+    { id: "Inbox", name: "Inbox", icon: <FaInbox />, tasks: [] },
+    { id: "Today", name: "Today", icon: <FaCalendarDay />, tasks: [] },
+    { id: "Urgent", name: "Urgent", icon: <FaFlag />, tasks: [] },
+    {
+      id: "Unscheduled",
+      name: "Unscheduled",
+      icon: <FaCalendarPlus />,
+      tasks: [],
+    },
+    { id: "Scheduled", name: "Scheduled", icon: <FaCalendarAlt />, tasks: [] },
+    { id: "All", name: "All", icon: <LuListTodo />, tasks: [] },
   ]);
 
   const {

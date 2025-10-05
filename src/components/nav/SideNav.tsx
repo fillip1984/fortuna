@@ -13,13 +13,14 @@ import {
 } from "~/components/ui/dialog";
 import { api } from "~/trpc/react";
 
-import Link from "next/link";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { useCollections } from "~/hooks/useCollections";
 import { useTasks } from "~/hooks/useTasks";
 
 export default function SideNav() {
-  const { data: collections } = api.collection.findAll.useQuery();
+  const { collections, activeCollectionId, setActiveCollectionId } =
+    useCollections();
   const { sifters } = useTasks();
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
@@ -29,15 +30,16 @@ export default function SideNav() {
       <nav className="flex flex-col gap-2 overflow-hidden">
         <div className="flex flex-col gap-2 overflow-y-auto p-2 pb-12">
           <h4 className="mx-auto italic">fortuna</h4>
-          <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
+          <div className="grid w-[280px] grid-cols-1 gap-1 select-none md:grid-cols-2">
             {sifters.map((sifter) => (
               <div
-                key={sifter.name}
-                className="bg-primary text-primary-foreground flex items-center rounded-lg px-2 py-1"
+                key={sifter.id}
+                onClick={() => setActiveCollectionId(sifter.id)}
+                className={`${activeCollectionId === sifter.id ? "bg-accent" : "hover:bg-accent/40"} flex items-center rounded-lg border px-2 py-1`}
               >
                 <div className="flex flex-col gap-1">
                   {sifter.icon}
-                  <p className="text-xs">{sifter.name}</p>
+                  <p className="text-[10px]">{sifter.name}</p>
                 </div>
                 <h3 className="ml-auto text-2xl">{sifter.tasks.length ?? 0}</h3>
               </div>
@@ -46,11 +48,16 @@ export default function SideNav() {
 
           <h3>Collections</h3>
           <hr />
-          <div className="ml-2 flex flex-col gap-1">
+          <div className="ml-2 flex flex-col gap-1 select-none">
             {collections?.map((collection) => (
-              <Link href={`/collections/${collection.id}`} key={collection.id}>
+              <div
+                key={collection.id}
+                className={`${activeCollectionId === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex justify-between rounded-lg p-1`}
+                onClick={() => setActiveCollectionId(collection.id)}
+              >
                 {collection.name}
-              </Link>
+                <span>{collection._count.tasks}</span>
+              </div>
             ))}
             <hr />
           </div>
