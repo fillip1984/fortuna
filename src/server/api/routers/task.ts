@@ -8,9 +8,7 @@ export const TaskRouter = createTRPCRouter({
       where: {
         completed: false,
       },
-      orderBy: {
-        order: "asc",
-      },
+      orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
     });
   }),
   create: publicProcedure
@@ -41,6 +39,7 @@ export const TaskRouter = createTRPCRouter({
         id: z.string(),
         title: z.string(),
         description: z.string().nullable(),
+        order: z.number(),
         completed: z.boolean(),
         dueDate: z.date().nullable(),
         priority: z.nativeEnum(PriorityOption).nullable(),
@@ -53,6 +52,7 @@ export const TaskRouter = createTRPCRouter({
         data: {
           title: input.title,
           description: input.description,
+          order: input.order,
           completed: input.completed,
           dueDate: input.dueDate,
           priority: input.priority,

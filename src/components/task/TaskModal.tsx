@@ -112,15 +112,21 @@ export default function TaskModal({
     e.preventDefault();
     if (title) {
       if (task) {
+        const effectiveCollection =
+          collections?.find((c) => c.name === collectionName) ?? null;
+        const effectiveOrder =
+          effectiveCollection && task.collectionId !== effectiveCollection.id
+            ? effectiveCollection._count.tasks
+            : task.order;
         await updateTask({
           id: task.id,
           title,
           description,
+          order: effectiveOrder,
           completed: task.completed,
           dueDate: dueDate ?? null,
           priority: priority ?? null,
-          collectionId:
-            collections?.find((c) => c.name === collectionName)?.id ?? null,
+          collectionId: effectiveCollection?.id ?? null,
         });
       } else {
         await createTask({

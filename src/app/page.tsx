@@ -1,7 +1,7 @@
 "use client";
 
 import { isPast } from "date-fns";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BiCollection } from "react-icons/bi";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
@@ -23,17 +23,38 @@ import { AppContext } from "~/context/AppContextProvider";
 import { GiBeerStein } from "react-icons/gi";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 
 export default function Home() {
   const { filteredTasks } = useContext(AppContext);
   const [addTaskOpen, setAddTaskOpen] = useState(false);
+
+  // DnD stuff
+  const { mutate: reorderTasks } = api.task.reorder.useMutation();
+  const [draggableTasksParentRef, draggabledTasks, setDraggabledTasks] =
+    useDragAndDrop<HTMLDivElement, TaskType>([], {
+      onDragend: (data) => {
+        reorderTasks(
+          data.values.map((section, index) => ({
+            id: (section as TaskType).id,
+            order: index,
+          })),
+        );
+      },
+    });
+  useEffect(() => {
+    setDraggabledTasks(filteredTasks ?? []);
+  }, [filteredTasks, setDraggabledTasks]);
+
   return (
     <div className="flex h-screen flex-col overflow-y-auto pb-12">
       {filteredTasks?.length > 0 ? (
-        <div>
-          {filteredTasks.map((task) => (
-            <TaskRow key={task.id} task={task} />
-          ))}
+        <>
+          <div ref={draggableTasksParentRef} className="select-none">
+            {draggabledTasks.map((task) => (
+              <TaskRow key={task.id} data-label={task.id} task={task} />
+            ))}
+          </div>
           <Button
             className="mx-auto mt-2 mb-4"
             variant="outline"
@@ -42,7 +63,7 @@ export default function Home() {
           >
             Add task...
           </Button>
-        </div>
+        </>
       ) : (
         <Empty>
           <EmptyHeader>
