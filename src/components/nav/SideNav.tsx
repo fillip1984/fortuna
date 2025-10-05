@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState, type FormEvent } from "react";
+import { useContext, useEffect, useState, type FormEvent } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Button } from "~/components/ui/button";
 import {
@@ -14,15 +14,38 @@ import {
 import { api } from "~/trpc/react";
 
 import { Input } from "~/components/ui/input";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+
 import { Label } from "~/components/ui/label";
 
 import { AppContext } from "~/context/AppContextProvider";
+import type { CollectionType } from "~/server/types";
 
 export default function SideNav() {
   const { collections, activeCollectionId, setActiveCollectionId, sifters } =
     useContext(AppContext);
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
+
+  // DnD stuff
+  const { mutate: reorderCollections } = api.collection.reorder.useMutation();
+  const [
+    draggableCollectionsParentRef,
+    draggabledCollections,
+    setDraggabledCollections,
+  ] = useDragAndDrop<HTMLDivElement, CollectionType>([], {
+    onDragend: (data) => {
+      reorderCollections(
+        data.values.map((section, index) => ({
+          id: (section as CollectionType).id,
+          order: index,
+        })),
+      );
+    },
+  });
+  useEffect(() => {
+    setDraggabledCollections(collections ?? []);
+  }, [collections, setDraggabledCollections]);
 
   return (
     <>
@@ -47,10 +70,14 @@ export default function SideNav() {
 
           <h3>Collections</h3>
           <hr />
-          <div className="ml-2 flex flex-col gap-1 select-none">
-            {collections?.map((collection) => (
+          <div
+            ref={draggableCollectionsParentRef}
+            className="ml-2 flex flex-col gap-1 select-none"
+          >
+            {draggabledCollections?.map((collection) => (
               <div
                 key={collection.id}
+                data-label={collection.id}
                 className={`${activeCollectionId === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex justify-between rounded-lg px-2 py-1`}
                 onClick={() => setActiveCollectionId(collection.id)}
               >
@@ -58,8 +85,8 @@ export default function SideNav() {
                 <span>{collection._count.tasks}</span>
               </div>
             ))}
-            <hr />
           </div>
+          <hr />
           <Button
             onClick={() => setIsAddingCollection(true)}
             size={"sm"}
