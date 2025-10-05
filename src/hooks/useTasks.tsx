@@ -1,4 +1,4 @@
-import { isToday } from "date-fns";
+import { isFuture, isToday } from "date-fns";
 import { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
@@ -57,9 +57,7 @@ export const useTasks = () => {
         } else if (sifter.name === "Scheduled") {
           return {
             ...sifter,
-            tasks:
-              tasks?.filter((t) => t.priority === "IMPORTANT" && t.dueDate) ??
-              [],
+            tasks: tasks?.filter((t) => t.dueDate && isFuture(t.dueDate)) ?? [],
           };
         } else if (sifter.name === "All") {
           return { ...sifter, tasks: tasks ?? [] };
