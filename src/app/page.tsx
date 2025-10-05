@@ -80,6 +80,7 @@ const TaskRow = ({ task }: { task: TaskType }) => {
   const { mutate: completeTask } = api.task.update.useMutation({
     onSuccess: async () => {
       await utils.task.findAll.invalidate();
+      await utils.collection.findAll.invalidate();
     },
   });
   return (

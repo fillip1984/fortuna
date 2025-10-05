@@ -9,7 +9,7 @@ export const TaskRouter = createTRPCRouter({
         completed: false,
       },
       orderBy: {
-        title: "asc",
+        order: "asc",
       },
     });
   }),
@@ -28,6 +28,7 @@ export const TaskRouter = createTRPCRouter({
         data: {
           title: input.title,
           description: input.description,
+          order: 9999,
           dueDate: input.dueDate,
           priority: input.priority,
           collectionId: input.collectionId,
@@ -57,6 +58,29 @@ export const TaskRouter = createTRPCRouter({
           priority: input.priority,
           collectionId: input.collectionId,
         },
+      });
+    }),
+  reorder: publicProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.string().min(1),
+          order: z.number(),
+        }),
+      ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.$transaction(async (tx) => {
+        for (const task of input) {
+          await tx.task.update({
+            where: {
+              id: task.id,
+            },
+            data: {
+              order: task.order,
+            },
+          });
+        }
       });
     }),
   delete: publicProcedure

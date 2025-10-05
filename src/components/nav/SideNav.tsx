@@ -51,7 +51,7 @@ export default function SideNav() {
             {collections?.map((collection) => (
               <div
                 key={collection.id}
-                className={`${activeCollectionId === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex justify-between rounded-lg p-1`}
+                className={`${activeCollectionId === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex justify-between rounded-lg px-2 py-1`}
                 onClick={() => setActiveCollectionId(collection.id)}
               >
                 {collection.name}
@@ -87,6 +87,7 @@ const NewCollectionModal = ({
   const utils = api.useUtils();
   const { mutate: addCollection } = api.collection.create.useMutation({
     onSuccess: async () => {
+      await utils.task.findAll.invalidate();
       await utils.collection.findAll.invalidate();
       dismiss();
     },

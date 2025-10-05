@@ -14,7 +14,7 @@ export const CollectionRouter = createTRPCRouter({
         },
       },
       orderBy: {
-        name: "asc",
+        order: "asc",
       },
     });
   }),
@@ -24,6 +24,7 @@ export const CollectionRouter = createTRPCRouter({
       return await ctx.db.collection.create({
         data: {
           name: input.name,
+          order: 9999,
         },
       });
     }),
@@ -35,6 +36,29 @@ export const CollectionRouter = createTRPCRouter({
         data: {
           name: input.name,
         },
+      });
+    }),
+  reorder: publicProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.string().min(1),
+          order: z.number(),
+        }),
+      ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.$transaction(async (tx) => {
+        for (const collection of input) {
+          await tx.collection.update({
+            where: {
+              id: collection.id,
+            },
+            data: {
+              order: collection.order,
+            },
+          });
+        }
       });
     }),
   delete: publicProcedure

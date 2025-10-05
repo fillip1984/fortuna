@@ -17,7 +17,7 @@ import {
   type TaskType,
 } from "~/server/types";
 import { isFuture } from "date-fns/isFuture";
-import { isToday } from "date-fns";
+import { isPast, isToday } from "date-fns";
 
 type AppContextType = {
   collections: CollectionType[];
@@ -36,7 +36,6 @@ export const AppContext = createContext<AppContextType>({
   },
   filteredTasks: [],
   sifters: [],
-  //   setFilteredTasks: () => {},
 });
 
 export function AppContextProvider({
@@ -81,7 +80,10 @@ export function AppContextProvider({
         } else if (sifter.name === "Today") {
           return {
             ...sifter,
-            tasks: tasks.filter((t) => t.dueDate && isToday(t.dueDate)) ?? [],
+            tasks:
+              tasks.filter(
+                (t) => t.dueDate && (isPast(t.dueDate) || isToday(t.dueDate)),
+              ) ?? [],
           };
         } else if (sifter.name === "Urgent") {
           return {

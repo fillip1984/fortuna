@@ -59,6 +59,7 @@ export default function TaskModal({
   const { mutateAsync: createTask } = api.task.create.useMutation({
     onSuccess: async () => {
       await utils.task.findAll.invalidate();
+      await utils.collection.findAll.invalidate();
       resetForm();
       dismiss();
     },
@@ -81,6 +82,7 @@ export default function TaskModal({
     setDescription("");
     setDueDate(undefined);
     setPriority(undefined);
+    setCollectionName("");
   };
 
   const handleDismiss = () => {
