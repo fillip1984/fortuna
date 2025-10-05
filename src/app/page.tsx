@@ -1,7 +1,7 @@
 "use client";
 
 import { isPast } from "date-fns";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BiCollection } from "react-icons/bi";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
@@ -10,34 +10,69 @@ import TaskModal from "~/components/task/TaskModal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
-import { useCollections } from "~/hooks/useCollections";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
+import { AppContext } from "~/context/AppContextProvider";
+
+import { GiBeerStein } from "react-icons/gi";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 
 export default function Home() {
-  const { data: tasks } = api.task.findAll.useQuery();
-
+  const { filteredTasks } = useContext(AppContext);
   const [addTaskOpen, setAddTaskOpen] = useState(false);
   return (
     <div className="flex h-screen flex-col overflow-y-auto pb-12">
-      {tasks?.map((task) => (
-        <TaskRow key={task.id} task={task} />
-      ))}
-      <Button
-        className="mx-auto mt-2 mb-4"
-        variant="outline"
-        size="sm"
-        onClick={() => setAddTaskOpen(true)}
-      >
-        Add task...
-      </Button>
+      {filteredTasks?.length > 0 ? (
+        <div>
+          {filteredTasks.map((task) => (
+            <TaskRow key={task.id} task={task} />
+          ))}
+          <Button
+            className="mx-auto mt-2 mb-4"
+            variant="outline"
+            size="sm"
+            onClick={() => setAddTaskOpen(true)}
+          >
+            Add task...
+          </Button>
+        </div>
+      ) : (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <GiBeerStein />
+            </EmptyMedia>
+            <EmptyTitle>No Tasks Found...</EmptyTitle>
+            <EmptyDescription>
+              Either you&apos;ve completed them all or there are no activities
+              for the filter/collection you selected.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <Button type="button" onClick={() => setAddTaskOpen(true)}>
+                Create Task
+              </Button>
+              {/* <Button variant="outline">Import Task</Button> */}
+            </div>
+          </EmptyContent>
+        </Empty>
+      )}
+
       <TaskModal isOpen={addTaskOpen} dismiss={() => setAddTaskOpen(false)} />
     </div>
   );
 }
 
 const TaskRow = ({ task }: { task: TaskType }) => {
-  const { collections } = useCollections();
+  const { collections } = useContext(AppContext);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useContext, useState, type FormEvent } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Button } from "~/components/ui/button";
 import {
@@ -15,13 +15,12 @@ import { api } from "~/trpc/react";
 
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { useCollections } from "~/hooks/useCollections";
-import { useTasks } from "~/hooks/useTasks";
+
+import { AppContext } from "~/context/AppContextProvider";
 
 export default function SideNav() {
-  const { collections, activeCollectionId, setActiveCollectionId } =
-    useCollections();
-  const { sifters } = useTasks();
+  const { collections, activeCollectionId, setActiveCollectionId, sifters } =
+    useContext(AppContext);
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
 
@@ -95,7 +94,6 @@ const NewCollectionModal = ({
   const [name, setName] = useState("");
   const handleAddCollection = (e: FormEvent) => {
     e.preventDefault();
-    console.log("handleAddCollection");
     addCollection({ name });
   };
 
@@ -108,7 +106,6 @@ const NewCollectionModal = ({
         <form
           id="add-collection-form"
           onSubmit={(e) => {
-            console.log("submitting");
             handleAddCollection(e);
           }}
           className="grid gap-4"

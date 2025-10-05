@@ -5,6 +5,7 @@ import SideNav from "~/components/nav/SideNav";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import ThemeToggle from "~/components/theme/ThemeToggle";
 import { TRPCReactProvider } from "~/trpc/react";
+import { AppContextProvider } from "~/context/AppContextProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -19,18 +20,20 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <ThemeProvider
-            attribute={"class"}
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="relative flex h-screen overflow-hidden">
-              <SideNav />
-              <main className="flex-1">{children}</main>
-            </div>
-            <ThemeToggle />
-          </ThemeProvider>
+          <AppContextProvider>
+            <ThemeProvider
+              attribute={"class"}
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="relative flex h-screen overflow-hidden">
+                <SideNav />
+                <main className="flex-1">{children}</main>
+              </div>
+              <ThemeToggle />
+            </ThemeProvider>
+          </AppContextProvider>
         </TRPCReactProvider>
       </body>
     </html>

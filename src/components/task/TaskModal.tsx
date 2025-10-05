@@ -2,14 +2,14 @@
 
 import type { PriorityOption } from "@prisma/client";
 import { Check, ChevronDownIcon } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useContext, useEffect, useState, type FormEvent } from "react";
 import { BiCollection } from "react-icons/bi";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
-import { useCollections } from "~/hooks/useCollections";
+import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
@@ -31,7 +31,7 @@ export default function TaskModal({
   dismiss: () => void;
   task?: TaskType;
 }) {
-  const { collections } = useCollections();
+  const { collections } = useContext(AppContext);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -41,6 +41,7 @@ export default function TaskModal({
 
   useEffect(() => {
     if (task) {
+      console.log({ msg: "editing task", task });
       setTitle(task.title);
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
@@ -51,7 +52,8 @@ export default function TaskModal({
           : "",
       );
     }
-  }, [task, collections]);
+    // TODO: add a way to default to specific things that make life easier (If the Today sifter is active, default due date to today, if a collection is active, default to that collection)
+  }, [collections, task]);
 
   const utils = api.useUtils();
   const { mutateAsync: createTask } = api.task.create.useMutation({
@@ -64,6 +66,7 @@ export default function TaskModal({
   const { mutateAsync: updateTask } = api.task.update.useMutation({
     onSuccess: async () => {
       await utils.task.findAll.invalidate();
+      await utils.collection.findAll.invalidate();
       resetForm();
       dismiss();
     },
@@ -87,7 +90,6 @@ export default function TaskModal({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("handleSubmit", { title, description });
     if (title) {
       if (task) {
         await updateTask({

@@ -16,6 +16,7 @@ model Collection {
     updatedAt DateTime @updatedAt
 
     name  String
+    order Int?   @default(9999)
     tasks Task[]
 
     @@index([name])
@@ -29,6 +30,7 @@ model Task {
     title       String
     description String?
     completed   Boolean         @default(false)
+    order       Int?            @default(9999)
     dueDate     DateTime?
     priority    PriorityOption?
 
