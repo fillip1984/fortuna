@@ -4,7 +4,6 @@ Simple reminder app
 
 ## TODOs
 
-- [ ] - add in quality of life functions like defaulting to selected Collection or due date
 - [ ] - add DnD functionality to reorder things (both collections and tasks within collection)
 - [ ] - add smooth animation
 - [ ] - add checklist functionality

@@ -31,7 +31,7 @@ export default function TaskModal({
   dismiss: () => void;
   task?: TaskType;
 }) {
-  const { collections } = useContext(AppContext);
+  const { collections, activeCollectionId } = useContext(AppContext);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -51,9 +51,27 @@ export default function TaskModal({
           ? (collections?.find((c) => c.id === task.collectionId)?.name ?? "")
           : "",
       );
+    } else {
+      // default to specific things that make life easier,
+      // such as if the Today sifter is active, default due date to today,
+      // if a collection is active, default to that collection
+      console.log("adding task");
+      setDueDate(activeCollectionId === "Today" ? new Date() : undefined);
+      setPriority(
+        activeCollectionId === "Urgent"
+          ? "URGENT"
+          : activeCollectionId === "Unscheduled"
+            ? "IMPORTANT"
+            : undefined,
+      );
+      setCollectionName(
+        activeCollectionId &&
+          collections.find((c) => c.id === activeCollectionId)
+          ? (collections.find((c) => c.id === activeCollectionId)?.name ?? "")
+          : "",
+      );
     }
-    // TODO: add a way to default to specific things that make life easier (If the Today sifter is active, default due date to today, if a collection is active, default to that collection)
-  }, [collections, task]);
+  }, [collections, task, activeCollectionId]);
 
   const utils = api.useUtils();
   const { mutateAsync: createTask } = api.task.create.useMutation({
