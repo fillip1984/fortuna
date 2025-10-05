@@ -41,7 +41,6 @@ export default function TaskModal({
 
   useEffect(() => {
     if (task) {
-      console.log({ msg: "editing task", task });
       setTitle(task.title);
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
@@ -55,7 +54,6 @@ export default function TaskModal({
       // default to specific things that make life easier,
       // such as if the Today sifter is active, default due date to today,
       // if a collection is active, default to that collection
-      console.log("adding task");
       setDueDate(activeCollectionId === "Today" ? new Date() : undefined);
       setPriority(
         activeCollectionId === "Urgent"
