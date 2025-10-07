@@ -8,6 +8,10 @@ export const TaskRouter = createTRPCRouter({
       where: {
         completed: false,
       },
+      include: {
+        checklist: true,
+        comments: true,
+      },
       orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
     });
   }),
@@ -64,7 +68,7 @@ export const TaskRouter = createTRPCRouter({
     .input(
       z.array(
         z.object({
-          id: z.string().min(1),
+          id: z.string(),
           order: z.number(),
         }),
       ),
@@ -81,6 +85,64 @@ export const TaskRouter = createTRPCRouter({
             },
           });
         }
+      });
+    }),
+  addChecklistItem: publicProcedure
+    .input(
+      z.object({
+        taskId: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.checklist.create({
+        data: {
+          taskId: input.taskId,
+          text: input.text,
+          completed: false,
+        },
+      });
+    }),
+  toggleChecklistItem: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        completed: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.checklist.update({
+        where: { id: input.id },
+        data: { completed: input.completed },
+      });
+    }),
+  deleteChecklistItem: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.checklist.delete({
+        where: { id: input.id },
+      });
+    }),
+  addComment: publicProcedure
+    .input(
+      z.object({
+        taskId: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.comment.create({
+        data: {
+          taskId: input.taskId,
+          text: input.text,
+        },
+      });
+    }),
+  deleteComment: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.comment.delete({
+        where: { id: input.id },
       });
     }),
   delete: publicProcedure
