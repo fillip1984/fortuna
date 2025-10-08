@@ -33,12 +33,16 @@ export default function TaskModal({
   }, []);
   return (
     <Dialog open={isOpen} onOpenChange={dismiss}>
-      <DialogContent className="flex flex-col overflow-hidden">
-        <DialogTitle>{task ? "Edit Task" : "New Task"}</DialogTitle>
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-2">
-          <TaskDetails task={task} />
-          <TaskChecklist task={task} />
-          <Comments task={task} />
+      <DialogContent className="m-0 flex h-[800px] flex-col overflow-hidden p-0">
+        <DialogTitle className="px-3 pt-3">
+          {task ? "Edit Task" : "New Task"}
+        </DialogTitle>
+        <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-12">
+            <TaskDetails task={task} />
+            <TaskChecklist task={task} />
+            <Comments task={task} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
