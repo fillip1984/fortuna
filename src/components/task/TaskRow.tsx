@@ -92,11 +92,14 @@ export default function TaskRow({ task }: { task: TaskType }) {
           </div>
         </div>
       </div>
-      <TaskModal
-        isOpen={showDetails}
-        dismiss={() => setShowDetails(false)}
-        task={task}
-      />
+
+      {showDetails && (
+        <TaskModal
+          isOpen={showDetails}
+          dismiss={() => setShowDetails(false)}
+          task={task}
+        />
+      )}
     </>
   );
 }
