@@ -74,7 +74,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
                 {collections?.find((c) => c.id === task.collectionId)?.name}
               </Badge>
             )}
-            {task.checklist && (
+            {task.checklist.length > 0 && (
               <Badge variant="secondary">
                 <FaList />
                 <span>
@@ -83,7 +83,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
                 </span>
               </Badge>
             )}
-            {task.comments && (
+            {task.comments.length > 0 && (
               <Badge variant="secondary">
                 <FaComment />
                 {task.comments.length}
