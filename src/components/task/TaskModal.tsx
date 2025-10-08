@@ -52,7 +52,7 @@ export default function TaskModal({
 const TaskDetails = ({ task }: { task: TaskType }) => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const { collections, activeCollectionId } = useContext(AppContext);
+  const { collections } = useContext(AppContext);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -69,21 +69,8 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
       setPriority(task.priority ?? undefined);
       setCollectionId(task.collectionId ?? undefined);
-    } else {
-      // default to specific things that make life easier,
-      // such as if the Today sifter is active, default due date to today,
-      // if a collection is active, default to that collection
-      setDueDate(activeCollectionId === "Today" ? new Date() : undefined);
-      setPriority(
-        activeCollectionId === "Urgent"
-          ? "URGENT"
-          : activeCollectionId === "Unscheduled"
-            ? "IMPORTANT"
-            : undefined,
-      );
-      setCollectionId(activeCollectionId ?? undefined);
     }
-  }, [collections, task, activeCollectionId]);
+  }, [task]);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [priorityPickerOpen, setPriorityPickerOpen] = useState(false);
