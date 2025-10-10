@@ -2,22 +2,28 @@ import z from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const CollectionRouter = createTRPCRouter({
-  findAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.collection.findMany({
-      select: {
-        id: true,
-        name: true,
-        _count: {
-          select: {
-            tasks: { where: { completed: false } },
+  findAll: publicProcedure
+    .input(z.object({ showCompleted: z.boolean() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.collection.findMany({
+        select: {
+          id: true,
+          name: true,
+          _count: {
+            select: {
+              tasks: {
+                where: {
+                  ...(input.showCompleted === true ? {} : { completed: false }),
+                },
+              },
+            },
           },
         },
-      },
-      orderBy: {
-        order: "asc",
-      },
-    });
-  }),
+        orderBy: {
+          order: "asc",
+        },
+      });
+    }),
   create: publicProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -64,8 +70,14 @@ export const CollectionRouter = createTRPCRouter({
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.collection.delete({
-        where: { id: input.id },
+      return await ctx.db.$transaction(async (tx) => {
+        await tx.task.updateMany({
+          where: { collectionId: input.id },
+          data: { collectionId: null },
+        });
+        await tx.collection.delete({
+          where: { id: input.id },
+        });
       });
     }),
 });

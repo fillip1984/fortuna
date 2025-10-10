@@ -20,6 +20,7 @@ import { Label } from "~/components/ui/label";
 
 import { AppContext } from "~/context/AppContextProvider";
 import type { CollectionType } from "~/server/types";
+import { motion } from "motion/react";
 
 export default function SideNav() {
   const { collections, activeCollectionId, setActiveCollectionId, sifters } =
@@ -63,7 +64,14 @@ export default function SideNav() {
                   {sifter.icon}
                   <p className="text-[10px]">{sifter.name}</p>
                 </div>
-                <h3 className="ml-auto text-2xl">{sifter.tasks.length ?? 0}</h3>
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 0.4, times: [0, 0.5, 1] }}
+                  key={sifter.tasks.length}
+                  className="ml-auto text-2xl"
+                >
+                  {sifter.tasks.length ?? 0}
+                </motion.div>
               </div>
             ))}
           </div>
@@ -82,7 +90,13 @@ export default function SideNav() {
                 onClick={() => setActiveCollectionId(collection.id)}
               >
                 {collection.name}
-                <span>{collection._count.tasks}</span>
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 0.4, times: [0, 0.5, 1] }}
+                  key={collection._count.tasks}
+                >
+                  {collection._count.tasks}
+                </motion.div>
               </div>
             ))}
           </div>

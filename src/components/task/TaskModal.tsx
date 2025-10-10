@@ -3,20 +3,29 @@
 import type { PriorityOption } from "@prisma/client";
 import { format } from "date-fns/format";
 import { Check, ChevronDownIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { BiCollection } from "react-icons/bi";
-import { FaChevronDown, FaTrash } from "react-icons/fa";
+import { FaChevronDown, FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
+import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
-import type { TaskType } from "~/server/types";
+import type { RecurrenceOption, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export default function TaskModal({
@@ -28,17 +37,45 @@ export default function TaskModal({
   dismiss: () => void;
   task: TaskType;
 }) {
-  useEffect(() => {
-    console.log("loading modal");
-  }, []);
+  const utils = api.useUtils();
+  const { mutateAsync: deleteTask } = api.task.delete.useMutation({
+    onSuccess: async () => {
+      await utils.task.findAll.invalidate();
+      await utils.collection.findAll.invalidate();
+      dismiss();
+    },
+  });
+
   return (
     <Dialog open={isOpen} onOpenChange={dismiss}>
-      <DialogContent className="m-0 flex h-[800px] flex-col overflow-hidden p-0">
-        <DialogTitle className="px-3 pt-3">
-          {task ? "Edit Task" : "New Task"}
-        </DialogTitle>
+      <DialogContent
+        showCloseButton={false}
+        className="m-0 flex h-[800px] flex-col gap-0 overflow-hidden p-0"
+      >
+        <div className="flex items-center justify-end px-1 py-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <FaEllipsisH />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-36" align="start">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => void deleteTask({ id: task.id })}
+                  className="text-destructive justify-between"
+                >
+                  Delete <FaTrash className="text-destructive" />
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="ghost" onClick={dismiss}>
+            <IoCloseSharp />
+          </Button>
+        </div>
         <div className="flex flex-1 overflow-hidden">
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-12">
+          <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-12">
             <TaskDetails task={task} />
             <TaskChecklist task={task} />
             <Comments task={task} />
@@ -61,6 +98,8 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [collectionId, setCollectionId] = useState<string | undefined>(
     undefined,
   );
+  const [repeats, setRepeats] = useState<boolean>(false);
+  const [recurrence, setRecurrence] = useState<RecurrenceOption>(null);
 
   useEffect(() => {
     if (task) {
@@ -84,291 +123,266 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
     },
   });
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   if (title) {
-  //     if (task) {
-  //       const effectiveCollection =
-  //         collections?.find((c) => c.name === collectionName) ?? null;
-  //       const effectiveOrder =
-  //         effectiveCollection && task.collectionId !== effectiveCollection.id
-  //           ? effectiveCollection._count.tasks
-  //           : task.order;
-  //       await updateTask({
-  //         id: task.id,
-  //         title,
-  //         description,
-  //         order: effectiveOrder,
-  //         completed: task.completed,
-  //         dueDate: dueDate ?? null,
-  //         priority: priority ?? null,
-  //         collectionId: effectiveCollection?.id ?? null,
-  //       });
-  //     } else {
-  //       await createTask({
-  //         title: title,
-  //         description: description,
-  //         dueDate: dueDate ?? null,
-  //         priority: priority ?? null,
-  //         collectionId:
-  //           collections?.find((c) => c.name === collectionName)?.id ?? null,
-  //       });
-  //     }
-  //   }
-  // };
-
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <Button
+        variant={"ghost"}
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center justify-between p-0"
+      >
         <div className="flex items-center gap-2">
           <FaChevronDown
-            onClick={() => setCollapsed(!collapsed)}
             className={`${collapsed ? "-rotate-90" : ""} transition-transform`}
           />
           <h3>Details</h3>
         </div>
-      </div>
+      </Button>
       <hr />
-      {!collapsed && (
-        <>
-          <div className="flex flex-col gap-2">
-            <Input
-              placeholder="New task..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onBlur={() => {
-                // have to do this since the cursor defaults into title
-                if (task.title === title) return;
-                void updateTask({
-                  ...task,
-                  title,
-                });
-              }}
-            />
-            <Textarea
-              placeholder="Description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              onBlur={async () => {
-                void updateTask({
-                  ...task,
-                  description,
-                });
-              }}
-            />
-            <div className="flex items-center gap-3">
-              <TbTargetArrow />
-              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="date"
-                    className="w-48 justify-between font-normal"
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            initial={{ opacity: 0, height: 0.5 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0.5 }}
+          >
+            <div className="flex flex-col gap-2">
+              <Input
+                placeholder="New task..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={() => {
+                  // have to do this since the cursor defaults into title
+                  if (task.title === title) return;
+                  void updateTask({
+                    ...task,
+                    title,
+                  });
+                }}
+              />
+              <Textarea
+                placeholder="Description..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                onBlur={async () => {
+                  void updateTask({
+                    ...task,
+                    description,
+                  });
+                }}
+              />
+              <div className="flex items-center gap-3">
+                <TbTargetArrow />
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="date"
+                      className="w-48 justify-between font-normal"
+                    >
+                      {dueDate ? (
+                        <>
+                          {dueDate.toLocaleDateString()}
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDueDate(undefined);
+                              setDatePickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                dueDate: null,
+                              });
+                            }}
+                            className="text-muted-foreground"
+                          >
+                            x
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Select due date
+                          <ChevronDownIcon />
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-auto overflow-hidden p-0"
+                    align="start"
                   >
-                    {dueDate ? (
-                      <>
-                        {dueDate.toLocaleDateString()}
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDueDate(undefined);
-                            setDatePickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              dueDate: null,
-                            });
-                          }}
-                          className="text-muted-foreground"
-                        >
-                          x
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        Select due date
-                        <ChevronDownIcon />
-                      </>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto overflow-hidden p-0"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={dueDate}
-                    captionLayout="dropdown"
-                    onSelect={(date) => {
-                      setDueDate(date);
-                      setDatePickerOpen(false);
-                      void updateTask({
-                        ...task,
-                        dueDate: date ?? null,
-                      });
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div className="flex items-center gap-3">
-              <GiLevelEndFlag />
-              <Popover
-                open={priorityPickerOpen}
-                onOpenChange={setPriorityPickerOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="priority"
-                    className="w-48 justify-between font-normal"
-                  >
-                    {priority ? (
-                      <>
-                        {priority}
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPriority(undefined);
-                            setPriorityPickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              priority: null,
-                            });
-                          }}
-                          className="text-muted-foreground"
-                        >
-                          x
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        Select priority
-                        <ChevronDownIcon />
-                      </>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-48 overflow-hidden p-2"
-                  align="center"
-                >
-                  <>
-                    <div
-                      onClick={() => {
-                        setPriority("URGENT");
-                        setPriorityPickerOpen(false);
+                    <Calendar
+                      mode="single"
+                      selected={dueDate}
+                      captionLayout="dropdown"
+                      onSelect={(date) => {
+                        setDueDate(date);
+                        setDatePickerOpen(false);
                         void updateTask({
                           ...task,
-                          priority: "URGENT",
+                          dueDate: date ?? null,
                         });
                       }}
-                      className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                    >
-                      Urgent
-                      {priority === "URGENT" && (
-                        <Check className="text-muted-foreground" />
-                      )}
-                    </div>
-                    <div
-                      onClick={() => {
-                        setPriority("IMPORTANT");
-                        setPriorityPickerOpen(false);
-                        void updateTask({
-                          ...task,
-                          priority: "IMPORTANT",
-                        });
-                      }}
-                      className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                    >
-                      Important
-                      {priority === "IMPORTANT" && (
-                        <Check className="text-muted-foreground" />
-                      )}
-                    </div>
-                  </>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <BiCollection />
-              <Popover
-                open={collectionPickerOpen}
-                onOpenChange={setCollectionPickerOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    id="collection"
-                    className="w-48 justify-between font-normal"
-                  >
-                    {collectionId ? (
-                      <>
-                        {
-                          collections.find((col) => col.id === collectionId)
-                            ?.name
-                        }
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCollectionId(undefined);
-                            setCollectionPickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              collectionId: null,
-                              order: 9999, // put it at the end of no collection
-                            });
-                          }}
-                          className="text-muted-foreground"
-                        >
-                          x
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        Select collection
-                        <ChevronDownIcon />
-                      </>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-48 overflow-hidden p-2"
-                  align="center"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="flex items-center gap-3">
+                <GiLevelEndFlag />
+                <Popover
+                  open={priorityPickerOpen}
+                  onOpenChange={setPriorityPickerOpen}
                 >
-                  <>
-                    {collections?.map((c) => (
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="priority"
+                      className="w-48 justify-between font-normal"
+                    >
+                      {priority ? (
+                        <>
+                          {priority}
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPriority(undefined);
+                              setPriorityPickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                priority: null,
+                              });
+                            }}
+                            className="text-muted-foreground"
+                          >
+                            x
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Select priority
+                          <ChevronDownIcon />
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-48 overflow-hidden p-2"
+                    align="center"
+                  >
+                    <>
                       <div
-                        key={c.id}
                         onClick={() => {
-                          setCollectionId(c.id);
-                          setCollectionPickerOpen(false);
+                          setPriority("URGENT");
+                          setPriorityPickerOpen(false);
                           void updateTask({
                             ...task,
-                            collectionId: c.id,
-                            // Handle putting item at the end of a collection if we move it to a new one
-                            order:
-                              task.collectionId === collectionId
-                                ? task.order
-                                : c._count.tasks,
+                            priority: "URGENT",
                           });
                         }}
                         className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
                       >
-                        {c.name}
-                        {collectionId === c.id && (
+                        Urgent
+                        {priority === "URGENT" && (
                           <Check className="text-muted-foreground" />
                         )}
                       </div>
-                    ))}
-                  </>
-                </PopoverContent>
-              </Popover>
+                      <div
+                        onClick={() => {
+                          setPriority("IMPORTANT");
+                          setPriorityPickerOpen(false);
+                          void updateTask({
+                            ...task,
+                            priority: "IMPORTANT",
+                          });
+                        }}
+                        className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
+                      >
+                        Important
+                        {priority === "IMPORTANT" && (
+                          <Check className="text-muted-foreground" />
+                        )}
+                      </div>
+                    </>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="flex items-center gap-3">
+                <BiCollection />
+                <Popover
+                  open={collectionPickerOpen}
+                  onOpenChange={setCollectionPickerOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="collection"
+                      className="w-48 justify-between font-normal"
+                    >
+                      {collectionId ? (
+                        <>
+                          {
+                            collections.find((col) => col.id === collectionId)
+                              ?.name
+                          }
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCollectionId(undefined);
+                              setCollectionPickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                collectionId: null,
+                                order: 9999, // put it at the end of no collection
+                              });
+                            }}
+                            className="text-muted-foreground"
+                          >
+                            x
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Select collection
+                          <ChevronDownIcon />
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-48 overflow-hidden p-2"
+                    align="center"
+                  >
+                    <>
+                      {collections?.map((c) => (
+                        <div
+                          key={c.id}
+                          onClick={() => {
+                            setCollectionId(c.id);
+                            setCollectionPickerOpen(false);
+                            void updateTask({
+                              ...task,
+                              collectionId: c.id,
+                              // Handle putting item at the end of a collection if we move it to a new one
+                              order:
+                                task.collectionId === collectionId
+                                  ? task.order
+                                  : c._count.tasks,
+                            });
+                          }}
+                          className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
+                        >
+                          {c.name}
+                          {collectionId === c.id && (
+                            <Check className="text-muted-foreground" />
+                          )}
+                        </div>
+                      ))}
+                    </>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -409,70 +423,79 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <Button
+        variant="ghost"
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center justify-between p-0"
+      >
         <div className="flex items-center gap-2">
           <FaChevronDown
-            onClick={() => setCollapsed(!collapsed)}
             className={`${collapsed ? "-rotate-90" : ""} transition-transform`}
           />
           <h3>Checklist</h3>
         </div>
         {task?.checklist.filter((item) => item.completed).length}/
         {task?.checklist.length}
-      </div>
+      </Button>
       <hr />
-      {!collapsed && (
-        <>
-          <div>
-            {task.checklist.map((item) => (
-              <div
-                key={item.id}
-                className="hover:bg-accent flex items-center gap-2 rounded-lg p-1"
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            initial={{ opacity: 0, height: 0.5 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0.5 }}
+          >
+            <div>
+              {task.checklist.map((item) => (
+                <div
+                  key={item.id}
+                  className="hover:bg-accent flex items-center gap-2 rounded-lg p-1"
+                >
+                  <Checkbox
+                    checked={item.completed}
+                    onClick={() =>
+                      toggleChecklistItem({
+                        id: item.id,
+                        completed: !item.completed,
+                      })
+                    }
+                  />
+                  <span
+                    className={`${item.completed ? "line-through" : ""} flex-grow`}
+                  >
+                    {item.text}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => deleteChecklistItem({ id: item.id })}
+                  >
+                    <FaTrash className="text-destructive h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-1">
+              <Input
+                placeholder="New checklist item..."
+                value={newChecklistItem}
+                onChange={(e) => setNewChecklistItem(e.target.value)}
+                onKeyUp={async (e) => {
+                  if (e.key === "Enter") await handleAddChecklistItem();
+                }}
+              />
+              <Button
+                type="button"
+                onClick={handleAddChecklistItem}
+                disabled={!newChecklistItem}
               >
-                <Checkbox
-                  checked={item.completed}
-                  onClick={() =>
-                    toggleChecklistItem({
-                      id: item.id,
-                      completed: !item.completed,
-                    })
-                  }
-                />
-                <span
-                  className={`${item.completed ? "line-through" : ""} flex-grow`}
-                >
-                  {item.text}
-                </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteChecklistItem({ id: item.id })}
-                >
-                  <FaTrash className="text-destructive h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-1">
-            <Input
-              placeholder="New checklist item..."
-              value={newChecklistItem}
-              onChange={(e) => setNewChecklistItem(e.target.value)}
-              onKeyUp={async (e) => {
-                if (e.key === "Enter") await handleAddChecklistItem();
-              }}
-            />
-            <Button
-              type="button"
-              onClick={handleAddChecklistItem}
-              disabled={!newChecklistItem}
-            >
-              Add
-            </Button>
-          </div>
-        </>
-      )}
+                Add
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -505,63 +528,72 @@ const Comments = ({ task }: { task: TaskType }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <Button
+        variant={"ghost"}
+        onClick={() => setCollapsed(!collapsed)}
+        className="flex items-center justify-between p-0"
+      >
         <div className="flex items-center gap-2">
           <FaChevronDown
-            onClick={() => setCollapsed(!collapsed)}
             className={`${collapsed ? "-rotate-90" : ""} transition-transform`}
           />
           <h3>Comments</h3>
         </div>
         {task.comments.length}
-      </div>
+      </Button>
       <hr />
-      {!collapsed && (
-        <>
-          <div className="flex flex-col gap-2">
-            {task.comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="hover:bg-accent flex flex-col gap-2 rounded-lg p-1"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-muted-foreground text-xs">
-                    {format(comment.postedDate, "PPpp")}
-                  </span>
-                  <Button
-                    type="button"
-                    onClick={() => deleteComment({ id: comment.id })}
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <FaTrash className="text-destructive" />
-                  </Button>
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            initial={{ opacity: 0, height: 0.5 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0.5 }}
+          >
+            <div className="flex flex-col gap-2">
+              {task.comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="hover:bg-accent flex flex-col gap-2 rounded-lg p-1"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-muted-foreground text-xs">
+                      {format(comment.postedDate, "PPpp")}
+                    </span>
+                    <Button
+                      type="button"
+                      onClick={() => deleteComment({ id: comment.id })}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <FaTrash className="text-destructive" />
+                    </Button>
+                  </div>
+                  <span className="flex-grow">{comment.text}</span>
                 </div>
-                <span className="flex-grow">{comment.text}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-1">
-            <Textarea
-              placeholder="New comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onKeyUp={async (e) => {
-                if (e.key === "Enter") {
-                  await handleAddComment();
-                }
-              }}
-            />
-            <Button
-              type="button"
-              onClick={handleAddComment}
-              disabled={!newComment}
-            >
-              Add
-            </Button>
-          </div>
-        </>
-      )}
+              ))}
+            </div>
+            <div className="flex gap-1">
+              <Textarea
+                placeholder="New comment..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyUp={async (e) => {
+                  if (e.key === "Enter") {
+                    await handleAddComment();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={handleAddComment}
+                disabled={!newComment}
+              >
+                Add
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

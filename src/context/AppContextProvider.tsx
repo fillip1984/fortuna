@@ -1,8 +1,11 @@
 "use client";
+
 import { createContext, useEffect, useState } from "react";
 
 import { api } from "~/trpc/react";
 
+import { isPast, isToday } from "date-fns";
+import { isFuture } from "date-fns/isFuture";
 import {
   FaCalendarAlt,
   FaCalendarDay,
@@ -12,18 +15,18 @@ import {
 } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
 import {
-  type SifterType,
   type CollectionType,
+  type SifterType,
   type TaskType,
 } from "~/server/types";
-import { isFuture } from "date-fns/isFuture";
-import { isPast, isToday } from "date-fns";
 
 type AppContextType = {
   collections: CollectionType[];
   activeCollectionId: string | null;
   setActiveCollectionId: React.Dispatch<React.SetStateAction<string | null>>;
   filteredTasks: TaskType[];
+  showCompletedTasks: boolean;
+  setShowCompletedTasks: React.Dispatch<React.SetStateAction<boolean>>;
   sifters: SifterType[];
 };
 
@@ -35,6 +38,11 @@ export const AppContext = createContext<AppContextType>({
     return;
   },
   filteredTasks: [],
+  showCompletedTasks: false,
+  setShowCompletedTasks: () => {
+    // no-op default function with correct signature
+    return;
+  },
   sifters: [],
 });
 
@@ -48,10 +56,15 @@ export function AppContextProvider({
     "Today",
   );
   const [filteredTasks, setFilteredTasks] = useState<TaskType[]>([]);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
   // fetched data
-  const { data: collections } = api.collection.findAll.useQuery();
-  const { data: tasks } = api.task.findAll.useQuery();
+  const { data: collections } = api.collection.findAll.useQuery({
+    showCompleted: showCompletedTasks,
+  });
+  const { data: tasks } = api.task.findAll.useQuery({
+    showCompleted: showCompletedTasks,
+  });
 
   // task sifters
   const [sifters, setSifters] = useState<SifterType[]>([
@@ -75,7 +88,10 @@ export function AppContextProvider({
         if (sifter.name === "Inbox") {
           return {
             ...sifter,
-            tasks: tasks.filter((t) => !t.collectionId) ?? [],
+            tasks:
+              tasks.filter(
+                (t) => !t.dueDate && !t.priority && !t.collectionId,
+              ) ?? [],
           };
         } else if (sifter.name === "Today") {
           return {
@@ -144,6 +160,8 @@ export function AppContextProvider({
         activeCollectionId,
         setActiveCollectionId,
         filteredTasks,
+        showCompletedTasks,
+        setShowCompletedTasks,
         sifters,
       }}
     >

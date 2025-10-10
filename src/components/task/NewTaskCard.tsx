@@ -50,6 +50,11 @@ export default function NewTask() {
         placeholder="New task..."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+        onKeyUp={async (e) => {
+          if (e.key === "Enter") {
+            await handleCreateTask();
+          }
+        }}
       />
       <Textarea
         placeholder="Description..."

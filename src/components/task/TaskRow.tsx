@@ -1,20 +1,21 @@
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { isPast } from "date-fns";
 
+import { motion } from "motion/react";
 import { useContext, useState } from "react";
 import { BiCollection } from "react-icons/bi";
+import { FaComment, FaList } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
 import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
-import TaskModal from "./TaskModal";
 import { Badge } from "../ui/badge";
-import { FaComment, FaList } from "react-icons/fa";
+import { Checkbox } from "../ui/checkbox";
+import TaskModal from "./TaskModal";
 
 export default function TaskRow({ task }: { task: TaskType }) {
   const { collections } = useContext(AppContext);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(task.completed);
   const [showDetails, setShowDetails] = useState(false);
 
   const utils = api.useUtils();
@@ -24,8 +25,14 @@ export default function TaskRow({ task }: { task: TaskType }) {
       await utils.collection.findAll.invalidate();
     },
   });
+
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0, height: 0.5 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0.5 }}
+      className="select-none"
+    >
       <div
         onClick={() => setShowDetails(true)}
         className="flex items-center gap-4 border-b p-4"
@@ -100,6 +107,6 @@ export default function TaskRow({ task }: { task: TaskType }) {
           task={task}
         />
       )}
-    </>
+    </motion.div>
   );
 }

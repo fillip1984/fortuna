@@ -21,7 +21,7 @@ export default function ThemeToggle() {
       onClick={handleThemeToggle}
       variant="outline"
       size="icon"
-      className="absolute top-4 right-4 md:right-8 md:bottom-8"
+      className="absolute bottom-8 left-4"
     >
       {theme === "light" ? <Sun /> : theme === "dark" ? <Moon /> : <GrSystem />}
     </Button>

@@ -3,18 +3,20 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { PriorityOption } from "@prisma/client";
 
 export const TaskRouter = createTRPCRouter({
-  findAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.task.findMany({
-      where: {
-        completed: false,
-      },
-      include: {
-        checklist: true,
-        comments: true,
-      },
-      orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
-    });
-  }),
+  findAll: publicProcedure
+    .input(z.object({ showCompleted: z.boolean() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.task.findMany({
+        where: {
+          ...(input.showCompleted === true ? {} : { completed: false }),
+        },
+        include: {
+          checklist: true,
+          comments: true,
+        },
+        orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
+      });
+    }),
   create: publicProcedure
     .input(
       z.object({
