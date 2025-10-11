@@ -1,8 +1,8 @@
 "use client";
 
-import type { PriorityOption } from "@prisma/client";
+import type { PriorityOption, RecurrenceOption } from "@prisma/client";
 import { format } from "date-fns/format";
-import { Check, ChevronDownIcon } from "lucide-react";
+import { Check, ChevronDownIcon, LucideRepeat } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { BiCollection } from "react-icons/bi";
@@ -14,7 +14,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
-import type { RecurrenceOption, TaskType } from "~/server/types";
+import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
@@ -98,8 +98,52 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [collectionId, setCollectionId] = useState<string | undefined>(
     undefined,
   );
-  const [repeats, setRepeats] = useState<boolean>(false);
-  const [recurrence, setRecurrence] = useState<RecurrenceOption>(null);
+  const [recurrence, setRecurrence] = useState<RecurrenceOption | null>(null);
+  const [recurrenceSchedule, setRecurrenceSchedule] = useState([
+    { label: "Sun", selected: false },
+    { label: "Mon", selected: false },
+    { label: "Tue", selected: false },
+    { label: "Wed", selected: false },
+    { label: "Thu", selected: false },
+    { label: "Fri", selected: false },
+    { label: "Sat", selected: false },
+  ]);
+  useEffect(() => {
+    if (recurrence === "Daily") {
+      setRecurrenceSchedule((prev) =>
+        prev.map((day) => ({ ...day, selected: true })),
+      );
+    } else if (recurrence === "Weekly") {
+      setRecurrenceSchedule((prev) =>
+        prev.map((day, index) => ({
+          ...day,
+          selected: index === new Date().getDay(),
+        })),
+      );
+    } else if (recurrence === "Monthly") {
+      setRecurrenceSchedule((prev) =>
+        prev.map((day, index) => ({
+          ...day,
+          selected: index === new Date().getDate() - 1,
+        })),
+      );
+    } else if (recurrence === "Yearly") {
+      setRecurrenceSchedule((prev) =>
+        prev.map((day, index) => ({
+          ...day,
+          selected:
+            index ===
+            Math.floor(
+              (new Date().getMonth() * 30 + new Date().getDate() - 1) / 30,
+            ),
+        })),
+      );
+    } else {
+      setRecurrenceSchedule((prev) =>
+        prev.map((day) => ({ ...day, selected: false })),
+      );
+    }
+  }, [recurrence]);
 
   useEffect(() => {
     if (task) {
@@ -114,6 +158,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [priorityPickerOpen, setPriorityPickerOpen] = useState(false);
   const [collectionPickerOpen, setCollectionPickerOpen] = useState(false);
+  const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
 
   const utils = api.useUtils();
   const { mutateAsync: updateTask } = api.task.update.useMutation({
@@ -171,7 +216,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                 }}
               />
               <div className="flex items-center gap-3">
-                <TbTargetArrow />
+                <TbTargetArrow className="h-5 w-5" />
                 <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -226,7 +271,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                 </Popover>
               </div>
               <div className="flex items-center gap-3">
-                <GiLevelEndFlag />
+                <GiLevelEndFlag className="h-5 w-5" />
                 <Popover
                   open={priorityPickerOpen}
                   onOpenChange={setPriorityPickerOpen}
@@ -268,44 +313,31 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     align="center"
                   >
                     <>
-                      <div
-                        onClick={() => {
-                          setPriority("URGENT");
-                          setPriorityPickerOpen(false);
-                          void updateTask({
-                            ...task,
-                            priority: "URGENT",
-                          });
-                        }}
-                        className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                      >
-                        Urgent
-                        {priority === "URGENT" && (
-                          <Check className="text-muted-foreground" />
-                        )}
-                      </div>
-                      <div
-                        onClick={() => {
-                          setPriority("IMPORTANT");
-                          setPriorityPickerOpen(false);
-                          void updateTask({
-                            ...task,
-                            priority: "IMPORTANT",
-                          });
-                        }}
-                        className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                      >
-                        Important
-                        {priority === "IMPORTANT" && (
-                          <Check className="text-muted-foreground" />
-                        )}
-                      </div>
+                      {["Urgent", "Important"].map((option) => (
+                        <div
+                          key={option}
+                          onClick={() => {
+                            setPriority(option as PriorityOption);
+                            setPriorityPickerOpen(false);
+                            void updateTask({
+                              ...task,
+                              priority: option as PriorityOption,
+                            });
+                          }}
+                          className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
+                        >
+                          {option}
+                          {priority === option && (
+                            <Check className="text-muted-foreground" />
+                          )}
+                        </div>
+                      ))}
                     </>
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="flex items-center gap-3">
-                <BiCollection />
+                <BiCollection className="h-5 w-5" />
                 <Popover
                   open={collectionPickerOpen}
                   onOpenChange={setCollectionPickerOpen}
@@ -378,6 +410,86 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     </>
                   </PopoverContent>
                 </Popover>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <LucideRepeat className="h-5 w-5" />
+                <Popover
+                  open={recurrencePickerOpen}
+                  onOpenChange={setRecurrencePickerOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      id="collection"
+                      className="w-48 justify-between font-normal"
+                    >
+                      {recurrence ? (
+                        <>
+                          {recurrence}
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setRecurrence(null);
+                              setRecurrencePickerOpen(false);
+                            }}
+                            className="text-muted-foreground"
+                          >
+                            x
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Select recurrence
+                          <ChevronDownIcon />
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-48 overflow-hidden p-2"
+                    align="center"
+                  >
+                    <>
+                      {["Daily", "Weekly", "Monthly", "Yearly"].map(
+                        (option) => (
+                          <div
+                            key={option}
+                            onClick={() => {
+                              setRecurrence(option as RecurrenceOption);
+                              setRecurrencePickerOpen(false);
+                            }}
+                            className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
+                          >
+                            {option}
+                            {recurrence === option && (
+                              <Check className="text-muted-foreground" />
+                            )}
+                          </div>
+                        ),
+                      )}
+                    </>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="my-2 flex justify-center gap-2">
+                {recurrenceSchedule.map((day) => (
+                  <span
+                    key={day.label}
+                    onClick={() => {
+                      setRecurrenceSchedule((prev) =>
+                        prev.map((d) =>
+                          d.label === day.label
+                            ? { ...d, selected: !d.selected }
+                            : d,
+                        ),
+                      );
+                    }}
+                    className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
+                  >
+                    {day.label}
+                  </span>
+                ))}
               </div>
             </div>
           </motion.div>

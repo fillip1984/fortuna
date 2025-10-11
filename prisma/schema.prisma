@@ -75,6 +75,13 @@ model Comment {
 }
 
 enum PriorityOption {
-    URGENT
-    IMPORTANT
+    Urgent
+    Important
+}
+
+enum RecurrenceOption {
+    Daily
+    Weekly
+    Monthly
+    Yearly
 }

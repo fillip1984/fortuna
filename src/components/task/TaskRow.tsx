@@ -68,7 +68,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
             {task.priority && (
               <Badge
                 variant={
-                  task.priority === "URGENT" ? "destructive" : "secondary"
+                  task.priority === "Urgent" ? "destructive" : "secondary"
                 }
               >
                 <GiLevelEndFlag />

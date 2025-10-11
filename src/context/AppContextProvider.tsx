@@ -104,13 +104,13 @@ export function AppContextProvider({
         } else if (sifter.name === "Urgent") {
           return {
             ...sifter,
-            tasks: tasks?.filter((t) => t.priority === "URGENT") ?? [],
+            tasks: tasks?.filter((t) => t.priority === "Urgent") ?? [],
           };
         } else if (sifter.name === "Unscheduled") {
           return {
             ...sifter,
             tasks:
-              tasks?.filter((t) => t.priority === "IMPORTANT" && !t.dueDate) ??
+              tasks?.filter((t) => t.priority === "Important" && !t.dueDate) ??
               [],
           };
         } else if (sifter.name === "Scheduled") {

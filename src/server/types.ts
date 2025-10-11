@@ -9,4 +9,4 @@ export type SifterType = {
   icon: JSX.Element;
   tasks: TaskType[];
 };
-export type RecurrenceOption = "daily" | "weekly" | "monthly" | "yearly" | null;
+// export type RecurrenceOption = "daily" | "weekly" | "monthly" | "yearly" | null;

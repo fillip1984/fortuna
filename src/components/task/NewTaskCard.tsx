@@ -35,9 +35,9 @@ export default function NewTask() {
       dueDate: activeCollectionId === "Today" ? new Date() : null,
       priority:
         activeCollectionId === "Urgent"
-          ? "URGENT"
+          ? "Urgent"
           : activeCollectionId === "Unscheduled"
-            ? "IMPORTANT"
+            ? "Important"
             : null,
       collectionId:
         collections.find((c) => activeCollectionId === c.id)?.id ?? null,
