@@ -11,8 +11,8 @@ export const TaskRouter = createTRPCRouter({
           ...(input.showCompleted === true ? {} : { completed: false }),
         },
         include: {
-          checklist: true,
-          comments: true,
+          checklist: { orderBy: { order: "asc" } },
+          comments: { orderBy: { postedDate: "asc" } },
         },
         orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
       });
@@ -94,6 +94,7 @@ export const TaskRouter = createTRPCRouter({
       z.object({
         taskId: z.string(),
         text: z.string(),
+        order: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -102,6 +103,7 @@ export const TaskRouter = createTRPCRouter({
           taskId: input.taskId,
           text: input.text,
           completed: false,
+          order: input.order,
         },
       });
     }),
@@ -118,11 +120,47 @@ export const TaskRouter = createTRPCRouter({
         data: { completed: input.completed },
       });
     }),
+  updateChecklistItem: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.checklist.update({
+        where: { id: input.id },
+        data: { text: input.text },
+      });
+    }),
   deleteChecklistItem: publicProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.checklist.delete({
         where: { id: input.id },
+      });
+    }),
+  reorderChecklist: publicProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.string(),
+          order: z.number(),
+        }),
+      ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.$transaction(async (tx) => {
+        for (const item of input) {
+          await tx.checklist.update({
+            where: {
+              id: item.id,
+            },
+            data: {
+              order: item.order,
+            },
+          });
+        }
       });
     }),
   addComment: publicProcedure

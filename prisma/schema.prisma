@@ -53,6 +53,7 @@ model Checklist {
 
     text      String
     completed Boolean @default(false)
+    order     Int
 
     task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId String

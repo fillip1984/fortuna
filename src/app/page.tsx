@@ -26,35 +26,22 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "~/components/ui/empty";
-import { AppContext } from "~/context/AppContextProvider";
-import type { CollectionType, TaskType } from "~/server/types";
-import { api } from "~/trpc/react";
 import { Input } from "~/components/ui/input";
+import { Spinner } from "~/components/ui/spinner";
+import { AppContext } from "~/context/AppContextProvider";
+import type { TaskType } from "~/server/types";
+import { api } from "~/trpc/react";
 
 export default function Home() {
   const {
-    filteredTasks,
-    activeCollectionId,
-    setActiveCollectionId,
-    collections,
+    isLoading,
+    isError,
+    refetch,
+    activeCollection,
+    setActiveCollection,
     showCompletedTasks,
     setShowCompletedTasks,
   } = useContext(AppContext);
-  const [activeCollection, setActiveCollection] =
-    useState<CollectionType | null>(null);
-
-  useEffect(() => {
-    if (activeCollectionId && collections) {
-      const found = collections.find(
-        (collection) => collection.id === activeCollectionId,
-      );
-      if (found) {
-        setActiveCollection(found);
-      } else {
-        setActiveCollection(null);
-      }
-    }
-  }, [activeCollectionId, collections]);
 
   // DnD stuff
   const { mutate: reorderTasks } = api.task.reorder.useMutation();
@@ -70,16 +57,18 @@ export default function Home() {
       },
     });
   useEffect(() => {
-    setDraggabledTasks(filteredTasks ?? []);
-  }, [filteredTasks, setDraggabledTasks]);
+    setDraggabledTasks(activeCollection?.tasks ?? []);
+  }, [activeCollection, setDraggabledTasks]);
 
   // collection stuff
   const utils = api.useUtils();
   const { mutateAsync: deleteCollection } = api.collection.delete.useMutation({
     onSuccess: async () => {
-      setActiveCollectionId("Today");
-      await utils.collection.findAll.invalidate();
-      await utils.task.findAll.invalidate();
+      setActiveCollection("Today");
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
 
@@ -98,11 +87,21 @@ export default function Home() {
   };
   const { mutateAsync: updateCollection } = api.collection.update.useMutation({
     onSuccess: async () => {
-      await utils.collection.findAll.invalidate();
-      await utils.task.findAll.invalidate();
       setIsRenaming(false);
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="mt-24 flex h-screen flex-col items-center overflow-hidden">
+        <Spinner className="size-18" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col overflow-y-auto pb-12">
@@ -110,7 +109,7 @@ export default function Home() {
         <div>
           {!isRenaming && activeCollection ? (
             <h3
-              className="text-2xl font-bold"
+              className="cursor-pointer text-2xl font-bold"
               onClick={() => setIsRenaming(true)}
             >
               {collectionName}
@@ -122,12 +121,16 @@ export default function Home() {
               onChange={(e) => {
                 setCollectionName(e.target.value);
               }}
-              onBlur={() =>
-                updateCollection({
+              onBlur={() => {
+                if (activeCollection?.name === collectionName) {
+                  setIsRenaming(false);
+                  return;
+                }
+                void updateCollection({
                   ...activeCollection!,
                   name: collectionName ?? "Untitled",
-                })
-              }
+                });
+              }}
               placeholder="Collection name..."
             />
           )}
@@ -164,7 +167,7 @@ export default function Home() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {filteredTasks?.length > 0 ? (
+      {activeCollection && activeCollection.tasks.length > 0 ? (
         <>
           <div ref={draggableTasksParentRef} className="flex flex-col">
             <AnimatePresence>

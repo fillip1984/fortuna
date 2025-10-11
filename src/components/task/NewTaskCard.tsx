@@ -8,20 +8,23 @@ import { AppContext } from "~/context/AppContextProvider";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { api } from "~/trpc/react";
+import { Spinner } from "../ui/spinner";
 
 export default function NewTask() {
-  const { collections, activeCollectionId } = useContext(AppContext);
+  const { activeCollection, collections } = useContext(AppContext);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const utils = api.useUtils();
-  const { mutate: createTask } = api.task.create.useMutation({
+  const { mutate: createTask, isPending } = api.task.create.useMutation({
     onSuccess: async () => {
-      await utils.task.findAll.invalidate();
-      await utils.collection.findAll.invalidate();
       setTitle("");
       setDescription("");
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
 
@@ -32,15 +35,15 @@ export default function NewTask() {
     createTask({
       title,
       description,
-      dueDate: activeCollectionId === "Today" ? new Date() : null,
+      dueDate: activeCollection?.id === "Today" ? new Date() : null,
       priority:
-        activeCollectionId === "Urgent"
+        activeCollection?.id === "Urgent"
           ? "Urgent"
-          : activeCollectionId === "Unscheduled"
+          : activeCollection?.id === "Unscheduled"
             ? "Important"
             : null,
       collectionId:
-        collections.find((c) => activeCollectionId === c.id)?.id ?? null,
+        collections?.find((c) => c.id === activeCollection?.id)?.id ?? null,
     });
   };
 
@@ -66,7 +69,9 @@ export default function NewTask() {
         variant="outline"
         size="sm"
         onClick={handleCreateTask}
+        disabled={isPending || !title.trim()}
       >
+        {isPending && <Spinner />}
         Add task...
       </Button>
     </div>

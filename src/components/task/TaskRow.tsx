@@ -21,8 +21,10 @@ export default function TaskRow({ task }: { task: TaskType }) {
   const utils = api.useUtils();
   const { mutate: completeTask } = api.task.update.useMutation({
     onSuccess: async () => {
-      await utils.task.findAll.invalidate();
-      await utils.collection.findAll.invalidate();
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
 

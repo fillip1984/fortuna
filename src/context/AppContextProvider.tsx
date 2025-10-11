@@ -14,30 +14,34 @@ import {
   FaInbox,
 } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
-import {
-  type CollectionType,
-  type SifterType,
-  type TaskType,
-} from "~/server/types";
+import { type CollectionType, type SifterType } from "~/server/types";
 
 type AppContextType = {
-  collections: CollectionType[];
-  activeCollectionId: string | null;
-  setActiveCollectionId: React.Dispatch<React.SetStateAction<string | null>>;
-  filteredTasks: TaskType[];
+  isLoading: boolean;
+  isError: boolean;
+  refetch: () => void;
+  activeCollection: SifterType | CollectionType | null;
+  setActiveCollection: (id: string) => void;
   showCompletedTasks: boolean;
   setShowCompletedTasks: React.Dispatch<React.SetStateAction<boolean>>;
+  collections: CollectionType[];
   sifters: SifterType[];
 };
 
 export const AppContext = createContext<AppContextType>({
-  collections: [],
-  activeCollectionId: "Today",
-  setActiveCollectionId: () => {
+  isLoading: false,
+  isError: false,
+  refetch: () => {
     // no-op default function with correct signature
     return;
   },
-  filteredTasks: [],
+  collections: [],
+  activeCollection: null,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setActiveCollection: (id: string) => {
+    // no-op default function with correct signature
+    return;
+  },
   showCompletedTasks: false,
   setShowCompletedTasks: () => {
     // no-op default function with correct signature
@@ -51,22 +55,43 @@ export function AppContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // state
+  // default to Today sifter view
   const [activeCollectionId, setActiveCollectionId] = useState<string | null>(
     "Today",
   );
-  const [filteredTasks, setFilteredTasks] = useState<TaskType[]>([]);
+  const [activeCollection, setActiveCollection] = useState<
+    SifterType | CollectionType | null
+  >(null);
+
+  // filtered tasks state
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
   // fetched data
-  const { data: collections } = api.collection.findAll.useQuery({
+  const {
+    data: collections,
+    isLoading: collectionsLoading,
+    isError: collectionsError,
+    refetch: collectionsRefetch,
+  } = api.collection.findAll.useQuery({
     showCompleted: showCompletedTasks,
   });
-  const { data: tasks } = api.task.findAll.useQuery({
+  const {
+    data: tasks,
+    isLoading: tasksLoading,
+    isError: tasksError,
+    refetch: tasksRefetch,
+  } = api.task.findAll.useQuery({
     showCompleted: showCompletedTasks,
   });
+  // consolidate loading/error states
+  const isLoading = collectionsLoading || tasksLoading;
+  const isError = collectionsError || tasksError;
+  const refetch = async () => {
+    await collectionsRefetch();
+    await tasksRefetch();
+  };
 
-  // task sifters
+  // build task sifters
   const [sifters, setSifters] = useState<SifterType[]>([
     { id: "Inbox", name: "Inbox", icon: <FaInbox />, tasks: [] },
     { id: "Today", name: "Today", icon: <FaCalendarDay />, tasks: [] },
@@ -80,6 +105,7 @@ export function AppContextProvider({
     { id: "Scheduled", name: "Scheduled", icon: <FaCalendarAlt />, tasks: [] },
     { id: "All", name: "All", icon: <LuListTodo />, tasks: [] },
   ]);
+  // effects to apply to sifters once tasks are loaded
   useEffect(() => {
     if (!tasks) return;
 
@@ -127,41 +153,45 @@ export function AppContextProvider({
     );
   }, [tasks]);
 
+  // determine which collection of sifter is active
   useEffect(() => {
-    if (!tasks) return;
-    if (activeCollectionId) {
-      // attempt to select collection
-      const matchingCollection = collections?.find(
-        (c) => c.id === activeCollectionId,
-      );
-      if (matchingCollection) {
-        setFilteredTasks(
-          tasks.filter((t) => t.collectionId === matchingCollection.id),
-        );
-        return;
-      }
-
-      // fall back to sifter
-      const matchingSifter = sifters.find((s) => s.id === activeCollectionId);
-      if (matchingSifter) {
-        setFilteredTasks(matchingSifter.tasks);
-        return;
-      }
+    if (!activeCollectionId) {
+      // default to Today sifter if no activeCollectionId
+      setActiveCollection(sifters.find((s) => s.id === "Today") ?? null);
+      return;
     }
 
-    // default to all tasks
-    setFilteredTasks(tasks);
-  }, [activeCollectionId, collections, sifters, tasks]);
+    // try to find collection
+    const matchingCollection = collections?.find(
+      (c) => c.id === activeCollectionId,
+    );
+    if (matchingCollection) {
+      setActiveCollection(matchingCollection);
+      return;
+    }
+
+    // try to find sifter
+    const matchingSifter = sifters.find((s) => s.id === activeCollectionId);
+    if (matchingSifter) {
+      setActiveCollection(matchingSifter);
+      return;
+    }
+
+    // if no match, default to Today sifter
+    setActiveCollection(sifters.find((s) => s.id === "Today") ?? null);
+  }, [activeCollectionId, collections, sifters]);
 
   return (
     <AppContext.Provider
       value={{
-        collections: collections ?? [],
-        activeCollectionId,
-        setActiveCollectionId,
-        filteredTasks,
+        isLoading,
+        isError,
+        refetch: () => void refetch(),
+        activeCollection,
+        setActiveCollection: setActiveCollectionId,
         showCompletedTasks,
         setShowCompletedTasks,
+        collections: collections ?? [],
         sifters,
       }}
     >

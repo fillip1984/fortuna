@@ -14,7 +14,8 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
-import type { TaskType } from "~/server/types";
+
+import type { ChecklistItemType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
@@ -32,6 +33,7 @@ import {
   InputGroupInput,
 } from "../ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 
 export default function TaskModal({
   isOpen,
@@ -45,9 +47,11 @@ export default function TaskModal({
   const utils = api.useUtils();
   const { mutateAsync: deleteTask } = api.task.delete.useMutation({
     onSuccess: async () => {
-      await utils.task.findAll.invalidate();
-      await utils.collection.findAll.invalidate();
       dismiss();
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
 
@@ -192,8 +196,10 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const utils = api.useUtils();
   const { mutateAsync: updateTask } = api.task.update.useMutation({
     onSuccess: async () => {
-      await utils.task.findAll.invalidate();
-      await utils.collection.findAll.invalidate();
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
 
@@ -425,7 +431,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                               order:
                                 task.collectionId === collectionId
                                   ? task.order
-                                  : c._count.tasks,
+                                  : c.tasks.length + 1,
                             });
                           }}
                           className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
@@ -659,23 +665,11 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
 
   const utils = api.useUtils();
-  const { mutateAsync: addChecklistItem } =
+  const { mutateAsync: addChecklistItem, isPending } =
     api.task.addChecklistItem.useMutation({
       onSuccess: async () => {
         await utils.task.findAll.invalidate();
         setNewChecklistItem("");
-      },
-    });
-  const { mutateAsync: toggleChecklistItem } =
-    api.task.toggleChecklistItem.useMutation({
-      onSuccess: async () => {
-        await utils.task.findAll.invalidate();
-      },
-    });
-  const { mutateAsync: deleteChecklistItem } =
-    api.task.deleteChecklistItem.useMutation({
-      onSuccess: async () => {
-        await utils.task.findAll.invalidate();
       },
     });
 
@@ -684,9 +678,30 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
       await addChecklistItem({
         taskId: task.id,
         text: newChecklistItem,
+        order: task.checklist.length + 1,
       });
     }
   };
+
+  // DnD stuff
+  const { mutate: reorderChecklist } = api.task.reorderChecklist.useMutation();
+  const [
+    draggableChecklistParentRef,
+    draggableChecklist,
+    setDraggableChecklist,
+  ] = useDragAndDrop<HTMLDivElement, ChecklistItemType>([], {
+    onDragend: (data) => {
+      reorderChecklist(
+        data.values.map((item, index) => ({
+          id: (item as ChecklistItemType).id,
+          order: index,
+        })),
+      );
+    },
+  });
+  useEffect(() => {
+    setDraggableChecklist(task.checklist ?? []);
+  }, [task, setDraggableChecklist]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -712,38 +727,19 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0.5 }}
           >
-            <div>
-              {task.checklist.map((item) => (
-                <div
-                  key={item.id}
-                  className="hover:bg-accent flex items-center gap-2 rounded-lg p-1"
-                >
-                  <Checkbox
-                    checked={item.completed}
-                    onClick={() =>
-                      toggleChecklistItem({
-                        id: item.id,
-                        completed: !item.completed,
-                      })
-                    }
-                  />
-                  <span
-                    className={`${item.completed ? "line-through" : ""} flex-grow`}
-                  >
-                    {item.text}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => deleteChecklistItem({ id: item.id })}
-                  >
-                    <FaTrash className="text-destructive h-4 w-4" />
-                  </Button>
-                </div>
+            <div
+              ref={draggableChecklistParentRef}
+              className="flex flex-col gap-1"
+            >
+              {draggableChecklist.map((checklistItem) => (
+                <ChecklistItem
+                  key={checklistItem.id}
+                  data-label={checklistItem.id}
+                  checklistItem={checklistItem}
+                />
               ))}
             </div>
-            <div className="flex gap-1">
+            <div className="my-2 flex gap-1">
               <Input
                 placeholder="New checklist item..."
                 value={newChecklistItem}
@@ -755,7 +751,7 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
               <Button
                 type="button"
                 onClick={handleAddChecklistItem}
-                disabled={!newChecklistItem}
+                disabled={isPending || !newChecklistItem}
               >
                 Add
               </Button>
@@ -763,6 +759,93 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+};
+
+const ChecklistItem = ({
+  checklistItem,
+}: {
+  checklistItem: ChecklistItemType;
+}) => {
+  const utils = api.useUtils();
+  const { mutateAsync: toggleChecklistItem } =
+    api.task.toggleChecklistItem.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.task.findAll.invalidate(),
+          utils.collection.findAll.invalidate(),
+        ]);
+      },
+    });
+
+  const [isEditingItem, setIsEditingItem] = useState(false);
+  const editedTextRef = (node: HTMLInputElement | null) => {
+    if (node) {
+      node.focus();
+    }
+  };
+  const [text, setText] = useState(checklistItem.text);
+  const { mutateAsync: updateChecklistItem } =
+    api.task.updateChecklistItem.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.task.findAll.invalidate(),
+          utils.collection.findAll.invalidate(),
+        ]);
+      },
+    });
+
+  const { mutateAsync: deleteChecklistItem } =
+    api.task.deleteChecklistItem.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.task.findAll.invalidate(),
+          utils.collection.findAll.invalidate(),
+        ]);
+      },
+    });
+
+  return (
+    <div className="hover:bg-accent flex items-center gap-2 rounded-lg p-1 select-none">
+      <Checkbox
+        checked={checklistItem.completed}
+        onClick={() =>
+          toggleChecklistItem({
+            id: checklistItem.id,
+            completed: !checklistItem.completed,
+          })
+        }
+      />
+      <span
+        className={`${checklistItem.completed ? "line-through" : ""} flex-grow`}
+        onClick={() => setIsEditingItem((prev) => !prev)}
+      >
+        {!isEditingItem ? (
+          text
+        ) : (
+          <Input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            ref={editedTextRef}
+            onBlur={() => {
+              void updateChecklistItem({
+                id: checklistItem.id,
+                text,
+              });
+              setIsEditingItem(false);
+            }}
+          />
+        )}
+      </span>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={() => deleteChecklistItem({ id: checklistItem.id })}
+      >
+        <FaTrash className="text-destructive h-4 w-4" />
+      </Button>
     </div>
   );
 };

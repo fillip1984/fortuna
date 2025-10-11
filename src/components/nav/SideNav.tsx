@@ -21,10 +21,18 @@ import { Label } from "~/components/ui/label";
 import { AppContext } from "~/context/AppContextProvider";
 import type { CollectionType } from "~/server/types";
 import { motion } from "motion/react";
+import { Spinner } from "../ui/spinner";
 
 export default function SideNav() {
-  const { collections, activeCollectionId, setActiveCollectionId, sifters } =
-    useContext(AppContext);
+  const {
+    isLoading,
+    isError,
+    refetch,
+    collections,
+    activeCollection,
+    setActiveCollection,
+    sifters,
+  } = useContext(AppContext);
 
   const [isAddingCollection, setIsAddingCollection] = useState(false);
 
@@ -57,8 +65,8 @@ export default function SideNav() {
             {sifters.map((sifter) => (
               <div
                 key={sifter.id}
-                onClick={() => setActiveCollectionId(sifter.id)}
-                className={`${activeCollectionId === sifter.id ? "bg-accent" : "hover:bg-accent/40"} flex items-center rounded-lg border px-2 py-1`}
+                onClick={() => setActiveCollection(sifter.id)}
+                className={`${activeCollection && activeCollection.id === sifter.id ? "bg-accent" : "hover:bg-accent/40"} flex items-center rounded-lg border px-2 py-1`}
               >
                 <div className="flex flex-col gap-1">
                   {sifter.icon}
@@ -78,36 +86,43 @@ export default function SideNav() {
 
           <h3>Collections</h3>
           <hr />
-          <div
-            ref={draggableCollectionsParentRef}
-            className="ml-2 flex flex-col gap-1 select-none"
-          >
-            {draggabledCollections?.map((collection) => (
+          {isLoading ? (
+            <Spinner className="mx-auto" />
+          ) : (
+            <>
               <div
-                key={collection.id}
-                data-label={collection.id}
-                className={`${activeCollectionId === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex justify-between rounded-lg px-2 py-1`}
-                onClick={() => setActiveCollectionId(collection.id)}
+                ref={draggableCollectionsParentRef}
+                className="ml-2 flex flex-col gap-1 select-none"
               >
-                {collection.name}
-                <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 0.4, times: [0, 0.5, 1] }}
-                  key={collection._count.tasks}
-                >
-                  {collection._count.tasks}
-                </motion.div>
+                {draggabledCollections?.map((collection) => (
+                  <div
+                    key={collection.id}
+                    data-label={collection.id}
+                    className={`${activeCollection?.id === collection.id ? "bg-accent" : "hover:bg-accent/40"} flex items-center justify-between rounded-lg px-2`}
+                    onClick={() => setActiveCollection(collection.id)}
+                  >
+                    {collection.name}
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 0.4, times: [0, 0.5, 1] }}
+                      key={collection.tasks.length}
+                      className="text-2xl"
+                    >
+                      {collection.tasks.length}
+                    </motion.div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <hr />
-          <Button
-            onClick={() => setIsAddingCollection(true)}
-            size={"sm"}
-            variant="outline"
-          >
-            New Collection <FaPlus />
-          </Button>
+              <hr />
+              <Button
+                onClick={() => setIsAddingCollection(true)}
+                size={"sm"}
+                variant="outline"
+              >
+                New Collection <FaPlus />
+              </Button>
+            </>
+          )}
         </div>
       </nav>
       <NewCollectionModal
@@ -128,9 +143,11 @@ const NewCollectionModal = ({
   const utils = api.useUtils();
   const { mutate: addCollection } = api.collection.create.useMutation({
     onSuccess: async () => {
-      await utils.task.findAll.invalidate();
-      await utils.collection.findAll.invalidate();
       dismiss();
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
     },
   });
   const [name, setName] = useState("");

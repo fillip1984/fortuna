@@ -9,14 +9,15 @@ export const CollectionRouter = createTRPCRouter({
         select: {
           id: true,
           name: true,
-          _count: {
-            select: {
-              tasks: {
-                where: {
-                  ...(input.showCompleted === true ? {} : { completed: false }),
-                },
-              },
+          tasks: {
+            where: {
+              ...(input.showCompleted === true ? {} : { completed: false }),
             },
+            include: {
+              checklist: { orderBy: { order: "asc" } },
+              comments: { orderBy: { postedDate: "asc" } },
+            },
+            orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
           },
         },
         orderBy: {
