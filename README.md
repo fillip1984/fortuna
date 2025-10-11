@@ -7,13 +7,13 @@ Simple reminder app
 - [ ] - add ability to make a task repeat
 - [ ] - add outcome interactions (notes, weight, blood pressure, etc)
 - [ ] - add results page
-- [ ] - add toasts
-- [ ] - add suspense state
 - [ ] - secure and deploy to aws
 - [ ] - use for a bit to see if it sticks
 
 ## Longer term TODOs
 
+- [ ] - add toasts (if we find need)
+- [ ] - add suspense state
 - [ ] - create a mobile app version converting this over to a monorepo
 - [ ] find a better Dialog/Modal experience, the one in ShadCN fights me every step
 - [ ] make further customizations of Button, it fights me a little by not defaulting to a type="button"

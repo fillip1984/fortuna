@@ -75,6 +75,55 @@ model Comment {
     @@index([text])
 }
 
+model WeighIn {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    date              DateTime
+    weight            Float
+    bodyFatPercentage Float?
+
+    // weightProgress     Float
+    // weightTotalChange  Float
+    // weightToGoal       Float
+    // bodyFatProgress    Float?
+    // bodyFatTotalChange Float?
+    // previousWeighInId  String?
+}
+
+model WeightGoal {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    weight Float
+}
+
+model BloodPressureReading {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    date      DateTime
+    systolic  Int
+    diastolic Int
+    pulse     Int?
+    // systolicChange  Int
+    // diastolicChange Int
+    // pulseChange     Int?
+    category  BloodPressureCategory
+}
+
+enum BloodPressureCategory {
+    Low
+    Normal
+    Elevated
+    Hypertension_1
+    Hypertension_2
+    Hypertension_crisis
+}
+
 enum PriorityOption {
     Urgent
     Important
@@ -85,4 +134,26 @@ enum RecurrenceOption {
     Weekly
     Monthly
     Yearly
+}
+
+enum CompleteOptionType {
+    Simple
+    Note
+    Weigh_in
+    Blood_pressure_reading
+    Runners_log
+}
+
+enum WeatherType {
+    Cold
+    Rainy
+    Fair
+    Hot
+}
+
+enum MoodType {
+    Bad
+    Okay
+    Good
+    Great
 }

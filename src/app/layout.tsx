@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import SideNav from "~/components/nav/SideNav";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import ThemeToggle from "~/components/theme/ThemeToggle";
-import { TRPCReactProvider } from "~/trpc/react";
 import { AppContextProvider } from "~/context/AppContextProvider";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
   title: "fortuna",
@@ -29,6 +29,7 @@ export default function RootLayout({
             >
               <div className="relative flex h-screen overflow-hidden">
                 <SideNav />
+
                 <main className="flex-1">{children}</main>
               </div>
               <ThemeToggle />
