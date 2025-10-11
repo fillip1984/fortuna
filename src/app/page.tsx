@@ -29,6 +29,7 @@ import {
 import { AppContext } from "~/context/AppContextProvider";
 import type { CollectionType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
+import { Input } from "~/components/ui/input";
 
 export default function Home() {
   const {
@@ -82,12 +83,55 @@ export default function Home() {
     },
   });
 
+  // collection name stuff
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [collectionName, setCollectionName] = useState("Untitled");
+  useEffect(() => {
+    if (activeCollection) {
+      setCollectionName(activeCollection.name);
+    }
+  }, [activeCollection]);
+  const collectionNameInputRef = (node: HTMLInputElement | null) => {
+    if (node) {
+      node.focus();
+    }
+  };
+  const { mutateAsync: updateCollection } = api.collection.update.useMutation({
+    onSuccess: async () => {
+      await utils.collection.findAll.invalidate();
+      await utils.task.findAll.invalidate();
+      setIsRenaming(false);
+    },
+  });
+
   return (
     <div className="flex h-screen flex-col overflow-y-auto pb-12">
       <div className="flex items-center justify-between border-b p-4">
-        <h3 className="text-2xl font-bold">
-          {activeCollection?.name ?? activeCollectionId}
-        </h3>
+        <div>
+          {!isRenaming && activeCollection ? (
+            <h3
+              className="text-2xl font-bold"
+              onClick={() => setIsRenaming(true)}
+            >
+              {collectionName}
+            </h3>
+          ) : (
+            <Input
+              ref={collectionNameInputRef}
+              value={collectionName}
+              onChange={(e) => {
+                setCollectionName(e.target.value);
+              }}
+              onBlur={() =>
+                updateCollection({
+                  ...activeCollection!,
+                  name: collectionName ?? "Untitled",
+                })
+              }
+              placeholder="Collection name..."
+            />
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost">

@@ -5,9 +5,9 @@ Simple reminder app
 ## TODOs
 
 - [ ] - add ability to make a task repeat
-- [ ] - add toasts
 - [ ] - add outcome interactions (notes, weight, blood pressure, etc)
 - [ ] - add results page
+- [ ] - add toasts
 - [ ] - add suspense state
 - [ ] - secure and deploy to aws
 - [ ] - use for a bit to see if it sticks
