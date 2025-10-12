@@ -8,7 +8,6 @@ import { BsHeartPulseFill } from "react-icons/bs";
 import { FaCalendarDay } from "react-icons/fa";
 import { IoScaleOutline } from "react-icons/io5";
 import { PiPersonBold } from "react-icons/pi";
-import { api } from "~/trpc/react";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import {
@@ -52,7 +51,7 @@ const WeighIn = () => {
   const [weight, setWeight] = useState("");
   const [bodyFatPercentage, setBodyFatPercentage] = useState("");
 
-  const utils = api.useUtils();
+  // const utils = api.useUtils();
   // const { mutate: createWeighIn, isLoading: isCreatingWeighIn } =
   //   api.weighIns.create.useMutation({
   //     onSuccess: () => {
@@ -140,7 +139,7 @@ const BloodPressureReading = () => {
   const [diastolic, setDiastolic] = useState("");
   const [heartRate, setHeartRate] = useState("");
 
-  const utils = api.useUtils();
+  // const utils = api.useUtils();
   // const { mutate: createWeighIn, isLoading: isCreatingWeighIn } =
   //   api.weighIns.create.useMutation({
   //     onSuccess: () => {

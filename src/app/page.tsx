@@ -35,8 +35,6 @@ import { api } from "~/trpc/react";
 export default function Home() {
   const {
     isLoading,
-    isError,
-    refetch,
     activeCollection,
     setActiveCollection,
     showCompletedTasks,

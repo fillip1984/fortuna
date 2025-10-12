@@ -26,8 +26,6 @@ import { Spinner } from "../ui/spinner";
 export default function SideNav() {
   const {
     isLoading,
-    isError,
-    refetch,
     collections,
     activeCollection,
     setActiveCollection,

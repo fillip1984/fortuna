@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -29,10 +30,12 @@ model Task {
 
     title       String
     description String?
-    completed   Boolean         @default(false)
+    completed   Boolean             @default(false)
+    onComplete  CompleteOptionType?
     order       Int
     dueDate     DateTime?
     priority    PriorityOption?
+    recurrence  RecurrenceOption?
 
     collection   Collection? @relation(fields: [collectionId], references: [id])
     collectionId String?
@@ -109,10 +112,8 @@ model BloodPressureReading {
     systolic  Int
     diastolic Int
     pulse     Int?
-    // systolicChange  Int
-    // diastolicChange Int
-    // pulseChange     Int?
-    category  BloodPressureCategory
+
+    category BloodPressureCategory
 }
 
 enum BloodPressureCategory {
@@ -144,16 +145,16 @@ enum CompleteOptionType {
     Runners_log
 }
 
-enum WeatherType {
-    Cold
-    Rainy
-    Fair
-    Hot
-}
+// enum WeatherType {
+//     Cold
+//     Rainy
+//     Fair
+//     Hot
+// }
 
-enum MoodType {
-    Bad
-    Okay
-    Good
-    Great
-}
+// enum MoodType {
+//     Bad
+//     Okay
+//     Good
+//     Great
+// }

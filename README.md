@@ -4,14 +4,14 @@ Simple reminder app
 
 ## TODOs
 
-- [ ] - add ability to make a task repeat
-- [ ] - add outcome interactions (notes, weight, blood pressure, etc)
-- [ ] - add results page
 - [ ] - secure and deploy to aws
 - [ ] - use for a bit to see if it sticks
 
 ## Longer term TODOs
 
+- [ ] - add results page
+- [ ] - add outcome interactions (notes, weight, blood pressure, etc)
+- [ ] - add ability to make a task repeat
 - [ ] - add toasts (if we find need)
 - [ ] - add suspense state
 - [ ] - create a mobile app version converting this over to a monorepo
