@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { AnimatePresence } from "motion/react";
+import { signIn, useSession } from "next-auth/react";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiBeerStein } from "react-icons/gi";
 import NewTask from "~/components/task/NewTaskCard";
@@ -33,6 +34,8 @@ import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 
 export default function Home() {
+  const { data: session } = useSession();
+
   const {
     isLoading,
     activeCollection,
@@ -92,6 +95,10 @@ export default function Home() {
       ]);
     },
   });
+
+  if (!session) {
+    return <SignInView />;
+  }
 
   if (isLoading) {
     return (
@@ -198,3 +205,18 @@ export default function Home() {
     </div>
   );
 }
+
+const SignInView = () => {
+  return (
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <h1 className="text-3xl font-bold">Welcome to Fortuna</h1>
+      <Button
+        variant="link"
+        onClick={() => signIn("google")}
+        className="text-muted-foreground cursor-pointer"
+      >
+        Please sign in to continue
+      </Button>
+    </div>
+  );
+};

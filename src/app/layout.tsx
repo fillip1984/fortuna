@@ -1,10 +1,10 @@
 import "~/styles/globals.css";
 
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import SideNav from "~/components/nav/SideNav";
-import { ThemeProvider } from "~/components/theme/theme-provider";
-import ThemeToggle from "~/components/theme/ThemeToggle";
 import { AppContextProvider } from "~/context/AppContextProvider";
+import { ThemeProvider } from "~/context/ThemeProvider";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
@@ -20,21 +20,22 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <AppContextProvider>
-            <ThemeProvider
-              attribute={"class"}
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="relative flex h-screen overflow-hidden">
-                <SideNav />
+          <SessionProvider>
+            <AppContextProvider>
+              <ThemeProvider
+                attribute={"class"}
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="relative flex h-screen overflow-hidden">
+                  <SideNav />
 
-                <main className="flex-1">{children}</main>
-              </div>
-              <ThemeToggle />
-            </ThemeProvider>
-          </AppContextProvider>
+                  <main className="flex-1">{children}</main>
+                </div>
+              </ThemeProvider>
+            </AppContextProvider>
+          </SessionProvider>
         </TRPCReactProvider>
       </body>
     </html>

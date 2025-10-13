@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "~/server/db";
 
@@ -32,7 +32,7 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
+    GoogleProvider,
     /**
      * ...add more providers here.
      *
@@ -45,6 +45,30 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
+    signIn: async (params) => {
+      const { account, user } = params;
+
+      // return true; // TEMPORARY: allow all sign-ins
+
+      if (account?.provider === "email") {
+        const existingUser = await db.user.findFirst({
+          where: { email: user.email },
+        });
+        if (existingUser) {
+          return true;
+        }
+      } else if (account?.provider === "google") {
+        const existingUser = await db.user.findFirst({
+          where: { email: user.email },
+        });
+        if (existingUser) {
+          return true;
+        }
+      }
+
+      // disable registration/login for EVERYONE but me
+      return false;
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
