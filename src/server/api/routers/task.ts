@@ -1,13 +1,14 @@
 import z from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { PriorityOption } from "@prisma/client";
 
 export const TaskRouter = createTRPCRouter({
-  findAll: publicProcedure
+  findAll: protectedProcedure
     .input(z.object({ showCompleted: z.boolean() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.task.findMany({
         where: {
+          userId: ctx.session.user.id,
           ...(input.showCompleted === true ? {} : { completed: false }),
         },
         include: {
@@ -17,7 +18,7 @@ export const TaskRouter = createTRPCRouter({
         orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
       });
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string(),
@@ -36,10 +37,11 @@ export const TaskRouter = createTRPCRouter({
           dueDate: input.dueDate,
           priority: input.priority,
           collectionId: input.collectionId,
+          userId: ctx.session.user.id,
         },
       });
     }),
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -66,7 +68,7 @@ export const TaskRouter = createTRPCRouter({
         },
       });
     }),
-  reorder: publicProcedure
+  reorder: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -89,7 +91,7 @@ export const TaskRouter = createTRPCRouter({
         }
       });
     }),
-  addChecklistItem: publicProcedure
+  addChecklistItem: protectedProcedure
     .input(
       z.object({
         taskId: z.string(),
@@ -107,7 +109,7 @@ export const TaskRouter = createTRPCRouter({
         },
       });
     }),
-  toggleChecklistItem: publicProcedure
+  toggleChecklistItem: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -120,7 +122,7 @@ export const TaskRouter = createTRPCRouter({
         data: { completed: input.completed },
       });
     }),
-  updateChecklistItem: publicProcedure
+  updateChecklistItem: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -133,14 +135,14 @@ export const TaskRouter = createTRPCRouter({
         data: { text: input.text },
       });
     }),
-  deleteChecklistItem: publicProcedure
+  deleteChecklistItem: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.checklist.delete({
         where: { id: input.id },
       });
     }),
-  reorderChecklist: publicProcedure
+  reorderChecklist: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -163,7 +165,7 @@ export const TaskRouter = createTRPCRouter({
         }
       });
     }),
-  addComment: publicProcedure
+  addComment: protectedProcedure
     .input(
       z.object({
         taskId: z.string(),
@@ -178,14 +180,14 @@ export const TaskRouter = createTRPCRouter({
         },
       });
     }),
-  deleteComment: publicProcedure
+  deleteComment: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.comment.delete({
         where: { id: input.id },
       });
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.task.delete({

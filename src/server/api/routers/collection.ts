@@ -1,11 +1,12 @@
 import z from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const CollectionRouter = createTRPCRouter({
-  findAll: publicProcedure
+  findAll: protectedProcedure
     .input(z.object({ showCompleted: z.boolean() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.collection.findMany({
+        where: { userId: ctx.session.user.id },
         select: {
           id: true,
           name: true,
@@ -25,17 +26,18 @@ export const CollectionRouter = createTRPCRouter({
         },
       });
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.collection.create({
         data: {
           name: input.name,
           order: 9999,
+          userId: ctx.session.user.id,
         },
       });
     }),
-  update: publicProcedure
+  update: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.collection.update({
@@ -45,7 +47,7 @@ export const CollectionRouter = createTRPCRouter({
         },
       });
     }),
-  reorder: publicProcedure
+  reorder: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -68,7 +70,7 @@ export const CollectionRouter = createTRPCRouter({
         }
       });
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.$transaction(async (tx) => {
