@@ -21,7 +21,6 @@ import { Label } from "~/components/ui/label";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Moon, Sun } from "lucide-react";
 import { motion } from "motion/react";
-import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { GrSystem } from "react-icons/gr";
 import { AppContext } from "~/context/AppContextProvider";
@@ -35,9 +34,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Spinner } from "../ui/spinner";
+import { authClient } from "~/server/auth/client";
 
 export default function SideNav() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const {
     isLoading,
     collections,
@@ -161,7 +161,7 @@ export default function SideNav() {
               <DropdownMenuContent className="w-36" align="start">
                 <DropdownMenuGroup>
                   <DropdownMenuItem
-                    onClick={() => void signOut()}
+                    onClick={() => void authClient.signOut()}
                     className="justify-between"
                   >
                     Sign out <FaSignOutAlt />

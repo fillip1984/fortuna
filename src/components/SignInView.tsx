@@ -1,49 +1,89 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
 import { useState } from "react";
+import { FaCircleNotch, FaGoogle } from "react-icons/fa";
+import { authClient } from "~/server/auth/client";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 export default function SignInView() {
-  const [email, setEmail] = useState("fillip1984@gmail.com");
-  const [password, setPassword] = useState("Fortis et liber!1");
+  const socialProviders = [
+    { label: "google", icon: <FaGoogle /> },
+    // { label: "github", icon: <FaGithub /> },
+  ];
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [emailLoginLoading, setEmailLoginLoading] = useState(false);
+  const handleEmailSignIn = async () => {
+    setEmailLoginLoading(true);
+    // await authClient.signUp.email({
+    //   email,
+    //   password,
+    //   name: "fillip1984",
+    // });
+    await authClient.signIn.email({
+      email,
+      password,
+      rememberMe: true,
+      fetchOptions: {
+        onError: (error) => {
+          setEmailError(error.error.message);
+        },
+        onResponse: () => {
+          setEmailLoginLoading(false);
+        },
+      },
+    });
+  };
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold">Welcome to Fortuna</h1>
-      <Button
-        variant="link"
-        onClick={() => signIn("google")}
-        className="text-muted-foreground cursor-pointer"
-      >
-        Sign in with Google
-      </Button>
-      <hr />
-      or
-      <hr />
-      <div className="my-4 flex w-1/3 flex-col gap-2">
-        <h3>Sign in with email/password</h3>
-        <Label className="text-muted-foreground">Email</Label>
-        <Input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Label className="text-muted-foreground">Password</Label>
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button
-          onClick={() => signIn("credentials", { email, password })}
-          disabled={!email || !password}
-          className="mt-4"
+    <div className="flex h-screen w-screen flex-col items-center pt-40">
+      <div className="flex w-2/3 flex-col items-center justify-center gap-2">
+        <h3 className="text-center text-2xl font-bold">Welcome to fortuna</h3>
+        <p className="text-muted-foreground text-sm">
+          This web application is by invitation only...
+        </p>
+        <div className="mt-8">
+          {socialProviders.map((provider) => (
+            <Button
+              key={provider.label}
+              onClick={() =>
+                authClient.signIn.social({ provider: provider.label })
+              }
+            >
+              {provider.icon}
+              {provider.label.charAt(0).toUpperCase() + provider.label.slice(1)}
+            </Button>
+          ))}
+        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleEmailSignIn();
+          }}
+          className="flex flex-col gap-2"
         >
-          Sign In
-        </Button>
+          {emailError && <p className="text-destructive">{emailError}</p>}
+
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+          />
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+          />
+          <Button type="submit" className="w-full">
+            {emailLoginLoading && <FaCircleNotch className="animate-spin" />}
+            Sign in with Email
+          </Button>
+        </form>
       </div>
     </div>
   );

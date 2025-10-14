@@ -1,7 +1,6 @@
 import "~/styles/globals.css";
 
 import type { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import SideNav from "~/components/nav/SideNav";
 import { AppContextProvider } from "~/context/AppContextProvider";
 import { ThemeProvider } from "~/context/ThemeProvider";
@@ -20,22 +19,20 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <SessionProvider>
-            <AppContextProvider>
-              <ThemeProvider
-                attribute={"class"}
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <div className="relative flex h-screen overflow-hidden">
-                  <SideNav />
+          <AppContextProvider>
+            <ThemeProvider
+              attribute={"class"}
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="relative flex h-screen overflow-hidden">
+                <SideNav />
 
-                  <main className="flex-1">{children}</main>
-                </div>
-              </ThemeProvider>
-            </AppContextProvider>
-          </SessionProvider>
+                <main className="flex-1">{children}</main>
+              </div>
+            </ThemeProvider>
+          </AppContextProvider>
         </TRPCReactProvider>
       </body>
     </html>

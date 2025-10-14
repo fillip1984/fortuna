@@ -1,11 +1,11 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { authClient } from "~/server/auth/client";
 import MainView from "~/components/MainView";
 import SignInView from "~/components/SignInView";
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
 
   if (!session) {
     return <SignInView />;

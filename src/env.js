@@ -17,6 +17,10 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    PRODUCTION_URL:
+      process.env.NODE_ENV === "production"
+        ? z.string().url().min(1)
+        : z.string().url().min(1).optional(),
   },
 
   /**
@@ -38,6 +42,7 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    PRODUCTION_URL: process.env.PRODUCTION_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

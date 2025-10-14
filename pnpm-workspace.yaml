@@ -4,6 +4,7 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - aws-sdk
   - bcrypt
+  - better-sqlite3
   - prisma
   - sharp
   - unrs-resolver

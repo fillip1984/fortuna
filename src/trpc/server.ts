@@ -7,6 +7,7 @@ import { cache } from "react";
 import { createCaller, type AppRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 import { createQueryClient } from "./query-client";
+import { auth } from "~/server/auth/server";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -18,6 +19,7 @@ const createContext = cache(async () => {
 
   return createTRPCContext({
     headers: heads,
+    auth,
   });
 });
 
