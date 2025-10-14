@@ -4,7 +4,6 @@ Simple reminder app
 
 ## TODOs
 
-- [ ] - secure and deploy to aws
 - [ ] - use for a bit to see if it sticks
 
 ## Longer term TODOs
