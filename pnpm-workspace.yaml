@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - aws-sdk
+  - bcrypt
+  - prisma
+  - sharp
+  - unrs-resolver
