@@ -1,8 +1,12 @@
 "use client";
 
-import type { PriorityOption } from "@prisma/client";
+import type {
+  CompleteOptionType,
+  PriorityOption,
+  RecurrenceOption,
+} from "@prisma/client";
 import { format } from "date-fns/format";
-import { Check, ChevronDownIcon } from "lucide-react";
+import { Check, ChevronDownIcon, LucideRepeat } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { BiCollection } from "react-icons/bi";
@@ -16,6 +20,8 @@ import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
 
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+import { addDays, startOfDay } from "date-fns";
+import { GrTrophy } from "react-icons/gr";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Calendar } from "../ui/calendar";
@@ -28,6 +34,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "../ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export default function TaskModal({
@@ -102,8 +113,8 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [collectionId, setCollectionId] = useState<string | undefined>(
     undefined,
   );
-  // const [outcome, setOutcome] = useState<CompleteOptionType | null>(null);
-  // const [recurrence, setRecurrence] = useState<RecurrenceOption | null>(null);
+  const [onComplete, setOnComplete] = useState<string | null>(null);
+  const [recurrence, setRecurrence] = useState<RecurrenceOption | null>(null);
 
   useEffect(() => {
     if (task) {
@@ -112,14 +123,16 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
       setPriority(task.priority ?? undefined);
       setCollectionId(task.collectionId ?? undefined);
+      setOnComplete(task.onComplete?.replaceAll("_", " ") ?? null);
+      setRecurrence(task.recurrence ?? null);
     }
   }, [task]);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [priorityPickerOpen, setPriorityPickerOpen] = useState(false);
   const [collectionPickerOpen, setCollectionPickerOpen] = useState(false);
-  // const [outcomePickerOpen, setOutcomePickerOpen] = useState(false);
-  // const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
+  const [onCompletePickerOpen, setOnCompletePickerOpen] = useState(false);
+  const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
 
   const utils = api.useUtils();
   const { mutateAsync: updateTask } = api.task.update.useMutation({
@@ -226,12 +239,17 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                         setDatePickerOpen(false);
                         void updateTask({
                           ...task,
-                          dueDate: date ?? null,
+                          dueDate: date ? startOfDay(date) : null,
                         });
                       }}
                     />
                   </PopoverContent>
                 </Popover>
+                {task.nextDueDate && (
+                  <span className="text-muted-foreground text-sm">
+                    Next Due Date: {task.nextDueDate.toLocaleDateString()}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-3">
                 <GiLevelEndFlag className="h-5 w-5" />
@@ -375,11 +393,11 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                 </Popover>
               </div>
 
-              {/* <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3">
                 <GrTrophy className="h-5 w-5" />
                 <Popover
-                  open={outcomePickerOpen}
-                  onOpenChange={setOutcomePickerOpen}
+                  open={onCompletePickerOpen}
+                  onOpenChange={setOnCompletePickerOpen}
                 >
                   <PopoverTrigger asChild>
                     <Button
@@ -387,14 +405,18 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                       id="collection"
                       className="w-48 justify-between font-normal"
                     >
-                      {outcome ? (
+                      {onComplete ? (
                         <>
-                          {outcome}
+                          {onComplete}
                           <span
                             onClick={(e) => {
                               e.stopPropagation();
-                              setOutcome(null);
-                              setOutcomePickerOpen(false);
+                              setOnComplete(null);
+                              setOnCompletePickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                onComplete: null,
+                              });
                             }}
                             className="text-muted-foreground"
                           >
@@ -424,13 +446,20 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                         <div
                           key={option}
                           onClick={() => {
-                            setOutcome(option as CompleteOptionType);
-                            setOutcomePickerOpen(false);
+                            setOnComplete(option as CompleteOptionType);
+                            setOnCompletePickerOpen(false);
+                            void updateTask({
+                              ...task,
+                              onComplete: option.replaceAll(
+                                " ",
+                                "_",
+                              ) as CompleteOptionType,
+                            });
                           }}
                           className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
                         >
                           {option}
-                          {outcome === option && (
+                          {onComplete === option && (
                             <Check className="text-muted-foreground" />
                           )}
                         </div>
@@ -438,9 +467,9 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     </>
                   </PopoverContent>
                 </Popover>
-              </div> */}
+              </div>
 
-              {/* <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3">
                 <LucideRepeat className="h-5 w-5" />
                 <Popover
                   open={recurrencePickerOpen}
@@ -460,6 +489,12 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                               e.stopPropagation();
                               setRecurrence(null);
                               setRecurrencePickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                recurrence: null,
+                                frequency: null,
+                                nextDueDate: null,
+                              });
                             }}
                             className="text-muted-foreground"
                           >
@@ -486,6 +521,12 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                             onClick={() => {
                               setRecurrence(option as RecurrenceOption);
                               setRecurrencePickerOpen(false);
+                              void updateTask({
+                                ...task,
+                                recurrence: option as RecurrenceOption,
+                                frequency: null,
+                                nextDueDate: null,
+                              });
                             }}
                             className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
                           >
@@ -499,8 +540,10 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     </>
                   </PopoverContent>
                 </Popover>
-              </div> */}
-              {/* <RecurrenceSection task={task} recurrence={recurrence} /> */}
+              </div>
+              {recurrence && (
+                <RecurrenceSection task={task} recurrence={recurrence} />
+              )}
             </div>
           </motion.div>
         )}
@@ -509,212 +552,315 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   );
 };
 
-// const RecurrenceSection = ({
-//   task,
-//   recurrence,
-// }: {
-//   task: TaskType;
-//   recurrence: RecurrenceOption | null;
-// }) => {
-//   const [dailyFrequency, setDailyFrequency] = useState<number>();
-//   const [monthPickerOpen, setMonthPickerOpen] = useState(false);
-//   const [recurrenceSchedule, setRecurrenceSchedule] = useState([
-//     { label: "Sun", selected: false },
-//     { label: "Mon", selected: false },
-//     { label: "Tue", selected: false },
-//     { label: "Wed", selected: false },
-//     { label: "Thu", selected: false },
-//     { label: "Fri", selected: false },
-//     { label: "Sat", selected: false },
-//   ]);
-//   const [recurrenceMonthlySchedule, setRecurrenceMonthlySchedule] = useState(
-//     Array.from({ length: 31 }, (_, i) => ({
-//       label: (i + 1).toString(),
-//       selected: false,
-//     })),
-//   );
-//   useEffect(() => {
-//     if (recurrence === "Daily") {
-//       setRecurrenceSchedule((prev) =>
-//         prev.map((day) => ({ ...day, selected: true })),
-//       );
-//     } else if (recurrence === "Weekly") {
-//       setRecurrenceSchedule((prev) =>
-//         prev.map((day, index) => ({
-//           ...day,
-//           selected: index === new Date().getDay(),
-//         })),
-//       );
-//     } else if (recurrence === "Monthly") {
-//       setRecurrenceSchedule((prev) =>
-//         prev.map((day, index) => ({
-//           ...day,
-//           selected: index === new Date().getDate() - 1,
-//         })),
-//       );
-//     } else if (recurrence === "Yearly") {
-//       setRecurrenceSchedule((prev) =>
-//         prev.map((day, index) => ({
-//           ...day,
-//           selected:
-//             index ===
-//             Math.floor(
-//               (new Date().getMonth() * 30 + new Date().getDate() - 1) / 30,
-//             ),
-//         })),
-//       );
-//     } else {
-//       setRecurrenceSchedule((prev) =>
-//         prev.map((day) => ({ ...day, selected: false })),
-//       );
-//     }
-//   }, [recurrence]);
+const RecurrenceSection = ({
+  task,
+  recurrence,
+}: {
+  task: TaskType;
+  recurrence: RecurrenceOption | null;
+}) => {
+  const [dailyFrequency, setDailyFrequency] = useState<number | null>(null);
+  const [weeklyFrequency, setWeeklyFrequency] = useState([
+    { label: "Sun", selected: false },
+    { label: "Mon", selected: false },
+    { label: "Tue", selected: false },
+    { label: "Wed", selected: false },
+    { label: "Thu", selected: false },
+    { label: "Fri", selected: false },
+    { label: "Sat", selected: false },
+  ]);
+  const [monthlyFrequency, setMonthlyFrequency] = useState(() =>
+    Array.from({ length: 31 }, (_, i) => ({
+      label: String(i + 1),
+      selected: false,
+    })),
+  );
+  const [yearlyFrequency, setYearlyFrequency] = useState({
+    month: "",
+    day: "",
+  });
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
 
-//   const months = [
-//     "January",
-//     "February",
-//     "March",
-//     "April",
-//     "May",
-//     "June",
-//     "July",
-//     "August",
-//     "September",
-//     "October",
-//     "November",
-//     "December",
-//   ];
-//   const [month, setMonth] = useState("");
+  useEffect(() => {
+    if (recurrence === "Daily") {
+      setDailyFrequency(task.frequency ? parseInt(task.frequency) : null);
+    } else if (recurrence === "Weekly") {
+      setWeeklyFrequency((prev) =>
+        prev.map((day) => ({
+          ...day,
+          selected: task.frequency
+            ? task.frequency.split(",").includes(day.label)
+            : false,
+        })),
+      );
+    } else if (recurrence === "Monthly") {
+      setMonthlyFrequency((prev) =>
+        prev.map((d) =>
+          d.label === d.label ? { ...d, selected: !d.selected } : d,
+        ),
+      );
+    } else if (recurrence === "Yearly") {
+      setYearlyFrequency({
+        month: task.frequency?.split("-")[0] ?? "",
+        day: task.frequency?.split("-")[1] ?? "",
+      });
+    }
+  }, [recurrence, task.frequency]);
 
-//   return (
-//     <>
-//       {recurrence === "Daily" && (
-//         <div className="my-2 flex justify-center gap-2">
-//           <InputGroup className="flex w-36 gap-2">
-//             <InputGroupAddon align="inline-start">Every</InputGroupAddon>
-//             <InputGroupInput
-//               value={dailyFrequency}
-//               onChange={(e) => setDailyFrequency(parseInt(e.target.value))}
-//             />
-//             <InputGroupAddon align="inline-end">days</InputGroupAddon>
-//           </InputGroup>
-//         </div>
-//       )}
-//       {recurrence === "Weekly" && (
-//         <div className="my-2 flex justify-center gap-2">
-//           {recurrenceSchedule.map((day) => (
-//             <span
-//               key={day.label}
-//               onClick={() => {
-//                 setRecurrenceSchedule((prev) =>
-//                   prev.map((d) =>
-//                     d.label === day.label ? { ...d, selected: !d.selected } : d,
-//                   ),
-//                 );
-//               }}
-//               className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
-//             >
-//               {day.label}
-//             </span>
-//           ))}
-//         </div>
-//       )}
+  const utils = api.useUtils();
+  const { mutateAsync: updateTask } = api.task.update.useMutation({
+    onSuccess: async () => {
+      await Promise.all([
+        utils.task.findAll.invalidate(),
+        utils.collection.findAll.invalidate(),
+      ]);
+    },
+  });
 
-//       {recurrence === "Monthly" && (
-//         <div className="flex flex-col items-center select-none">
-//           <div className="grid w-[300px] grid-cols-7 justify-center gap-2 text-center">
-//             <span>Su</span>
-//             <span>Mo</span>
-//             <span>Tu</span>
-//             <span>We</span>
-//             <span>Th</span>
-//             <span>Fr</span>
-//             <span>Sa</span>
-//           </div>
-//           <div className="my-2 grid w-[300px] grid-cols-7 justify-center gap-2">
-//             {recurrenceMonthlySchedule.map((day) => (
-//               <span
-//                 key={day.label}
-//                 onClick={() => {
-//                   setRecurrenceMonthlySchedule((prev) =>
-//                     prev.map((d) =>
-//                       d.label === day.label
-//                         ? { ...d, selected: !d.selected }
-//                         : d,
-//                     ),
-//                   );
-//                 }}
-//                 className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
-//               >
-//                 {day.label}
-//               </span>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-
-//       {recurrence === "Yearly" && (
-//         <div className="flex gap-2">
-//           <InputGroup className="w-[150px]">
-//             <InputGroupAddon align="inline-start">On day</InputGroupAddon>
-//             <InputGroupInput
-//               value={dailyFrequency}
-//               onChange={(e) => setDailyFrequency(parseInt(e.target.value))}
-//             />
-//             <InputGroupAddon align="inline-end">of</InputGroupAddon>
-//           </InputGroup>
-//           <Popover open={monthPickerOpen} onOpenChange={setMonthPickerOpen}>
-//             <PopoverTrigger asChild>
-//               <Button
-//                 variant="outline"
-//                 id="collection"
-//                 className="w-32 justify-between font-normal"
-//               >
-//                 {month ? (
-//                   <>
-//                     {month}
-//                     <span
-//                       onClick={(e) => {
-//                         e.stopPropagation();
-//                         setMonth("");
-//                         setMonthPickerOpen(false);
-//                       }}
-//                       className="text-muted-foreground"
-//                     >
-//                       x
-//                     </span>
-//                   </>
-//                 ) : (
-//                   <>
-//                     Select Month
-//                     <ChevronDownIcon />
-//                   </>
-//                 )}
-//               </Button>
-//             </PopoverTrigger>
-//             <PopoverContent className="w-48 overflow-hidden p-2" align="center">
-//               <>
-//                 {months.map((m) => (
-//                   <div
-//                     key={m}
-//                     onClick={() => {
-//                       setMonth(m);
-//                       setMonthPickerOpen(false);
-//                     }}
-//                     className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-//                   >
-//                     {m}
-//                     {month === m && <Check className="text-muted-foreground" />}
-//                   </div>
-//                 ))}
-//               </>
-//             </PopoverContent>
-//           </Popover>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
+  return (
+    <>
+      {recurrence === "Daily" && (
+        <div className="my-2 flex justify-center gap-2">
+          <InputGroup className="flex w-36 gap-2">
+            <InputGroupAddon align="inline-start">Every</InputGroupAddon>
+            <InputGroupInput
+              value={dailyFrequency ?? ""}
+              onChange={(e) => setDailyFrequency(parseInt(e.target.value))}
+              onBlur={() => {
+                void updateTask({
+                  ...task,
+                  frequency: dailyFrequency?.toString() ?? "",
+                  nextDueDate:
+                    task.dueDate && dailyFrequency
+                      ? addDays(startOfDay(task.dueDate), dailyFrequency)
+                      : null,
+                });
+              }}
+            />
+            <InputGroupAddon align="inline-end">days</InputGroupAddon>
+          </InputGroup>
+        </div>
+      )}
+      {recurrence === "Weekly" && (
+        <div className="my-2 flex justify-center gap-2">
+          {weeklyFrequency.map((day) => (
+            <span
+              key={day.label}
+              onClick={() => {
+                const updatedWeeklyFrequency = weeklyFrequency.map((d) =>
+                  d.label === day.label ? { ...d, selected: !d.selected } : d,
+                );
+                setWeeklyFrequency(updatedWeeklyFrequency);
+                void updateTask({
+                  ...task,
+                  frequency: updatedWeeklyFrequency.reduce<string>(
+                    (acc, d) =>
+                      d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
+                    "",
+                  ),
+                  nextDueDate: task.dueDate
+                    ? addDays(
+                        startOfDay(task.dueDate),
+                        7 -
+                          ((task.dueDate.getDay() -
+                            updatedWeeklyFrequency.findIndex(
+                              (d) => d.label === day.label,
+                            ) +
+                            7) %
+                            7),
+                      )
+                    : null,
+                });
+              }}
+              className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
+            >
+              {day.label}
+            </span>
+          ))}
+        </div>
+      )}
+      {recurrence === "Monthly" && (
+        <div className="flex flex-col items-center select-none">
+          <div className="grid w-[300px] grid-cols-7 justify-center gap-2 text-center">
+            <span>Su</span>
+            <span>Mo</span>
+            <span>Tu</span>
+            <span>We</span>
+            <span>Th</span>
+            <span>Fr</span>
+            <span>Sa</span>
+          </div>
+          <div className="my-2 grid w-[300px] grid-cols-7 justify-center gap-2">
+            {monthlyFrequency.map((day) => (
+              <span
+                key={day.label}
+                onClick={() => {
+                  const updatedMonthlyFrequency = monthlyFrequency.map((d) =>
+                    d.label === day.label ? { ...d, selected: !d.selected } : d,
+                  );
+                  setMonthlyFrequency(updatedMonthlyFrequency);
+                  void updateTask({
+                    ...task,
+                    frequency: updatedMonthlyFrequency.reduce<string>(
+                      (acc, d) =>
+                        d.selected
+                          ? acc
+                            ? `${acc},${d.label}`
+                            : d.label
+                          : acc,
+                      "",
+                    ),
+                    nextDueDate: task.dueDate
+                      ? addDays(
+                          startOfDay(task.dueDate),
+                          30 -
+                            ((task.dueDate.getDate() -
+                              updatedMonthlyFrequency.findIndex(
+                                (d) => d.label === day.label,
+                              ) +
+                              31) %
+                              31),
+                        )
+                      : null,
+                  });
+                }}
+                className={`${
+                  day.selected
+                    ? "bg-primary text-black"
+                    : "text-muted-foreground"
+                } flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
+              >
+                {day.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      {recurrence === "Yearly" && (
+        <div className="flex justify-center gap-2">
+          <InputGroup className="w-[150px]">
+            <InputGroupAddon align="inline-start">On day</InputGroupAddon>
+            <InputGroupInput
+              value={yearlyFrequency.day}
+              onChange={(e) =>
+                setYearlyFrequency({
+                  ...yearlyFrequency,
+                  day: e.target.value,
+                })
+              }
+              onBlur={() => {
+                if (!yearlyFrequency.month || !yearlyFrequency.day) return;
+                void updateTask({
+                  ...task,
+                  frequency: yearlyFrequency.month + "-" + yearlyFrequency.day,
+                  nextDueDate: task.dueDate
+                    ? addDays(
+                        startOfDay(task.dueDate),
+                        365 -
+                          (task.dueDate.getMonth() * 30 +
+                            task.dueDate.getDate() -
+                            1) /
+                            30,
+                      )
+                    : null,
+                });
+              }}
+            />
+            <InputGroupAddon align="inline-end">of</InputGroupAddon>
+          </InputGroup>
+          <Popover open={monthPickerOpen} onOpenChange={setMonthPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                id="collection"
+                className="w-32 justify-between font-normal"
+              >
+                {yearlyFrequency.month ? (
+                  <>
+                    {yearlyFrequency.month}
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setYearlyFrequency({
+                          ...yearlyFrequency,
+                          month: "",
+                        });
+                        setMonthPickerOpen(false);
+                        void updateTask({
+                          ...task,
+                          frequency: null,
+                          nextDueDate: null,
+                        });
+                      }}
+                      className="text-muted-foreground"
+                    >
+                      x
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Select Month
+                    <ChevronDownIcon />
+                  </>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 overflow-hidden p-2" align="center">
+              <>
+                {[
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ].map((m) => (
+                  <div
+                    key={m}
+                    onClick={() => {
+                      setYearlyFrequency({
+                        ...yearlyFrequency,
+                        month: m,
+                      });
+                      setMonthPickerOpen(false);
+                      if (!m || !yearlyFrequency.day) return;
+                      void updateTask({
+                        ...task,
+                        frequency: m + "-" + yearlyFrequency.day,
+                        nextDueDate: task.dueDate
+                          ? addDays(
+                              startOfDay(task.dueDate),
+                              365 -
+                                (task.dueDate.getMonth() * 30 +
+                                  task.dueDate.getDate() -
+                                  1) /
+                                  30,
+                            )
+                          : null,
+                      });
+                    }}
+                    className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
+                  >
+                    {m}
+                    {yearlyFrequency.month === m && (
+                      <Check className="text-muted-foreground" />
+                    )}
+                  </div>
+                ))}
+              </>
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+    </>
+  );
+};
 
 const TaskChecklist = ({ task }: { task: TaskType }) => {
   const [collapsed, setCollapsed] = useState(false);
