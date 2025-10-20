@@ -1,14 +1,15 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
-
+import { useContext, useEffect, useState, type ChangeEvent } from "react";
+import MsgReader from "@kenjiuno/msgreader";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { AnimatePresence } from "motion/react";
-import { FaEllipsisH, FaTrash } from "react-icons/fa";
+import { FaEllipsisH, FaTrash, FaVoicemail } from "react-icons/fa";
 import { GiBeerStein } from "react-icons/gi";
 import NewTask from "~/components/task/NewTaskCard";
 import TaskRow from "~/components/task/TaskRow";
 import { Button } from "~/components/ui/button";
+import { MdOutlineCloudUpload } from "react-icons/md";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -31,6 +32,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
+import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
 
 export default function MainView() {
   const {
@@ -102,99 +104,102 @@ export default function MainView() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-y-auto pb-12">
-      <div className="flex items-center justify-between border-b p-4">
-        <div>
-          {!isRenaming && activeCollection ? (
-            <h3
-              className="cursor-pointer text-2xl font-bold"
-              onClick={() => setIsRenaming(true)}
-            >
-              {collectionName}
-            </h3>
-          ) : (
-            <Input
-              ref={collectionNameInputRef}
-              value={collectionName}
-              onChange={(e) => {
-                setCollectionName(e.target.value);
-              }}
-              onBlur={() => {
-                if (activeCollection?.name === collectionName) {
-                  setIsRenaming(false);
-                  return;
-                }
-                void updateCollection({
-                  ...activeCollection!,
-                  name: collectionName ?? "Untitled",
-                });
-              }}
-              placeholder="Collection name..."
-            />
-          )}
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <FaEllipsisH />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-40" align="start">
-            <DropdownMenuCheckboxItem
-              checked={showCompletedTasks}
-              onCheckedChange={setShowCompletedTasks}
-              className="text-xs"
-            >
-              Show Completed
-            </DropdownMenuCheckboxItem>
-            {activeCollection && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      void deleteCollection({ id: activeCollection.id })
-                    }
-                    className="text-destructive justify-between"
-                  >
-                    Delete <FaTrash className="text-destructive" />
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </>
+    <>
+      <div className="flex h-screen flex-col overflow-y-auto pb-12">
+        <div className="flex items-center justify-between border-b p-4">
+          <div>
+            {!isRenaming && activeCollection ? (
+              <h3
+                className="cursor-pointer text-2xl font-bold"
+                onClick={() => setIsRenaming(true)}
+              >
+                {collectionName}
+              </h3>
+            ) : (
+              <Input
+                ref={collectionNameInputRef}
+                value={collectionName}
+                onChange={(e) => {
+                  setCollectionName(e.target.value);
+                }}
+                onBlur={() => {
+                  if (activeCollection?.name === collectionName) {
+                    setIsRenaming(false);
+                    return;
+                  }
+                  void updateCollection({
+                    ...activeCollection!,
+                    name: collectionName ?? "Untitled",
+                  });
+                }}
+                placeholder="Collection name..."
+              />
             )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      {activeCollection && activeCollection.tasks.length > 0 ? (
-        <>
-          <div ref={draggableTasksParentRef} className="flex flex-col">
-            <AnimatePresence>
-              {draggabledTasks.map((task) => (
-                <TaskRow key={task.id} data-label={task.id} task={task} />
-              ))}
-            </AnimatePresence>
           </div>
-          <NewTask />
-        </>
-      ) : (
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <GiBeerStein />
-            </EmptyMedia>
-            <EmptyTitle>No Tasks Found...</EmptyTitle>
-            <EmptyDescription>
-              Either you&apos;ve completed them all or there are no activities
-              for the filter/collection you selected.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <div className="w-full">
-              <NewTask />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <FaEllipsisH />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-40" align="start">
+              <DropdownMenuCheckboxItem
+                checked={showCompletedTasks}
+                onCheckedChange={setShowCompletedTasks}
+                className="text-xs"
+              >
+                Show Completed
+              </DropdownMenuCheckboxItem>
+              {activeCollection && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        void deleteCollection({ id: activeCollection.id })
+                      }
+                      className="text-destructive justify-between"
+                    >
+                      Delete <FaTrash className="text-destructive" />
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        {activeCollection && activeCollection.tasks.length > 0 ? (
+          <>
+            <div ref={draggableTasksParentRef} className="flex flex-col">
+              <AnimatePresence>
+                {draggabledTasks.map((task) => (
+                  <TaskRow key={task.id} data-label={task.id} task={task} />
+                ))}
+              </AnimatePresence>
             </div>
-          </EmptyContent>
-        </Empty>
-      )}
-    </div>
+            <NewTask />
+          </>
+        ) : (
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <GiBeerStein />
+              </EmptyMedia>
+              <EmptyTitle>No Tasks Found...</EmptyTitle>
+              <EmptyDescription>
+                Either you&apos;ve completed them all or there are no activities
+                for the filter/collection you selected.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <div className="w-full">
+                <NewTask />
+              </div>
+            </EmptyContent>
+          </Empty>
+        )}
+      </div>
+      <NewTaskViaEmailDnD />
+    </>
   );
 }
