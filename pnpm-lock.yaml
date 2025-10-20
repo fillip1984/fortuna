@@ -11,6 +11,9 @@ importers:
       '@formkit/drag-and-drop':
         specifier: ^0.5.3
         version: 0.5.3
+      '@kenjiuno/msgreader':
+        specifier: 1.27.0-alpha.3
+        version: 1.27.0-alpha.3
       '@prisma/client':
         specifier: ^6.17.1
         version: 6.17.1(prisma@6.17.1(typescript@5.9.3))(typescript@5.9.3)
@@ -594,6 +597,13 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@kenjiuno/decompressrtf@0.1.4':
+    resolution: {integrity: sha512-v9c/iFz17jRWyd2cRnrvJg4VOg/4I/VCk+bG8JnoX2gJ9sAesPzo3uTqcmlVXdpasTI8hChpBVw00pghKe3qTQ==}
+
+  '@kenjiuno/msgreader@1.27.0-alpha.3':
+    resolution: {integrity: sha512-XLCgIE5viHueZDe8vp4pQx/R49yFstQYLBs/Cr6O0dZVs9kuyQ1prBwdyAwggGeL1NER95tUPtagC2peOpgpwg==}
+    engines: {node: '>= 10'}
 
   '@levischuck/tiny-cbor@0.2.11':
     resolution: {integrity: sha512-llBRm4dT4Z89aRsm6u2oEZ8tfwL/2l6BwpZ7JcyieouniDECM5AqNgr/y08zalEIvW3RSK4upYyybDcmjXqAow==}
@@ -4358,6 +4368,13 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@kenjiuno/decompressrtf@0.1.4': {}
+
+  '@kenjiuno/msgreader@1.27.0-alpha.3':
+    dependencies:
+      '@kenjiuno/decompressrtf': 0.1.4
+      iconv-lite: 0.6.3
 
   '@levischuck/tiny-cbor@0.2.11': {}
 
