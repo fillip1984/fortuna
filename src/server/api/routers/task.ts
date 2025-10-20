@@ -1,6 +1,10 @@
+import {
+  CompleteOptionType,
+  PriorityOption,
+  RecurrenceOption,
+} from "@prisma/client";
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { PriorityOption } from "@prisma/client";
 
 export const TaskRouter = createTRPCRouter({
   findAll: protectedProcedure
@@ -47,10 +51,14 @@ export const TaskRouter = createTRPCRouter({
         id: z.string(),
         title: z.string(),
         description: z.string().nullable(),
-        order: z.number(),
         completed: z.boolean(),
+        onComplete: z.nativeEnum(CompleteOptionType).nullable(),
+        order: z.number(),
         dueDate: z.date().nullable(),
         priority: z.nativeEnum(PriorityOption).nullable(),
+        recurrence: z.nativeEnum(RecurrenceOption).nullable(),
+        frequency: z.string().nullable(),
+        nextDueDate: z.date().nullable(),
         collectionId: z.string().nullable(),
       }),
     )
@@ -60,10 +68,14 @@ export const TaskRouter = createTRPCRouter({
         data: {
           title: input.title,
           description: input.description,
-          order: input.order,
           completed: input.completed,
+          onComplete: input.onComplete,
+          order: input.order,
           dueDate: input.dueDate,
           priority: input.priority,
+          recurrence: input.recurrence,
+          frequency: input.frequency,
+          nextDueDate: input.nextDueDate,
           collectionId: input.collectionId,
         },
       });

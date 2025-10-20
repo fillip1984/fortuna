@@ -39,6 +39,8 @@ model Task {
     dueDate     DateTime?
     priority    PriorityOption?
     recurrence  RecurrenceOption?
+    frequency   String?
+    nextDueDate DateTime?
 
     collection   Collection? @relation(fields: [collectionId], references: [id])
     collectionId String?
@@ -144,7 +146,6 @@ enum RecurrenceOption {
 }
 
 enum CompleteOptionType {
-    Simple
     Note
     Weigh_in
     Blood_pressure_reading
