@@ -41,6 +41,7 @@ import {
   InputGroupInput,
 } from "../ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CopyButton } from "../ui/shadcn-io/copy-button";
 
 export default function TaskModal({
   isOpen,
@@ -192,9 +193,24 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   });
                 }}
               />
-              <div className="text-muted-foreground line-clamp-3 text-xs">
-                Source: {task.source}
-              </div>
+              {task.source && (
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground line-clamp-3 text-xs break-all">
+                    Source: {task.source}
+                  </span>
+                  <CopyButton
+                    content={task.source}
+                    onCopy={async () => {
+                      if (!task.source) return;
+                      await navigator.clipboard.writeText(
+                        task.source.substring(
+                          task.source.indexOf("subject: ") + 9,
+                        ),
+                      );
+                    }}
+                  />
+                </div>
+              )}
               <div className="flex items-center gap-3">
                 <TbTargetArrow className="h-5 w-5" />
                 <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
