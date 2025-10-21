@@ -1,7 +1,7 @@
 "use client";
 
 import MsgReader from "@kenjiuno/msgreader";
-import { parse } from "date-fns";
+import { addHours, format, parse } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { AppContext } from "~/context/AppContextProvider";
@@ -66,9 +66,14 @@ export default function NewTaskViaEmailDnD() {
     const { subject, body, messageDeliveryTime } = msgInfo;
     const received = parse(
       messageDeliveryTime ?? "",
-      "EEE, dd MMM yyy HH:mm:ss xx",
+      "EEE, dd MMM yyyy HH:mm:ss 'GMT'",
       new Date(),
     );
+    // To get the offset in hours: (-4 or --5 depending on daylight savings time)
+    const now = new Date();
+    const timezoneOffsetMinutes = now.getTimezoneOffset();
+    const timezoneOffsetHours = timezoneOffsetMinutes / 60;
+    const adjustedReceived = addHours(received, -timezoneOffsetHours);
 
     await createTask({
       title: subject ?? "No subject",
@@ -80,7 +85,7 @@ export default function NewTaskViaEmailDnD() {
           : activeCollection?.id === "Unscheduled"
             ? "Important"
             : null,
-      source: `Email received on ${received.toLocaleString()} with subject: ${subject}`,
+      source: `Email received on ${format(adjustedReceived, "yyyy/MM/dd hh:mm a")} with subject: ${subject}`,
       collectionId:
         collections?.find((c) => c.id === activeCollection?.id)?.id ?? null,
     });
