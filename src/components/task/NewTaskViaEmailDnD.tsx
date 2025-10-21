@@ -1,6 +1,7 @@
 "use client";
 
 import MsgReader from "@kenjiuno/msgreader";
+import { parse } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { AppContext } from "~/context/AppContextProvider";
@@ -63,6 +64,11 @@ export default function NewTaskViaEmailDnD() {
     const msgReader = new MsgReader(msgFileBuffer);
     const msgInfo = msgReader.getFileData();
     const { subject, body, messageDeliveryTime } = msgInfo;
+    const received = parse(
+      messageDeliveryTime ?? "",
+      "EEE, dd MMM yyy HH:mm:ss xx",
+      new Date(),
+    );
 
     await createTask({
       title: subject ?? "No subject",
@@ -74,7 +80,7 @@ export default function NewTaskViaEmailDnD() {
           : activeCollection?.id === "Unscheduled"
             ? "Important"
             : null,
-      source: `Email received on ${messageDeliveryTime} with subject: ${subject}`,
+      source: `Email received on ${received.toLocaleString()} with subject: ${subject}`,
       collectionId:
         collections?.find((c) => c.id === activeCollection?.id)?.id ?? null,
     });

@@ -1026,7 +1026,7 @@ const ChecklistItem = ({
         }
       />
       <span
-        className={`${checklistItem.completed ? "line-through" : ""} flex-grow`}
+        className={`${checklistItem.completed ? "line-through" : ""} grow`}
         onClick={() => setIsEditingItem((prev) => !prev)}
       >
         {!isEditingItem ? (
@@ -1126,7 +1126,7 @@ const Comments = ({ task }: { task: TaskType }) => {
                       <FaTrash className="text-destructive" />
                     </Button>
                   </div>
-                  <span className="flex-grow">{comment.text}</span>
+                  <span className="grow">{comment.text}</span>
                 </div>
               ))}
             </div>
