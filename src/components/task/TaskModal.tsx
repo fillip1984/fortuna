@@ -192,6 +192,9 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   });
                 }}
               />
+              <div className="text-muted-foreground line-clamp-3 text-xs">
+                Source: {task.source}
+              </div>
               <div className="flex items-center gap-3">
                 <TbTargetArrow className="h-5 w-5" />
                 <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
