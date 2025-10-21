@@ -1,15 +1,13 @@
 "use client";
 
-import { useContext, useEffect, useState, type ChangeEvent } from "react";
-import MsgReader from "@kenjiuno/msgreader";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { AnimatePresence } from "motion/react";
-import { FaEllipsisH, FaTrash, FaVoicemail } from "react-icons/fa";
+import { useContext, useEffect, useState } from "react";
+import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiBeerStein } from "react-icons/gi";
 import NewTask from "~/components/task/NewTaskCard";
 import TaskRow from "~/components/task/TaskRow";
 import { Button } from "~/components/ui/button";
-import { MdOutlineCloudUpload } from "react-icons/md";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

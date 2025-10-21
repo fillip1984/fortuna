@@ -46,14 +46,14 @@ export default function NewTaskViaEmailDnD() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       await processMsgFile(e.dataTransfer.files[0]);
     }
   };
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       await processMsgFile(e.target.files[0]);
     }
   };
@@ -62,9 +62,9 @@ export default function NewTaskViaEmailDnD() {
     const msgFileBuffer = await msgFile.arrayBuffer();
     const msgReader = new MsgReader(msgFileBuffer);
     const msgInfo = msgReader.getFileData();
-    const { subject, body } = msgInfo;
+    const { subject, body, messageDeliveryTime } = msgInfo;
 
-    createTask({
+    await createTask({
       title: subject ?? "No subject",
       description: body ?? "",
       dueDate: activeCollection?.id === "Today" ? new Date() : null,
@@ -74,6 +74,7 @@ export default function NewTaskViaEmailDnD() {
           : activeCollection?.id === "Unscheduled"
             ? "Important"
             : null,
+      source: `Email received on ${messageDeliveryTime} with subject: ${subject}`,
       collectionId:
         collections?.find((c) => c.id === activeCollection?.id)?.id ?? null,
     });

@@ -29,6 +29,7 @@ export const TaskRouter = createTRPCRouter({
         description: z.string().nullable(),
         dueDate: z.date().nullable(),
         priority: z.nativeEnum(PriorityOption).nullable(),
+        source: z.string().nullish(),
         collectionId: z.string().nullable(),
       }),
     )
@@ -40,6 +41,7 @@ export const TaskRouter = createTRPCRouter({
           order: 9999,
           dueDate: input.dueDate,
           priority: input.priority,
+          source: input.source,
           collectionId: input.collectionId,
           userId: ctx.session.user.id,
         },
