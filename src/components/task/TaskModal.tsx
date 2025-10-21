@@ -24,6 +24,7 @@ import { addDays, startOfDay } from "date-fns";
 import { GrTrophy } from "react-icons/gr";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
+import { calculateNextDueDate } from "~/utils/date";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -651,6 +652,7 @@ const RecurrenceSection = ({
                   d.label === day.label ? { ...d, selected: !d.selected } : d,
                 );
                 setWeeklyFrequency(updatedWeeklyFrequency);
+
                 void updateTask({
                   ...task,
                   frequency: updatedWeeklyFrequency.reduce<string>(
@@ -658,18 +660,19 @@ const RecurrenceSection = ({
                       d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
                     "",
                   ),
-                  nextDueDate: task.dueDate
-                    ? addDays(
-                        startOfDay(task.dueDate),
-                        7 -
-                          ((task.dueDate.getDay() -
-                            updatedWeeklyFrequency.findIndex(
-                              (d) => d.label === day.label,
-                            ) +
-                            7) %
-                            7),
-                      )
-                    : null,
+                  nextDueDate: calculateNextDueDate({
+                    recurrence: "Weekly",
+                    frequency: updatedWeeklyFrequency.reduce<string>(
+                      (acc, d) =>
+                        d.selected
+                          ? acc
+                            ? `${acc},${d.label}`
+                            : d.label
+                          : acc,
+                      "",
+                    ),
+                    currentDueDate: task.dueDate ?? new Date(),
+                  }),
                 });
               }}
               className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
