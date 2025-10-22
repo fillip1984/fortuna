@@ -650,10 +650,11 @@ const RecurrenceSection = ({
                 void updateTask({
                   ...task,
                   frequency: dailyFrequency?.toString() ?? "",
-                  nextDueDate:
-                    task.dueDate && dailyFrequency
-                      ? addDays(startOfDay(task.dueDate), dailyFrequency)
-                      : null,
+                  nextDueDate: calculateNextDueDate({
+                    recurrence: "Daily",
+                    frequency: dailyFrequency?.toString() ?? "",
+                    currentDueDate: task.dueDate ?? new Date(),
+                  }),
                 });
               }}
             />
@@ -672,6 +673,16 @@ const RecurrenceSection = ({
                 );
                 setWeeklyFrequency(updatedWeeklyFrequency);
 
+                const nextDueDate = calculateNextDueDate({
+                  recurrence: "Weekly",
+                  frequency: updatedWeeklyFrequency.reduce<string>(
+                    (acc, d) =>
+                      d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
+                    "",
+                  ),
+                  currentDueDate: task.dueDate ?? new Date(),
+                });
+
                 void updateTask({
                   ...task,
                   frequency: updatedWeeklyFrequency.reduce<string>(
@@ -679,19 +690,8 @@ const RecurrenceSection = ({
                       d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
                     "",
                   ),
-                  nextDueDate: calculateNextDueDate({
-                    recurrence: "Weekly",
-                    frequency: updatedWeeklyFrequency.reduce<string>(
-                      (acc, d) =>
-                        d.selected
-                          ? acc
-                            ? `${acc},${d.label}`
-                            : d.label
-                          : acc,
-                      "",
-                    ),
-                    currentDueDate: task.dueDate ?? new Date(),
-                  }),
+                  dueDate: task.dueDate ?? nextDueDate,
+                  nextDueDate: nextDueDate,
                 });
               }}
               className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
