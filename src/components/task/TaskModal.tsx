@@ -20,7 +20,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
 
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
-import { addDays, startOfDay } from "date-fns";
+import { startOfDay } from "date-fns";
 import { GrTrophy } from "react-icons/gr";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
@@ -615,9 +615,12 @@ const RecurrenceSection = ({
       );
     } else if (recurrence === "Monthly") {
       setMonthlyFrequency((prev) =>
-        prev.map((d) =>
-          d.label === d.label ? { ...d, selected: !d.selected } : d,
-        ),
+        prev.map((day) => ({
+          ...day,
+          selected: task.frequency
+            ? task.frequency.split(",").includes(day.label)
+            : false,
+        })),
       );
     } else if (recurrence === "Yearly") {
       setYearlyFrequency({
@@ -721,29 +724,34 @@ const RecurrenceSection = ({
                     d.label === day.label ? { ...d, selected: !d.selected } : d,
                   );
                   setMonthlyFrequency(updatedMonthlyFrequency);
-                  void updateTask({
-                    ...task,
+                  const nextDueDate = calculateNextDueDate({
+                    recurrence: "Monthly",
                     frequency: updatedMonthlyFrequency.reduce<string>(
-                      (acc, d) =>
-                        d.selected
+                      (acc, d) => {
+                        return d.selected
                           ? acc
                             ? `${acc},${d.label}`
                             : d.label
-                          : acc,
+                          : acc;
+                      },
                       "",
                     ),
-                    nextDueDate: task.dueDate
-                      ? addDays(
-                          startOfDay(task.dueDate),
-                          30 -
-                            ((task.dueDate.getDate() -
-                              updatedMonthlyFrequency.findIndex(
-                                (d) => d.label === day.label,
-                              ) +
-                              31) %
-                              31),
-                        )
-                      : null,
+                    currentDueDate: task.dueDate ?? new Date(),
+                  });
+                  void updateTask({
+                    ...task,
+                    frequency: updatedMonthlyFrequency.reduce<string>(
+                      (acc, d) => {
+                        return d.selected
+                          ? acc
+                            ? `${acc},${d.label}`
+                            : d.label
+                          : acc;
+                      },
+                      "",
+                    ),
+                    nextDueDate,
+                    dueDate: task.dueDate ?? nextDueDate,
                   });
                 }}
                 className={`${
@@ -775,16 +783,12 @@ const RecurrenceSection = ({
                 void updateTask({
                   ...task,
                   frequency: yearlyFrequency.month + "-" + yearlyFrequency.day,
-                  nextDueDate: task.dueDate
-                    ? addDays(
-                        startOfDay(task.dueDate),
-                        365 -
-                          (task.dueDate.getMonth() * 30 +
-                            task.dueDate.getDate() -
-                            1) /
-                            30,
-                      )
-                    : null,
+                  nextDueDate: calculateNextDueDate({
+                    recurrence: "Yearly",
+                    frequency:
+                      yearlyFrequency.month + "-" + yearlyFrequency.day,
+                    currentDueDate: task.dueDate ?? new Date(),
+                  }),
                 });
               }}
             />
@@ -810,7 +814,8 @@ const RecurrenceSection = ({
                         setMonthPickerOpen(false);
                         void updateTask({
                           ...task,
-                          frequency: null,
+                          frequency:
+                            yearlyFrequency.month + "-" + yearlyFrequency.day,
                           nextDueDate: null,
                         });
                       }}
@@ -852,19 +857,18 @@ const RecurrenceSection = ({
                       });
                       setMonthPickerOpen(false);
                       if (!m || !yearlyFrequency.day) return;
+                      let nextDueDate = null;
+                      if (m && yearlyFrequency.day) {
+                        nextDueDate = calculateNextDueDate({
+                          recurrence: "Yearly",
+                          frequency: m + "-" + yearlyFrequency.day,
+                          currentDueDate: task.dueDate ?? new Date(),
+                        });
+                      }
                       void updateTask({
                         ...task,
                         frequency: m + "-" + yearlyFrequency.day,
-                        nextDueDate: task.dueDate
-                          ? addDays(
-                              startOfDay(task.dueDate),
-                              365 -
-                                (task.dueDate.getMonth() * 30 +
-                                  task.dueDate.getDate() -
-                                  1) /
-                                  30,
-                            )
-                          : null,
+                        nextDueDate,
                       });
                     }}
                     className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"

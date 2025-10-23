@@ -1,5 +1,13 @@
 import { type RecurrenceOption } from "@prisma/client";
-import { addDays, eachDayOfInterval, format } from "date-fns";
+import {
+  addDays,
+  addYears,
+  eachDayOfInterval,
+  format,
+  getDate,
+  isBefore,
+  parse,
+} from "date-fns";
 
 export const calculateNextDueDate = ({
   recurrence,
@@ -23,6 +31,27 @@ export const calculateNextDueDate = ({
     console.log({ thisWeek });
 
     nextDueDate = thisWeek[0]?.date ?? null;
+  } else if (recurrence === "Monthly") {
+    const thisMonth = eachDayOfInterval({
+      start: currentDueDate,
+      end: addDays(currentDueDate, 31),
+    })
+      .map((d) => ({ date: d, dayOfMonth: getDate(d).toString() }))
+      .filter((d) => frequency.includes(d.dayOfMonth));
+    console.log({ thisMonth });
+
+    nextDueDate = thisMonth[0]?.date ?? null;
+  } else if (recurrence === "Yearly") {
+    const [monthStr, dayStr] = frequency.split("-");
+    if (monthStr && dayStr) {
+      const suggestedDate =
+        monthStr + "-" + dayStr + "-" + currentDueDate.getFullYear();
+      console.log({ suggestedDate });
+      nextDueDate = parse(suggestedDate, "MMMM-d-yyyy", new Date());
+      if (isBefore(nextDueDate, currentDueDate)) {
+        nextDueDate = addYears(nextDueDate, 1);
+      }
+    }
   } else {
     throw new Error("Unsupported recurrence option");
   }
