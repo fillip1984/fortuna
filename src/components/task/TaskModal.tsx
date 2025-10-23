@@ -253,6 +253,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     <Calendar
                       mode="single"
                       selected={dueDate}
+                      endMonth={new Date(2032, 12)}
                       captionLayout="dropdown"
                       onSelect={(date) => {
                         setDueDate(date);
