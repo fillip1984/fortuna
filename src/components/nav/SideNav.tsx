@@ -87,7 +87,7 @@ export default function SideNav() {
       <nav className="flex shrink-0 flex-col gap-2 overflow-hidden">
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2 pb-12">
           <h4 className="mx-auto italic">fortuna</h4>
-          <div className="grid w-[280px] grid-cols-1 gap-1 select-none md:grid-cols-2">
+          <div className="grid w-[180px] grid-cols-1 gap-1 select-none lg:w-[320px] lg:grid-cols-2">
             {sifters.map((sifter) => (
               <div
                 key={sifter.id}
