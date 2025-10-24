@@ -31,6 +31,15 @@ import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
+import {
+  addDays,
+  eachDayOfInterval,
+  endOfYear,
+  format,
+  isPast,
+  isToday,
+  startOfDay,
+} from "date-fns";
 
 export default function MainView() {
   const {
@@ -40,23 +49,6 @@ export default function MainView() {
     showCompletedTasks,
     setShowCompletedTasks,
   } = useContext(AppContext);
-
-  // DnD stuff
-  const { mutate: reorderTasks } = api.task.reorder.useMutation();
-  const [draggableTasksParentRef, draggabledTasks, setDraggabledTasks] =
-    useDragAndDrop<HTMLDivElement, TaskType>([], {
-      onDragend: (data) => {
-        reorderTasks(
-          data.values.map((section, index) => ({
-            id: (section as TaskType).id,
-            order: index,
-          })),
-        );
-      },
-    });
-  useEffect(() => {
-    setDraggabledTasks(activeCollection?.tasks ?? []);
-  }, [activeCollection, setDraggabledTasks]);
 
   // collection stuff
   const utils = api.useUtils();
@@ -166,18 +158,7 @@ export default function MainView() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        {activeCollection && activeCollection.tasks.length > 0 ? (
-          <>
-            <div ref={draggableTasksParentRef} className="flex flex-col">
-              <AnimatePresence>
-                {draggabledTasks.map((task) => (
-                  <TaskRow key={task.id} data-label={task.id} task={task} />
-                ))}
-              </AnimatePresence>
-            </div>
-            <NewTask />
-          </>
-        ) : (
+        {activeCollection?.tasks.length === 0 ? (
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
@@ -195,9 +176,105 @@ export default function MainView() {
               </div>
             </EmptyContent>
           </Empty>
+        ) : activeCollection?.name === "Scheduled" ? (
+          <DateSegmentedList tasks={activeCollection.tasks} />
+        ) : (
+          <SimpleList tasks={activeCollection!.tasks} />
         )}
       </div>
       <NewTaskViaEmailDnD />
     </>
   );
 }
+
+const SimpleList = ({ tasks }: { tasks: TaskType[] }) => {
+  // DnD stuff
+  const { mutate: reorderTasks } = api.task.reorder.useMutation();
+  const [draggableTasksParentRef, draggabledTasks, setDraggabledTasks] =
+    useDragAndDrop<HTMLDivElement, TaskType>([], {
+      onDragend: (data) => {
+        reorderTasks(
+          data.values.map((section, index) => ({
+            id: (section as TaskType).id,
+            order: index,
+          })),
+        );
+      },
+    });
+  useEffect(() => {
+    setDraggabledTasks(tasks);
+  }, [tasks, setDraggabledTasks]);
+
+  return (
+    <>
+      <div ref={draggableTasksParentRef} className="flex flex-col">
+        <AnimatePresence>
+          {draggabledTasks.map((task) => (
+            <TaskRow key={task.id} data-label={task.id} task={task} />
+          ))}
+        </AnimatePresence>
+      </div>
+      <NewTask />
+    </>
+  );
+};
+
+const DateSegmentedList = ({ tasks }: { tasks: TaskType[] }) => {
+  const [today] = useState(new Date());
+  const [range] = useState(
+    eachDayOfInterval({
+      start: today,
+      end: endOfYear(today),
+    }),
+  );
+
+  const overdueSections = {
+    label: "Overdue",
+    tasks: tasks.filter(
+      (task) => task.dueDate && !isToday(task.dueDate) && isPast(task.dueDate),
+    ),
+  };
+  const daysAsSections = range.map((day) => ({
+    label: format(day, "MMM dd - EEE"),
+    tasks: tasks.filter((task) => {
+      if (task.dueDate == null) return false;
+      return startOfDay(day).getTime() === startOfDay(task.dueDate).getTime();
+    }),
+  }));
+  const allSections = [overdueSections, ...daysAsSections];
+
+  return (
+    <>
+      {allSections.map((section) =>
+        section.tasks.length > 0 ? (
+          <div key={section.label} className="mb-6">
+            <h4 className="text-muted-foreground mb-2 px-4 text-sm font-semibold">
+              {section.label}
+            </h4>
+            <hr />
+            <div className="flex flex-col">
+              <AnimatePresence>
+                {section.tasks.map((task) => (
+                  <TaskRow key={task.id} data-label={task.id} task={task} />
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+        ) : null,
+      )}
+      <NewTask />
+    </>
+  );
+};
+
+// const Section = () => {
+//   return (
+//     <div className="flex flex-col">
+//       <AnimatePresence>
+//         {tasks.map((task) => (
+//           <TaskRow key={task.id} data-label={task.id} task={task} />
+//         ))}
+//       </AnimatePresence>
+//     </div>
+//   );
+// };
