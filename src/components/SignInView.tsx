@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { FaCircleNotch, FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { authClient } from "~/server/auth/client";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 
 export default function SignInView() {
   const socialProviders = [
@@ -12,31 +10,31 @@ export default function SignInView() {
     // { label: "github", icon: <FaGithub /> },
   ];
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [emailLoginLoading, setEmailLoginLoading] = useState(false);
-  const handleEmailSignIn = async () => {
-    setEmailLoginLoading(true);
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [emailError, setEmailError] = useState("");
+  // const [emailLoginLoading, setEmailLoginLoading] = useState(false);
+  // const handleEmailSignIn = async () => {
+    // setEmailLoginLoading(true);
     // await authClient.signUp.email({
     //   email,
     //   password,
     //   name: "fillip1984",
     // });
-    await authClient.signIn.email({
-      email,
-      password,
-      rememberMe: true,
-      fetchOptions: {
-        onError: (error) => {
-          setEmailError(error.error.message);
-        },
-        onResponse: () => {
-          setEmailLoginLoading(false);
-        },
-      },
-    });
-  };
+    // await authClient.signIn.email({
+    //   email,
+    //   password,
+    //   rememberMe: true,
+    //   fetchOptions: {
+    //     onError: (error) => {
+    //       setEmailError(error.error.message);
+    //     },
+    //     onResponse: () => {
+    //       setEmailLoginLoading(false);
+    //     },
+    //   },
+    // });
+  // };
 
   return (
     <div className="flex h-screen w-screen flex-col items-center pt-40">
@@ -58,7 +56,7 @@ export default function SignInView() {
             </Button>
           ))}
         </div>
-        <form
+        {/* <form
           onSubmit={(e) => {
             e.preventDefault();
             void handleEmailSignIn();
@@ -83,7 +81,7 @@ export default function SignInView() {
             {emailLoginLoading && <FaCircleNotch className="animate-spin" />}
             Sign in with Email
           </Button>
-        </form>
+        </form> */}
       </div>
     </div>
   );

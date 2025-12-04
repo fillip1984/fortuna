@@ -67,8 +67,10 @@ export default function TaskModal({
     <Dialog open={isOpen} onOpenChange={dismiss}>
       <DialogContent
         showCloseButton={false}
-        className="m-0 flex h-[800px] flex-col gap-0 overflow-hidden p-0"
+         
+        className="m-0 flex md:max-w-[800px] sm:max-w-1/2 h-[90%] flex-col gap-0 overflow-hidden p-0"
       >
+        {/* header */}
         <div className="flex items-center justify-end px-1 py-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -91,6 +93,8 @@ export default function TaskModal({
             <IoCloseSharp />
           </Button>
         </div>
+
+        {/* body */}
         <div className="flex flex-1 overflow-hidden">
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-12">
             <TaskDetails task={task} />
