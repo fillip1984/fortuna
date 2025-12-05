@@ -15,8 +15,7 @@ import { Checkbox } from "../ui/checkbox";
 export default function TaskRow({ task }: { task: TaskType }) {
   const { collections } = useContext(AppContext);
   const [isCompleted, setIsCompleted] = useState(task.completed);
-  const {  showWithItem } =
-    useContext(AppContext);
+  const { showTaskModalWithItem } = useContext(AppContext);
 
   const utils = api.useUtils();
   const { mutate: completeTask } = api.task.update.useMutation({
@@ -36,7 +35,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
       className="select-none"
     >
       <div
-        onClick={() => showWithItem(task)}
+        onClick={() => showTaskModalWithItem(task)}
         className="flex items-center gap-4 border-b p-4"
       >
         <Checkbox

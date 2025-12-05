@@ -44,11 +44,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CopyButton } from "../ui/shadcn-io/copy-button";
 
 export default function TaskModal() {
-  const { isOpen, show,hide, editableItem: task } = useContext(AppContext);
+  const {
+    isTaskModalOpen,
+    showTaskModal,
+    hideTaskModal,
+    editableTaskItem: task,
+  } = useContext(AppContext);
   const utils = api.useUtils();
   const { mutateAsync: deleteTask } = api.task.delete.useMutation({
     onSuccess: async () => {
-      hide();
+      hideTaskModal();
       await Promise.all([
         utils.task.findAll.invalidate(),
         utils.collection.findAll.invalidate(),
@@ -56,20 +61,24 @@ export default function TaskModal() {
     },
   });
 
+  if (!isTaskModalOpen) return null;
+
   if (!task) return <div>Unable to find task</div>;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
+    <Dialog
+      open={isTaskModalOpen}
+      onOpenChange={(open) => {
         if (!open) {
-          hide();
+          hideTaskModal();
         } else {
-          show();
+          showTaskModal();
         }
-      }}>
+      }}
+    >
       <DialogContent
         showCloseButton={false}
-         
-        className="m-0 flex md:max-w-[800px] sm:max-w-1/2 h-[90%] flex-col gap-0 overflow-hidden p-0"
+        className="m-0 flex h-[90%] flex-col gap-0 overflow-hidden p-0 sm:max-w-1/2 md:max-w-[800px]"
       >
         {/* header */}
         <div className="flex items-center justify-end px-1 py-1">
@@ -90,7 +99,7 @@ export default function TaskModal() {
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="ghost" onClick={hide}>
+          <Button variant="ghost" onClick={hideTaskModal}>
             <IoCloseSharp />
           </Button>
         </div>

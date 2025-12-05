@@ -118,17 +118,48 @@ export function AppContextProvider({
 
   // build task sifters
   const [sifters, setSifters] = useState<SifterType[]>([
-    { id: "Inbox", name: "Inbox", icon: <FaInbox />, tasks: [] },
-    { id: "Today", name: "Today", icon: <FaCalendarDay />, tasks: [] },
-    { id: "Urgent", name: "Urgent", icon: <FaFlag />, tasks: [] },
+    {
+      id: "Inbox",
+      name: "Inbox",
+      icon: <FaInbox />,
+      tasks: [],
+      protected: true,
+    },
+    {
+      id: "Today",
+      name: "Today",
+      icon: <FaCalendarDay />,
+      tasks: [],
+      protected: true,
+    },
+    {
+      id: "Urgent",
+      name: "Urgent",
+      icon: <FaFlag />,
+      tasks: [],
+      protected: true,
+    },
     {
       id: "Unscheduled",
       name: "Unscheduled",
       icon: <FaCalendarPlus />,
       tasks: [],
+      protected: true,
     },
-    { id: "Scheduled", name: "Scheduled", icon: <FaCalendarAlt />, tasks: [] },
-    { id: "All", name: "All", icon: <LuListTodo />, tasks: [] },
+    {
+      id: "Scheduled",
+      name: "Scheduled",
+      icon: <FaCalendarAlt />,
+      tasks: [],
+      protected: true,
+    },
+    {
+      id: "All",
+      name: "All",
+      icon: <LuListTodo />,
+      tasks: [],
+      protected: true,
+    },
   ]);
   // effects to apply to sifters once tasks are loaded
   useEffect(() => {

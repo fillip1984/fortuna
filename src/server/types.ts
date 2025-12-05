@@ -10,4 +10,5 @@ export type SifterType = {
   name: string;
   icon: JSX.Element;
   tasks: TaskType[];
+  protected: boolean;
 };

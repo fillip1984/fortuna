@@ -7,7 +7,7 @@ import {
   format,
   isPast,
   isToday,
-  startOfDay
+  startOfDay,
 } from "date-fns";
 import { AnimatePresence } from "motion/react";
 import { useContext, useEffect, useState } from "react";
@@ -39,6 +39,7 @@ import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
+import { isDeletable } from "~/utils/collection";
 
 export default function MainView() {
   const {
@@ -139,7 +140,7 @@ export default function MainView() {
               >
                 Show Completed
               </DropdownMenuCheckboxItem>
-              {activeCollection && (
+              {activeCollection && isDeletable(activeCollection) && (
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
