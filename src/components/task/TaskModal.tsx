@@ -43,19 +43,12 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CopyButton } from "../ui/shadcn-io/copy-button";
 
-export default function TaskModal({
-  isOpen,
-  dismiss,
-  task,
-}: {
-  isOpen: boolean;
-  dismiss: () => void;
-  task: TaskType;
-}) {
+export default function TaskModal() {
+  const { isOpen, show,hide, editableItem: task } = useContext(AppContext);
   const utils = api.useUtils();
   const { mutateAsync: deleteTask } = api.task.delete.useMutation({
     onSuccess: async () => {
-      dismiss();
+      hide();
       await Promise.all([
         utils.task.findAll.invalidate(),
         utils.collection.findAll.invalidate(),
@@ -63,8 +56,16 @@ export default function TaskModal({
     },
   });
 
+  if (!task) return <div>Unable to find task</div>;
+
   return (
-    <Dialog open={isOpen} onOpenChange={dismiss}>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+        if (!open) {
+          hide();
+        } else {
+          show();
+        }
+      }}>
       <DialogContent
         showCloseButton={false}
          
@@ -89,7 +90,7 @@ export default function TaskModal({
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="ghost" onClick={dismiss}>
+          <Button variant="ghost" onClick={hide}>
             <IoCloseSharp />
           </Button>
         </div>

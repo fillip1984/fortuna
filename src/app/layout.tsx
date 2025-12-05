@@ -5,6 +5,7 @@ import SideNav from "~/components/nav/SideNav";
 import { AppContextProvider } from "~/context/AppContextProvider";
 import { ThemeProvider } from "~/context/ThemeProvider";
 import { TRPCReactProvider } from "~/trpc/react";
+import TaskModal from "~/components/task/TaskModal";
 
 export const metadata: Metadata = {
   title: "fortuna",
@@ -30,6 +31,7 @@ export default function RootLayout({
                 <SideNav />
 
                 <main className="flex-1">{children}</main>
+                <TaskModal/>
               </div>
             </ThemeProvider>
           </AppContextProvider>

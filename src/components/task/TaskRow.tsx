@@ -11,12 +11,12 @@ import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
-import TaskModal from "./TaskModal";
 
 export default function TaskRow({ task }: { task: TaskType }) {
   const { collections } = useContext(AppContext);
   const [isCompleted, setIsCompleted] = useState(task.completed);
-  const [showDetails, setShowDetails] = useState(false);
+  const {  showWithItem } =
+    useContext(AppContext);
 
   const utils = api.useUtils();
   const { mutate: completeTask } = api.task.update.useMutation({
@@ -36,7 +36,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
       className="select-none"
     >
       <div
-        onClick={() => setShowDetails(true)}
+        onClick={() => showWithItem(task)}
         className="flex items-center gap-4 border-b p-4"
       >
         <Checkbox
@@ -101,14 +101,6 @@ export default function TaskRow({ task }: { task: TaskType }) {
           </div>
         </div>
       </div>
-
-      {showDetails && (
-        <TaskModal
-          isOpen={showDetails}
-          dismiss={() => setShowDetails(false)}
-          task={task}
-        />
-      )}
     </motion.div>
   );
 }

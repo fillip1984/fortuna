@@ -1,6 +1,14 @@
 "use client";
 
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+import {
+  eachDayOfInterval,
+  endOfYear,
+  format,
+  isPast,
+  isToday,
+  startOfDay
+} from "date-fns";
 import { AnimatePresence } from "motion/react";
 import { useContext, useEffect, useState } from "react";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
@@ -31,15 +39,6 @@ import { AppContext } from "~/context/AppContextProvider";
 import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
-import {
-  addDays,
-  eachDayOfInterval,
-  endOfYear,
-  format,
-  isPast,
-  isToday,
-  startOfDay,
-} from "date-fns";
 
 export default function MainView() {
   const {

@@ -14,7 +14,12 @@ import {
   FaInbox,
 } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
-import { type CollectionType, type SifterType } from "~/server/types";
+import {
+  type CollectionType,
+  type SifterType,
+  type TaskType,
+} from "~/server/types";
+import { useModal } from "~/hooks/useModal";
 
 type AppContextType = {
   isLoading: boolean;
@@ -26,6 +31,11 @@ type AppContextType = {
   setShowCompletedTasks: React.Dispatch<React.SetStateAction<boolean>>;
   collections: CollectionType[];
   sifters: SifterType[];
+  isTaskModalOpen: boolean;
+  showTaskModal: () => void;
+  hideTaskModal: () => void;
+  showTaskModalWithItem: (item: TaskType) => void;
+  editableTaskItem: TaskType | null;
 };
 
 export const AppContext = createContext<AppContextType>({
@@ -48,6 +58,21 @@ export const AppContext = createContext<AppContextType>({
     return;
   },
   sifters: [],
+  isTaskModalOpen: false,
+  showTaskModal: () => {
+    // no-op default function with correct signature
+    return;
+  },
+  hideTaskModal: () => {
+    // no-op default function with correct signature
+    return;
+  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  showTaskModalWithItem: (item: TaskType) => {
+    // no-op default function with correct signature
+    return;
+  },
+  editableTaskItem: null,
 });
 
 export function AppContextProvider({
@@ -181,6 +206,15 @@ export function AppContextProvider({
     setActiveCollection(sifters.find((s) => s.id === "Today") ?? null);
   }, [activeCollectionId, collections, sifters]);
 
+  // modal context
+  const {
+    isOpen: isTaskModalOpen,
+    show: showTaskModal,
+    hide: hideTaskModal,
+    showWithItem: showTaskModalWithItem,
+    editableItem: editableTaskItem,
+  } = useModal<TaskType>();
+
   return (
     <AppContext.Provider
       value={{
@@ -193,6 +227,11 @@ export function AppContextProvider({
         setShowCompletedTasks,
         collections: collections ?? [],
         sifters,
+        isTaskModalOpen,
+        showTaskModal,
+        hideTaskModal,
+        showTaskModalWithItem,
+        editableTaskItem,
       }}
     >
       {children}
