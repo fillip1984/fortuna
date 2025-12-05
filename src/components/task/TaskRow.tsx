@@ -35,7 +35,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
       className="select-none"
     >
       <div
-        onClick={() => showTaskModalWithItem(task)}
+        onClick={() => showTaskModalWithItem(task.id)}
         className="flex items-center gap-4 border-b p-4"
       >
         <Checkbox

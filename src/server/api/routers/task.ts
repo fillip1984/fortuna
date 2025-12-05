@@ -22,6 +22,20 @@ export const TaskRouter = createTRPCRouter({
         orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
       });
     }),
+    findById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.task.findFirst({
+        where: {
+          id: input.id,
+          userId: ctx.session.user.id,
+        },
+        include: {
+          checklist: { orderBy: { order: "asc" } },
+          comments: { orderBy: { postedDate: "asc" } },
+        },
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({

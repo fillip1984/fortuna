@@ -48,9 +48,15 @@ export default function TaskModal() {
     isTaskModalOpen,
     showTaskModal,
     hideTaskModal,
-    editableTaskItem: task,
+    editableTaskItem: taskId,
   } = useContext(AppContext);
   const utils = api.useUtils();
+  const { data: task } = api.task.findById.useQuery(
+    { id: taskId ?? "" },
+    {
+      enabled: !!taskId,
+    },
+  );
   const { mutateAsync: deleteTask } = api.task.delete.useMutation({
     onSuccess: async () => {
       hideTaskModal();
@@ -155,6 +161,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
     onSuccess: async () => {
       await Promise.all([
         utils.task.findAll.invalidate(),
+        utils.task.findById.invalidate({ id: task.id }),
         utils.collection.findAll.invalidate(),
       ]);
     },
@@ -912,6 +919,7 @@ const TaskChecklist = ({ task }: { task: TaskType }) => {
     api.task.addChecklistItem.useMutation({
       onSuccess: async () => {
         await utils.task.findAll.invalidate();
+        await utils.task.findById.invalidate({ id: task.id });
         setNewChecklistItem("");
       },
     });
@@ -1018,6 +1026,7 @@ const ChecklistItem = ({
         await Promise.all([
           utils.task.findAll.invalidate(),
           utils.collection.findAll.invalidate(),
+          utils.task.findById.invalidate({ id: checklistItem.taskId }),
         ]);
       },
     });
@@ -1034,6 +1043,7 @@ const ChecklistItem = ({
       onSuccess: async () => {
         await Promise.all([
           utils.task.findAll.invalidate(),
+          utils.task.findById.invalidate({ id: checklistItem.taskId }),
           utils.collection.findAll.invalidate(),
         ]);
       },
@@ -1044,6 +1054,7 @@ const ChecklistItem = ({
       onSuccess: async () => {
         await Promise.all([
           utils.task.findAll.invalidate(),
+          utils.task.findById.invalidate({ id: checklistItem.taskId }),
           utils.collection.findAll.invalidate(),
         ]);
       },
@@ -1101,6 +1112,7 @@ const Comments = ({ task }: { task: TaskType }) => {
   const { mutateAsync: addComment } = api.task.addComment.useMutation({
     onSuccess: async () => {
       await utils.task.findAll.invalidate();
+      await utils.task.findById.invalidate({ id: task.id });
       setNewComment("");
     },
   });
@@ -1116,6 +1128,7 @@ const Comments = ({ task }: { task: TaskType }) => {
   const { mutateAsync: deleteComment } = api.task.deleteComment.useMutation({
     onSuccess: async () => {
       await utils.task.findAll.invalidate();
+      await utils.task.findById.invalidate({ id: task.id });
     },
   });
 

@@ -14,12 +14,8 @@ import {
   FaInbox,
 } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
-import {
-  type CollectionType,
-  type SifterType,
-  type TaskType,
-} from "~/server/types";
 import { useModal } from "~/hooks/useModal";
+import { type CollectionType, type SifterType } from "~/server/types";
 
 type AppContextType = {
   isLoading: boolean;
@@ -34,8 +30,8 @@ type AppContextType = {
   isTaskModalOpen: boolean;
   showTaskModal: () => void;
   hideTaskModal: () => void;
-  showTaskModalWithItem: (item: TaskType) => void;
-  editableTaskItem: TaskType | null;
+  showTaskModalWithItem: (id: string) => void;
+  editableTaskItem: string | null;
 };
 
 export const AppContext = createContext<AppContextType>({
@@ -68,7 +64,7 @@ export const AppContext = createContext<AppContextType>({
     return;
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  showTaskModalWithItem: (item: TaskType) => {
+  showTaskModalWithItem: (id: string) => {
     // no-op default function with correct signature
     return;
   },
@@ -244,7 +240,7 @@ export function AppContextProvider({
     hide: hideTaskModal,
     showWithItem: showTaskModalWithItem,
     editableItem: editableTaskItem,
-  } = useModal<TaskType>();
+  } = useModal<string>();
 
   return (
     <AppContext.Provider
