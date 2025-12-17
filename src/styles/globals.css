@@ -118,3 +118,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  h1 {
+    @apply mb-4 text-6xl font-bold;
+  }
+
+  h2 {
+    @apply mb-3 text-5xl font-semibold;
+  }
+
+  h3 {
+    @apply mb-2 text-4xl font-semibold;
+  }
+
+  h4 {
+    @apply mb-1 text-3xl font-semibold;
+  }
+
+  h5 {
+    @apply text-2xl font-semibold;
+  }
+}
