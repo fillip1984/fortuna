@@ -15,26 +15,13 @@ export default function SignInView() {
   // const [emailError, setEmailError] = useState("");
   // const [emailLoginLoading, setEmailLoginLoading] = useState(false);
   // const handleEmailSignIn = async () => {
-    // setEmailLoginLoading(true);
-    // await authClient.signUp.email({
-    //   email,
-    //   password,
-    //   name: "fillip1984",
-    // });
-    // await authClient.signIn.email({
-    //   email,
-    //   password,
-    //   rememberMe: true,
-    //   fetchOptions: {
-    //     onError: (error) => {
-    //       setEmailError(error.error.message);
-    //     },
-    //     onResponse: () => {
-    //       setEmailLoginLoading(false);
-    //     },
-    //   },
-    // });
-  // };
+  // setEmailLoginLoading(true);
+  // await authClient.signUp.email({
+  //   email,
+  //   password,
+  //   name: "fillip1984",
+  // });
+  // await authClient.signIn.email({
 
   return (
     <div className="flex h-screen w-screen flex-col items-center pt-40">
