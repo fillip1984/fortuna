@@ -26,7 +26,7 @@ jobs:
         run: pnpm install
 
       # Looks like maintaining (restoring and saving updated cache) nextjs cache takes close to 1 minute (24s to restore and 40'ish to save off) .
-      # If you overall build is shorter than that then there is no benefit here
+      # If your nextjs build is shorter than that then there is no benefit here
       - name: Cache Next.js build
         uses: actions/cache@v4
         with:
