@@ -35,6 +35,8 @@ import {
 } from "../ui/dropdown-menu";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "~/server/auth/client";
+import { FiSettings } from "react-icons/fi";
+import Link from "next/link";
 
 export default function SideNav() {
   const { data: session } = authClient.useSession();
@@ -163,6 +165,13 @@ export default function SideNav() {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-36" align="start">
+                <DropdownMenuGroup>
+                  <Link href="/settings">
+                    <DropdownMenuItem className="justify-between">
+                      Settings <FiSettings />
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuGroup>
                 <DropdownMenuGroup>
                   <DropdownMenuItem
                     onClick={() => void authClient.signOut()}

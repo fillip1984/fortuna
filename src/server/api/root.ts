@@ -1,6 +1,7 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { CollectionRouter } from "./routers/collection";
 import { TaskRouter } from "./routers/task";
+import { adminRouter } from "./routers/admin";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { TaskRouter } from "./routers/task";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  admin: adminRouter,
   collection: CollectionRouter,
   task: TaskRouter,
 });
