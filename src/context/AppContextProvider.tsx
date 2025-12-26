@@ -1,9 +1,6 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-
-import { api } from "~/trpc/react";
-
 import { isPast, isToday } from "date-fns";
 import { isFuture } from "date-fns/isFuture";
 import {
@@ -14,8 +11,10 @@ import {
   FaInbox,
 } from "react-icons/fa";
 import { LuListTodo } from "react-icons/lu";
+
 import { useModal } from "~/hooks/useModal";
 import { type CollectionType, type SifterType } from "~/server/types";
+import { api } from "~/trpc/react";
 
 type AppContextType = {
   isLoading: boolean;
@@ -161,6 +160,7 @@ export function AppContextProvider({
   useEffect(() => {
     if (!tasks) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSifters((prev) =>
       [...prev].map((sifter) => {
         if (sifter.name === "Inbox") {
@@ -209,6 +209,7 @@ export function AppContextProvider({
   useEffect(() => {
     if (!activeCollectionId) {
       // default to Today sifter if no activeCollectionId
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveCollection(sifters.find((s) => s.id === "Today") ?? null);
       return;
     }

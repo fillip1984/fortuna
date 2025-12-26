@@ -1,5 +1,6 @@
 "use client";
 
+import { useContext, useEffect, useState } from "react";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import {
   eachDayOfInterval,
@@ -10,9 +11,10 @@ import {
   startOfDay,
 } from "date-fns";
 import { AnimatePresence } from "motion/react";
-import { useContext, useEffect, useState } from "react";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiBeerStein } from "react-icons/gi";
+
+import type { TaskType } from "~/server/types";
 import NewTask from "~/components/task/NewTaskCard";
 import TaskRow from "~/components/task/TaskRow";
 import { Button } from "~/components/ui/button";
@@ -36,10 +38,9 @@ import {
 import { Input } from "~/components/ui/input";
 import { Spinner } from "~/components/ui/spinner";
 import { AppContext } from "~/context/AppContextProvider";
-import type { TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
-import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
 import { isDeletable } from "~/utils/collection";
+import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
 
 export default function MainView() {
   const {
@@ -67,6 +68,7 @@ export default function MainView() {
   const [collectionName, setCollectionName] = useState("Untitled");
   useEffect(() => {
     if (activeCollection) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCollectionName(activeCollection.name);
     }
   }, [activeCollection]);

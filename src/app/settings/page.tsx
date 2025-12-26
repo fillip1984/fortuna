@@ -1,17 +1,8 @@
 "use client";
 
-import type { ChangeEvent } from "react";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { FiDownloadCloud, FiUploadCloud } from "react-icons/fi";
-import { IoScaleOutline } from "react-icons/io5";
+import { FiDownloadCloud } from "react-icons/fi";
 
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import { api } from "~/trpc/react";
 
 export default function PreferencesPage() {
@@ -29,10 +20,10 @@ export default function PreferencesPage() {
 }
 
 const ImportExportSection = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   // export/import data stuff
-  const utils = api.useUtils();
+  // const utils = api.useUtils();
   const { mutate: exportData } = api.admin.exportData.useMutation({
     onSuccess: (data) => {
       // Create blob link to download
@@ -41,7 +32,7 @@ const ImportExportSection = () => {
       link.href = url;
       link.setAttribute(
         "download",
-        `${new Date().toLocaleString()} stamina_backup.json`,
+        `${new Date().toLocaleString()} fortuna_backup.json`,
       );
 
       // Append to html link element page
@@ -66,10 +57,10 @@ const ImportExportSection = () => {
   //   },
   // });
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const triggerFileBrowse = () => {
-    fileInputRef.current?.click();
-  };
+  // const fileInputRef = useRef<HTMLInputElement>(null);
+  // const triggerFileBrowse = () => {
+  //   fileInputRef.current?.click();
+  // };
 
   // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
   //   e.preventDefault();

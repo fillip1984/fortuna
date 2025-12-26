@@ -5,24 +5,24 @@ import type {
   PriorityOption,
   RecurrenceOption,
 } from "@prisma/client";
+import { useContext, useEffect, useState } from "react";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+import { startOfDay } from "date-fns";
 import { format } from "date-fns/format";
 import { Check, ChevronDownIcon, LucideRepeat } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useContext, useEffect, useState } from "react";
 import { BiCollection } from "react-icons/bi";
 import { FaChevronDown, FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
+import { GrTrophy } from "react-icons/gr";
 import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
+
+import type { ChecklistItemType, TaskType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
-
-import { useDragAndDrop } from "@formkit/drag-and-drop/react";
-import { startOfDay } from "date-fns";
-import { GrTrophy } from "react-icons/gr";
-import type { ChecklistItemType, TaskType } from "~/server/types";
 import { api } from "~/trpc/react";
 import { calculateNextDueDate } from "~/utils/date";
 import { Calendar } from "../ui/calendar";
@@ -140,6 +140,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
 
   useEffect(() => {
     if (task) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(task.title);
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
@@ -625,6 +626,7 @@ const RecurrenceSection = ({
 
   useEffect(() => {
     if (recurrence === "Daily") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDailyFrequency(task.frequency ? parseInt(task.frequency) : null);
     } else if (recurrence === "Weekly") {
       setWeeklyFrequency((prev) =>
