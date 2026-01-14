@@ -50,7 +50,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
             setIsCompleted((prev) => !prev);
           }}
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col overflow-hidden">
           <span className={`${isCompleted ? "line-through" : ""}`}>
             {task.title}
           </span>

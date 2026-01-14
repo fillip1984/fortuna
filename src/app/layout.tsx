@@ -2,10 +2,12 @@ import "~/styles/globals.css";
 
 import type { Metadata } from "next";
 import SideNav from "~/components/nav/SideNav";
+import SignInView from "~/components/SignInView";
+import TaskModal from "~/components/task/TaskModal";
 import { AppContextProvider } from "~/context/AppContextProvider";
 import { ThemeProvider } from "~/context/ThemeProvider";
+import { getSession } from "~/server/auth/server";
 import { TRPCReactProvider } from "~/trpc/react";
-import TaskModal from "~/components/task/TaskModal";
 
 export const metadata: Metadata = {
   title: "fortuna",
@@ -13,30 +15,38 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <AppContextProvider>
-            <ThemeProvider
-              attribute={"class"}
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="relative flex h-screen overflow-hidden">
-                <SideNav />
-
-                <main className="flex-1">{children}</main>
-                <TaskModal/>
-              </div>
-            </ThemeProvider>
-          </AppContextProvider>
+          <ThemeProvider
+            attribute={"class"}
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {session?.user ? <SignedIn>{children}</SignedIn> : <SignInView />}
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
     </html>
   );
 }
+
+const SignedIn = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+  return (
+    <AppContextProvider>
+      <div className="relative flex h-screen overflow-hidden">
+        <SideNav />
+
+        <main className="flex-1">{children}</main>
+        <TaskModal />
+      </div>
+    </AppContextProvider>
+  );
+};

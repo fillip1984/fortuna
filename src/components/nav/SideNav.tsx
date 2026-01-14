@@ -37,6 +37,7 @@ import { Spinner } from "../ui/spinner";
 import { authClient } from "~/server/auth/client";
 import { FiSettings } from "react-icons/fi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SideNav() {
   const { data: session } = authClient.useSession();
@@ -52,12 +53,20 @@ export default function SideNav() {
 
   // theme stuff
   const { theme, setTheme } = useTheme();
+
   const handleThemeToggle = () => {
     setTheme((prevTheme) => {
       if (prevTheme === "light") return "dark";
       if (prevTheme === "dark") return "system";
       return "light";
     });
+  };
+
+  // auth stuff
+  const router = useRouter();
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.replace("/");
   };
 
   // DnD stuff
@@ -174,7 +183,7 @@ export default function SideNav() {
                 </DropdownMenuGroup>
                 <DropdownMenuGroup>
                   <DropdownMenuItem
-                    onClick={() => void authClient.signOut()}
+                    onClick={handleSignOut}
                     className="justify-between"
                   >
                     Sign out <FaSignOutAlt />
