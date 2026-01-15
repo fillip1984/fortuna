@@ -8,7 +8,10 @@ const createPrismaClient = () =>
     adapter: new PrismaPg(
       {
         connectionString: env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
+        ssl:
+          env.NODE_ENV === "production"
+            ? { rejectUnauthorized: false }
+            : undefined,
       },
       {
         schema: new URL(env.DATABASE_URL!).searchParams.get("schema")!,

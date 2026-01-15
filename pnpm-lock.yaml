@@ -128,7 +128,7 @@ importers:
         version: 3.3.3
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.7.0
-        version: 4.7.0(prettier@3.7.4)
+        version: 4.7.0(prettier@3.8.0)
       '@tailwindcss/postcss':
         specifier: ^4.1.18
         version: 4.1.18
@@ -154,11 +154,11 @@ importers:
         specifier: ^8.5.6
         version: 8.5.6
       prettier:
-        specifier: ^3.7.4
-        version: 3.7.4
+        specifier: ^3.8.0
+        version: 3.8.0
       prettier-plugin-tailwindcss:
         specifier: ^0.7.2
-        version: 0.7.2(@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.7.4))(prettier@3.7.4)
+        version: 0.7.2(@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.8.0))(prettier@3.8.0)
       prisma:
         specifier: ^7.2.0
         version: 7.2.0(@types/react@19.2.8)(better-sqlite3@12.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
@@ -3357,8 +3357,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.7.4:
-    resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
+  prettier@3.8.0:
+    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4292,7 +4292,7 @@ snapshots:
       drizzle-orm: 0.41.0(@electric-sql/pglite@0.3.2)(@prisma/client@7.2.0(prisma@7.2.0(@types/react@19.2.8)(better-sqlite3@12.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.16.0)(better-sqlite3@12.6.0)(kysely@0.28.9)(mysql2@3.15.3)(pg@8.17.0)(postgres@3.4.7)(prisma@7.2.0(@types/react@19.2.8)(better-sqlite3@12.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3))
       open: 10.2.0
       pg: 8.17.0
-      prettier: 3.7.4
+      prettier: 3.8.0
       prompts: 2.4.2
       semver: 7.7.3
       yocto-spinner: 0.2.3
@@ -4497,13 +4497,13 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.7.4)':
+  '@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.8.0)':
     dependencies:
       '@babel/generator': 7.28.6
       '@babel/parser': 7.28.6
       '@babel/traverse': 7.28.6
       '@babel/types': 7.28.6
-      prettier: 3.7.4
+      prettier: 3.8.0
       semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
@@ -7278,13 +7278,13 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-tailwindcss@0.7.2(@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.7.4))(prettier@3.7.4):
+  prettier-plugin-tailwindcss@0.7.2(@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.8.0))(prettier@3.8.0):
     dependencies:
-      prettier: 3.7.4
+      prettier: 3.8.0
     optionalDependencies:
-      '@ianvs/prettier-plugin-sort-imports': 4.7.0(prettier@3.7.4)
+      '@ianvs/prettier-plugin-sort-imports': 4.7.0(prettier@3.8.0)
 
-  prettier@3.7.4: {}
+  prettier@3.8.0: {}
 
   prisma@7.2.0(@types/react@19.2.8)(better-sqlite3@12.6.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
     dependencies:
