@@ -1,7 +1,19 @@
 "use client";
 
-import { useContext, useEffect, useState, type FormEvent } from "react";
+import type { FormEvent } from "react";
+import { useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDragAndDrop } from "@formkit/drag-and-drop/react";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Moon, Sun } from "lucide-react";
+import { motion } from "motion/react";
+import { useTheme } from "next-themes";
 import { FaPlus, FaSignOutAlt } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
+import { GrSystem } from "react-icons/gr";
+
+import type { CollectionType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -11,20 +23,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { api } from "~/trpc/react";
-
-import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { Input } from "~/components/ui/input";
-
 import { Label } from "~/components/ui/label";
-
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Moon, Sun } from "lucide-react";
-import { motion } from "motion/react";
-import { useTheme } from "next-themes";
-import { GrSystem } from "react-icons/gr";
 import { AppContext } from "~/context/AppContextProvider";
-import type { CollectionType } from "~/server/types";
+import { authClient } from "~/server/auth/client";
+import { api } from "~/trpc/react";
 import { Avatar } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -34,10 +37,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Spinner } from "../ui/spinner";
-import { authClient } from "~/server/auth/client";
-import { FiSettings } from "react-icons/fi";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function SideNav() {
   const { data: session } = authClient.useSession();
@@ -98,7 +97,7 @@ export default function SideNav() {
       <nav className="flex shrink-0 flex-col gap-2 overflow-hidden">
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-2 pb-12">
           <h4 className="mx-auto italic">fortuna</h4>
-          <div className="grid w-[180px] grid-cols-1 gap-1 select-none lg:w-[320px] lg:grid-cols-2">
+          <div className="grid w-45 grid-cols-1 gap-1 select-none lg:w-[320px] lg:grid-cols-2">
             {sifters.map((sifter) => (
               <div
                 key={sifter.id}
@@ -240,7 +239,7 @@ const NewCollectionModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && dismiss()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Add Collection</DialogTitle>
         </DialogHeader>

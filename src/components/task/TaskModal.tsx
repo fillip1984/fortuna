@@ -84,7 +84,7 @@ export default function TaskModal() {
     >
       <DialogContent
         showCloseButton={false}
-        className="m-0 flex h-[90%] flex-col gap-0 overflow-hidden p-0 sm:max-w-1/2 md:max-w-[800px]"
+        className="m-0 flex h-[90%] flex-col gap-0 overflow-hidden p-0 sm:max-w-1/2 md:max-w-200"
       >
         {/* header */}
         <div className="flex items-center justify-end px-1 py-1">
@@ -731,7 +731,7 @@ const RecurrenceSection = ({
       )}
       {recurrence === "Monthly" && (
         <div className="flex flex-col items-center select-none">
-          <div className="grid w-[300px] grid-cols-7 justify-center gap-2 text-center">
+          <div className="grid w-75 grid-cols-7 justify-center gap-2 text-center">
             <span>Su</span>
             <span>Mo</span>
             <span>Tu</span>
@@ -740,7 +740,7 @@ const RecurrenceSection = ({
             <span>Fr</span>
             <span>Sa</span>
           </div>
-          <div className="my-2 grid w-[300px] grid-cols-7 justify-center gap-2">
+          <div className="my-2 grid w-75 grid-cols-7 justify-center gap-2">
             {monthlyFrequency.map((day) => (
               <span
                 key={day.label}
@@ -793,7 +793,7 @@ const RecurrenceSection = ({
       )}
       {recurrence === "Yearly" && (
         <div className="flex justify-center gap-2">
-          <InputGroup className="w-[150px]">
+          <InputGroup className="w-37.5">
             <InputGroupAddon align="inline-start">On day</InputGroupAddon>
             <InputGroupInput
               value={yearlyFrequency.day}
