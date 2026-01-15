@@ -209,10 +209,7 @@ const SimpleList = ({ tasks }: { tasks: TaskType[] }) => {
 
   return (
     <>
-      <div
-        ref={draggableTasksParentRef}
-        className="flex flex-col bg-orange-400/40 pr-4"
-      >
+      <div ref={draggableTasksParentRef} className="flex flex-col">
         <AnimatePresence>
           {draggabledTasks.map((task) => (
             <TaskRow key={task.id} data-label={task.id} task={task} />

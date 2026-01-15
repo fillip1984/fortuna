@@ -1,13 +1,13 @@
-import { isPast } from "date-fns";
-
-import { motion } from "motion/react";
 import { useContext, useState } from "react";
+import { isPast } from "date-fns";
+import { motion } from "motion/react";
 import { BiCollection } from "react-icons/bi";
 import { FaComment, FaList } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
-import { AppContext } from "~/context/AppContextProvider";
+
 import type { TaskType } from "~/server/types";
+import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
@@ -54,7 +54,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
           <span className={`${isCompleted ? "line-through" : ""}`}>
             {task.title}
           </span>
-          <span className="text-muted-foreground line-clamp-2 text-xs">
+          <span className="text-muted-foreground line-clamp-2 text-xs wrap-anywhere">
             {task.description}
           </span>
           <div className="mt-2 flex gap-2">

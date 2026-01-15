@@ -3,10 +3,9 @@
 import { useContext, useState } from "react";
 
 import { Button } from "~/components/ui/button";
-import { AppContext } from "~/context/AppContextProvider";
-
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
 import { Spinner } from "../ui/spinner";
 
@@ -48,7 +47,7 @@ export default function NewTask() {
   };
 
   return (
-    <div className="mt-4 flex flex-col gap-2 px-4">
+    <div className="mx-auto mt-4 flex w-1/2 flex-col gap-2 px-4">
       <Input
         placeholder="New task..."
         value={title}
