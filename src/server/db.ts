@@ -6,7 +6,10 @@ import { PrismaClient } from "~/generated/prisma/client/client";
 const createPrismaClient = () =>
   new PrismaClient({
     adapter: new PrismaPg(
-      { connectionString: env.DATABASE_URL },
+      {
+        connectionString: env.DATABASE_URL,
+        ssl: env.NODE_ENV === "production",
+      },
       {
         schema: new URL(env.DATABASE_URL!).searchParams.get("schema")!,
       },
