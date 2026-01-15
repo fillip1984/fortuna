@@ -214,6 +214,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     description,
                   });
                 }}
+                className="max-h-80"
               />
               {task.source && (
                 <div className="flex items-center gap-2">

@@ -1,9 +1,10 @@
 "use client";
 
+import { useContext, useEffect, useState } from "react";
 import MsgReader from "@kenjiuno/msgreader";
 import { addHours, format, parse } from "date-fns";
-import { useContext, useEffect, useState } from "react";
 import { MdOutlineCloudUpload } from "react-icons/md";
+
 import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
 
@@ -23,6 +24,16 @@ export default function NewTaskViaEmailDnD() {
   // register drag enter and leave to enable the backdrop and dropzone
   useEffect(() => {
     const handleDocumentDragEnter = (e: DragEvent) => {
+      if (!e.dataTransfer?.types.includes("Files")) {
+        return;
+      }
+      const items = e.dataTransfer.items;
+      if (items && items.length > 0) {
+        const item = items[0];
+        if (item?.type !== "application/vnd.ms-outlook") {
+          return;
+        }
+      }
       e.preventDefault();
       setDragActive(true);
     };
