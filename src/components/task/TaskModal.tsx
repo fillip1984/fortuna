@@ -1,10 +1,5 @@
 "use client";
 
-import type {
-  CompleteOptionType,
-  PriorityOption,
-  RecurrenceOption,
-} from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { startOfDay } from "date-fns";
@@ -18,6 +13,11 @@ import { GrTrophy } from "react-icons/gr";
 import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 
+import type {
+  CompleteOptionType,
+  PriorityOption,
+  RecurrenceOption,
+} from "~/generated/prisma/client/enums";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";

@@ -1,13 +1,14 @@
 "use client";
 
-import { type CompleteOptionType } from "@prisma/client";
-import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
+import { ChevronDownIcon } from "lucide-react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsHeartPulseFill } from "react-icons/bs";
 import { FaCalendarDay } from "react-icons/fa";
 import { IoScaleOutline } from "react-icons/io5";
 import { PiPersonBold } from "react-icons/pi";
+
+import type { CompleteOptionType } from "~/generated/prisma/client/enums";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import {

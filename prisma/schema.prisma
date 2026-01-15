@@ -2,13 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider      = "prisma-client-js"
+    provider      = "prisma-client"
+    engineType    = "binary"
     binaryTargets = ["native", "rhel-openssl-3.0.x"]
+    moduleFormat  = "esm"
+    output        = "../src/generated/prisma/client"
 }
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
 }
 
 model Collection {

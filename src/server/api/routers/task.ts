@@ -1,10 +1,10 @@
+import z from "zod";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import {
   CompleteOptionType,
   PriorityOption,
   RecurrenceOption,
-} from "@prisma/client";
-import z from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+} from "~/generated/prisma/client/enums";
 
 export const TaskRouter = createTRPCRouter({
   findAll: protectedProcedure
@@ -22,7 +22,7 @@ export const TaskRouter = createTRPCRouter({
         orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
       });
     }),
-    findById: protectedProcedure
+  findById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.task.findFirst({
@@ -68,11 +68,11 @@ export const TaskRouter = createTRPCRouter({
         title: z.string(),
         description: z.string().nullable(),
         completed: z.boolean(),
-        onComplete: z.nativeEnum(CompleteOptionType).nullable(),
+        onComplete: z.enum(CompleteOptionType).nullable(),
         order: z.number(),
         dueDate: z.date().nullable(),
-        priority: z.nativeEnum(PriorityOption).nullable(),
-        recurrence: z.nativeEnum(RecurrenceOption).nullable(),
+        priority: z.enum(PriorityOption).nullable(),
+        recurrence: z.enum(RecurrenceOption).nullable(),
         frequency: z.string().nullable(),
         nextDueDate: z.date().nullable(),
         collectionId: z.string().nullable(),

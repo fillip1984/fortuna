@@ -1,4 +1,3 @@
-import { type RecurrenceOption } from "@prisma/client";
 import {
   addDays,
   addYears,
@@ -8,6 +7,8 @@ import {
   isBefore,
   parse,
 } from "date-fns";
+
+import type { RecurrenceOption } from "~/generated/prisma/client/enums";
 
 export const calculateNextDueDate = ({
   recurrence,
