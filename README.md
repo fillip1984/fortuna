@@ -6,6 +6,7 @@ Simple reminder app
 
 - [ ] - use for a bit to see if it sticks
 - [ ] - upgrading to prisma 7
+- [ ] - add status to indicate if we're waiting, blocked, not started yet
 
 ## Longer term TODOs
 
