@@ -55,9 +55,6 @@ export const ModelName = {
   Task: 'Task',
   Checklist: 'Checklist',
   Comment: 'Comment',
-  WeighIn: 'WeighIn',
-  WeightGoal: 'WeightGoal',
-  BloodPressureReading: 'BloodPressureReading',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -99,10 +96,12 @@ export const TaskScalarFieldEnum = {
   title: 'title',
   description: 'description',
   completed: 'completed',
+  lastCompleted: 'lastCompleted',
   onComplete: 'onComplete',
   order: 'order',
   dueDate: 'dueDate',
   priority: 'priority',
+  status: 'status',
   recurrence: 'recurrence',
   frequency: 'frequency',
   nextDueDate: 'nextDueDate',
@@ -137,42 +136,6 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
-
-
-export const WeighInScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  date: 'date',
-  weight: 'weight',
-  bodyFatPercentage: 'bodyFatPercentage'
-} as const
-
-export type WeighInScalarFieldEnum = (typeof WeighInScalarFieldEnum)[keyof typeof WeighInScalarFieldEnum]
-
-
-export const WeightGoalScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  weight: 'weight'
-} as const
-
-export type WeightGoalScalarFieldEnum = (typeof WeightGoalScalarFieldEnum)[keyof typeof WeightGoalScalarFieldEnum]
-
-
-export const BloodPressureReadingScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  date: 'date',
-  systolic: 'systolic',
-  diastolic: 'diastolic',
-  pulse: 'pulse',
-  category: 'category'
-} as const
-
-export type BloodPressureReadingScalarFieldEnum = (typeof BloodPressureReadingScalarFieldEnum)[keyof typeof BloodPressureReadingScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

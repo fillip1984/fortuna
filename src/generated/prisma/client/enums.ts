@@ -9,24 +9,21 @@
 * 🟢 You can import this file directly.
 */
 
-export const BloodPressureCategory = {
-  Low: 'Low',
-  Normal: 'Normal',
-  Elevated: 'Elevated',
-  Hypertension_1: 'Hypertension_1',
-  Hypertension_2: 'Hypertension_2',
-  Hypertension_crisis: 'Hypertension_crisis'
-} as const
-
-export type BloodPressureCategory = (typeof BloodPressureCategory)[keyof typeof BloodPressureCategory]
-
-
 export const PriorityOption = {
   Urgent: 'Urgent',
   Important: 'Important'
 } as const
 
 export type PriorityOption = (typeof PriorityOption)[keyof typeof PriorityOption]
+
+
+export const TaskStatus = {
+  In_Progress: 'In_Progress',
+  Blocked: 'Blocked',
+  Completed: 'Completed'
+} as const
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
 
 export const RecurrenceOption = {

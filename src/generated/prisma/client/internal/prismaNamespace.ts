@@ -388,9 +388,6 @@ export const ModelName = {
   Task: 'Task',
   Checklist: 'Checklist',
   Comment: 'Comment',
-  WeighIn: 'WeighIn',
-  WeightGoal: 'WeightGoal',
-  BloodPressureReading: 'BloodPressureReading',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -410,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "collection" | "task" | "checklist" | "comment" | "weighIn" | "weightGoal" | "bloodPressureReading" | "user" | "session" | "account" | "verification"
+    modelProps: "collection" | "task" | "checklist" | "comment" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -707,228 +704,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CommentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CommentCountAggregateOutputType> | number
-        }
-      }
-    }
-    WeighIn: {
-      payload: Prisma.$WeighInPayload<ExtArgs>
-      fields: Prisma.WeighInFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.WeighInFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.WeighInFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        findFirst: {
-          args: Prisma.WeighInFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.WeighInFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        findMany: {
-          args: Prisma.WeighInFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>[]
-        }
-        create: {
-          args: Prisma.WeighInCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        createMany: {
-          args: Prisma.WeighInCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.WeighInCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>[]
-        }
-        delete: {
-          args: Prisma.WeighInDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        update: {
-          args: Prisma.WeighInUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        deleteMany: {
-          args: Prisma.WeighInDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.WeighInUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.WeighInUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>[]
-        }
-        upsert: {
-          args: Prisma.WeighInUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeighInPayload>
-        }
-        aggregate: {
-          args: Prisma.WeighInAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateWeighIn>
-        }
-        groupBy: {
-          args: Prisma.WeighInGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeighInGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.WeighInCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeighInCountAggregateOutputType> | number
-        }
-      }
-    }
-    WeightGoal: {
-      payload: Prisma.$WeightGoalPayload<ExtArgs>
-      fields: Prisma.WeightGoalFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.WeightGoalFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.WeightGoalFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        findFirst: {
-          args: Prisma.WeightGoalFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.WeightGoalFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        findMany: {
-          args: Prisma.WeightGoalFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>[]
-        }
-        create: {
-          args: Prisma.WeightGoalCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        createMany: {
-          args: Prisma.WeightGoalCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.WeightGoalCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>[]
-        }
-        delete: {
-          args: Prisma.WeightGoalDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        update: {
-          args: Prisma.WeightGoalUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        deleteMany: {
-          args: Prisma.WeightGoalDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.WeightGoalUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.WeightGoalUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>[]
-        }
-        upsert: {
-          args: Prisma.WeightGoalUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$WeightGoalPayload>
-        }
-        aggregate: {
-          args: Prisma.WeightGoalAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateWeightGoal>
-        }
-        groupBy: {
-          args: Prisma.WeightGoalGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeightGoalGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.WeightGoalCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.WeightGoalCountAggregateOutputType> | number
-        }
-      }
-    }
-    BloodPressureReading: {
-      payload: Prisma.$BloodPressureReadingPayload<ExtArgs>
-      fields: Prisma.BloodPressureReadingFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.BloodPressureReadingFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.BloodPressureReadingFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        findFirst: {
-          args: Prisma.BloodPressureReadingFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.BloodPressureReadingFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        findMany: {
-          args: Prisma.BloodPressureReadingFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>[]
-        }
-        create: {
-          args: Prisma.BloodPressureReadingCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        createMany: {
-          args: Prisma.BloodPressureReadingCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.BloodPressureReadingCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>[]
-        }
-        delete: {
-          args: Prisma.BloodPressureReadingDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        update: {
-          args: Prisma.BloodPressureReadingUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        deleteMany: {
-          args: Prisma.BloodPressureReadingDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.BloodPressureReadingUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.BloodPressureReadingUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>[]
-        }
-        upsert: {
-          args: Prisma.BloodPressureReadingUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BloodPressureReadingPayload>
-        }
-        aggregate: {
-          args: Prisma.BloodPressureReadingAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateBloodPressureReading>
-        }
-        groupBy: {
-          args: Prisma.BloodPressureReadingGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BloodPressureReadingGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.BloodPressureReadingCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BloodPressureReadingCountAggregateOutputType> | number
         }
       }
     }
@@ -1286,10 +1061,12 @@ export const TaskScalarFieldEnum = {
   title: 'title',
   description: 'description',
   completed: 'completed',
+  lastCompleted: 'lastCompleted',
   onComplete: 'onComplete',
   order: 'order',
   dueDate: 'dueDate',
   priority: 'priority',
+  status: 'status',
   recurrence: 'recurrence',
   frequency: 'frequency',
   nextDueDate: 'nextDueDate',
@@ -1324,42 +1101,6 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
-
-
-export const WeighInScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  date: 'date',
-  weight: 'weight',
-  bodyFatPercentage: 'bodyFatPercentage'
-} as const
-
-export type WeighInScalarFieldEnum = (typeof WeighInScalarFieldEnum)[keyof typeof WeighInScalarFieldEnum]
-
-
-export const WeightGoalScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  weight: 'weight'
-} as const
-
-export type WeightGoalScalarFieldEnum = (typeof WeightGoalScalarFieldEnum)[keyof typeof WeightGoalScalarFieldEnum]
-
-
-export const BloodPressureReadingScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  date: 'date',
-  systolic: 'systolic',
-  diastolic: 'diastolic',
-  pulse: 'pulse',
-  category: 'category'
-} as const
-
-export type BloodPressureReadingScalarFieldEnum = (typeof BloodPressureReadingScalarFieldEnum)[keyof typeof BloodPressureReadingScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -1528,6 +1269,20 @@ export type ListEnumPriorityOptionFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'TaskStatus'
+ */
+export type EnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TaskStatus[]'
+ */
+export type ListEnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'RecurrenceOption'
  */
 export type EnumRecurrenceOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurrenceOption'>
@@ -1552,20 +1307,6 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
- * Reference to a field of type 'BloodPressureCategory'
- */
-export type EnumBloodPressureCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BloodPressureCategory'>
-    
-
-
-/**
- * Reference to a field of type 'BloodPressureCategory[]'
- */
-export type ListEnumBloodPressureCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BloodPressureCategory[]'>
     
 
 /**
@@ -1667,9 +1408,6 @@ export type GlobalOmitConfig = {
   task?: Prisma.TaskOmit
   checklist?: Prisma.ChecklistOmit
   comment?: Prisma.CommentOmit
-  weighIn?: Prisma.WeighInOmit
-  weightGoal?: Prisma.WeightGoalOmit
-  bloodPressureReading?: Prisma.BloodPressureReadingOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit

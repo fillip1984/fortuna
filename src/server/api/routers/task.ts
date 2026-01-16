@@ -1,10 +1,11 @@
 import z from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+
 import {
   CompleteOptionType,
   PriorityOption,
   RecurrenceOption,
 } from "~/generated/prisma/client/enums";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const TaskRouter = createTRPCRouter({
   findAll: protectedProcedure
@@ -36,13 +37,31 @@ export const TaskRouter = createTRPCRouter({
         },
       });
     }),
+  search: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.task.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          title: {
+            contains: input.query,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          checklist: { orderBy: { order: "asc" } },
+          comments: { orderBy: { postedDate: "asc" } },
+        },
+        orderBy: [{ order: "asc" }, { dueDate: "asc" }, { title: "asc" }],
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({
         title: z.string(),
         description: z.string().nullable(),
         dueDate: z.date().nullable(),
-        priority: z.nativeEnum(PriorityOption).nullable(),
+        priority: z.enum(PriorityOption).nullable(),
         source: z.string().nullish(),
         collectionId: z.string().nullable(),
       }),

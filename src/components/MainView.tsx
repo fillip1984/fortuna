@@ -41,6 +41,7 @@ import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
 import { isDeletable } from "~/utils/collection";
 import NewTaskViaEmailDnD from "./task/NewTaskViaEmailDnD";
+import { SearchModal, useSearchModal } from "./task/SearchModal";
 
 export default function MainView() {
   const {
@@ -86,6 +87,8 @@ export default function MainView() {
       ]);
     },
   });
+
+  const { isOpen, setIsOpen } = useSearchModal();
 
   if (isLoading) {
     return (
@@ -185,6 +188,7 @@ export default function MainView() {
         )}
       </div>
       <NewTaskViaEmailDnD />
+      <SearchModal isOpen={isOpen} dismiss={() => setIsOpen(false)} />
     </>
   );
 }

@@ -60,21 +60,6 @@ export type Checklist = Prisma.ChecklistModel
  */
 export type Comment = Prisma.CommentModel
 /**
- * Model WeighIn
- * 
- */
-export type WeighIn = Prisma.WeighInModel
-/**
- * Model WeightGoal
- * 
- */
-export type WeightGoal = Prisma.WeightGoalModel
-/**
- * Model BloodPressureReading
- * 
- */
-export type BloodPressureReading = Prisma.BloodPressureReadingModel
-/**
  * Model User
  * 
  */

@@ -33,17 +33,19 @@ model Task {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    title       String
-    description String?
-    completed   Boolean             @default(false)
-    onComplete  CompleteOptionType?
-    order       Int
-    dueDate     DateTime?
-    priority    PriorityOption?
-    recurrence  RecurrenceOption?
-    frequency   String?
-    nextDueDate DateTime?
-    source      String?
+    title         String
+    description   String?
+    completed     Boolean             @default(false)
+    lastCompleted DateTime?
+    onComplete    CompleteOptionType?
+    order         Int
+    dueDate       DateTime?
+    priority      PriorityOption?
+    status        TaskStatus?
+    recurrence    RecurrenceOption?
+    frequency     String?
+    nextDueDate   DateTime?
+    source        String?
 
     collection   Collection? @relation(fields: [collectionId], references: [id])
     collectionId String?
@@ -89,56 +91,15 @@ model Comment {
     @@index([text])
 }
 
-model WeighIn {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    date              DateTime
-    weight            Float
-    bodyFatPercentage Float?
-
-    // weightProgress     Float
-    // weightTotalChange  Float
-    // weightToGoal       Float
-    // bodyFatProgress    Float?
-    // bodyFatTotalChange Float?
-    // previousWeighInId  String?
-}
-
-model WeightGoal {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    weight Float
-}
-
-model BloodPressureReading {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    date      DateTime
-    systolic  Int
-    diastolic Int
-    pulse     Int?
-
-    category BloodPressureCategory
-}
-
-enum BloodPressureCategory {
-    Low
-    Normal
-    Elevated
-    Hypertension_1
-    Hypertension_2
-    Hypertension_crisis
-}
-
 enum PriorityOption {
     Urgent
     Important
+}
+
+enum TaskStatus {
+    In_Progress
+    Blocked
+    Completed
 }
 
 enum RecurrenceOption {
@@ -154,20 +115,6 @@ enum CompleteOptionType {
     Blood_pressure_reading
     Runners_log
 }
-
-// enum WeatherType {
-//     Cold
-//     Rainy
-//     Fair
-//     Hot
-// }
-
-// enum MoodType {
-//     Bad
-//     Okay
-//     Good
-//     Great
-// }
 
 // Necessary for Beter auth
 model User {

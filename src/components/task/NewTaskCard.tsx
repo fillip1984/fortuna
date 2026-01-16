@@ -47,7 +47,7 @@ export default function NewTask() {
   };
 
   return (
-    <div className="mx-auto mt-4 flex w-1/2 flex-col gap-2 px-4">
+    <div className="mx-auto mt-4 flex w-1/2 min-w-100 flex-col gap-2 px-4">
       <Input
         placeholder="New task..."
         value={title}
