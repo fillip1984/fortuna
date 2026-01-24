@@ -24,13 +24,16 @@ export default function NewTaskViaEmailDnD() {
   // register drag enter and leave to enable the backdrop and dropzone
   useEffect(() => {
     const handleDocumentDragEnter = (e: DragEvent) => {
+      console.log("handling drag enter", { e });
       if (!e.dataTransfer?.types.includes("Files")) {
+        console.log("not files");
         return;
       }
       const items = e.dataTransfer.items;
       if (items && items.length > 0) {
         const item = items[0];
         if (item?.type !== "application/vnd.ms-outlook") {
+          console.log("not outlook msg file");
           return;
         }
       }
@@ -39,6 +42,7 @@ export default function NewTaskViaEmailDnD() {
     };
 
     const handleDocumentDragLeave = (e: DragEvent) => {
+      console.log("handling drag leave", { e });
       e.preventDefault();
       if (e.clientX === 0 && e.clientY === 0) {
         setDragActive(false);
@@ -55,6 +59,7 @@ export default function NewTaskViaEmailDnD() {
   }, []);
 
   const handleDrop = async (e: React.DragEvent<HTMLInputElement>) => {
+    console.log("handling drop", { e });
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -64,6 +69,7 @@ export default function NewTaskViaEmailDnD() {
   };
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handling change", { e });
     e.preventDefault();
     if (e.target.files?.[0]) {
       await processMsgFile(e.target.files[0]);
