@@ -26,18 +26,18 @@ export default function NewTaskViaEmailDnD() {
     const handleDocumentDragEnter = (e: DragEvent) => {
       console.log("handling drag enter", { e });
       console.log("effect allowed", e.dataTransfer?.effectAllowed);
-      if (!e.dataTransfer?.effectAllowed?.includes("move")) {
+      if (e.dataTransfer?.effectAllowed?.includes("move")) {
         console.log("not files");
         return;
       }
-      const items = e.dataTransfer.items;
-      if (items && items.length > 0) {
-        const item = items[0];
-        if (item?.type !== "application/vnd.ms-outlook") {
-          console.log("not outlook msg file");
-          return;
-        }
-      }
+      // const items = e.dataTransfer.items;
+      // if (items && items.length > 0) {
+      //   const item = items[0];
+      //   if (item?.type !== "application/vnd.ms-outlook") {
+      //     console.log("not outlook msg file");
+      //     return;
+      //   }
+      // }
       e.preventDefault();
       setDragActive(true);
     };
