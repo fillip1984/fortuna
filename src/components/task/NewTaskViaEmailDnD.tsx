@@ -24,26 +24,16 @@ export default function NewTaskViaEmailDnD() {
   // register drag enter and leave to enable the backdrop and dropzone
   useEffect(() => {
     const handleDocumentDragEnter = (e: DragEvent) => {
-      console.log("handling drag enter", { e });
-      console.log("effect allowed", e.dataTransfer?.effectAllowed);
       if (e.dataTransfer?.effectAllowed?.includes("move")) {
-        console.log("not files");
+        // this is the best I could do at differentiating files being drug into the window like an email vs dnd of items within the web app
+        // effectAllowed is "move" for internal dnd but "all" for external dnd
         return;
       }
-      // const items = e.dataTransfer.items;
-      // if (items && items.length > 0) {
-      //   const item = items[0];
-      //   if (item?.type !== "application/vnd.ms-outlook") {
-      //     console.log("not outlook msg file");
-      //     return;
-      //   }
-      // }
       e.preventDefault();
       setDragActive(true);
     };
 
     const handleDocumentDragLeave = (e: DragEvent) => {
-      console.log("handling drag leave", { e });
       e.preventDefault();
       if (e.clientX === 0 && e.clientY === 0) {
         setDragActive(false);
@@ -60,7 +50,6 @@ export default function NewTaskViaEmailDnD() {
   }, []);
 
   const handleDrop = async (e: React.DragEvent<HTMLInputElement>) => {
-    console.log("handling drop", { e });
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -70,7 +59,6 @@ export default function NewTaskViaEmailDnD() {
   };
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handling change", { e });
     e.preventDefault();
     if (e.target.files?.[0]) {
       await processMsgFile(e.target.files[0]);
