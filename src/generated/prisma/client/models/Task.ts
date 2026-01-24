@@ -42,12 +42,10 @@ export type TaskMinAggregateOutputType = {
   description: string | null
   completed: boolean | null
   lastCompleted: Date | null
-  onComplete: $Enums.CompleteOptionType | null
   order: number | null
   dueDate: Date | null
   priority: $Enums.PriorityOption | null
   status: $Enums.TaskStatus | null
-  recurrence: $Enums.RecurrenceOption | null
   frequency: string | null
   nextDueDate: Date | null
   source: string | null
@@ -63,12 +61,10 @@ export type TaskMaxAggregateOutputType = {
   description: string | null
   completed: boolean | null
   lastCompleted: Date | null
-  onComplete: $Enums.CompleteOptionType | null
   order: number | null
   dueDate: Date | null
   priority: $Enums.PriorityOption | null
   status: $Enums.TaskStatus | null
-  recurrence: $Enums.RecurrenceOption | null
   frequency: string | null
   nextDueDate: Date | null
   source: string | null
@@ -84,12 +80,10 @@ export type TaskCountAggregateOutputType = {
   description: number
   completed: number
   lastCompleted: number
-  onComplete: number
   order: number
   dueDate: number
   priority: number
   status: number
-  recurrence: number
   frequency: number
   nextDueDate: number
   source: number
@@ -115,12 +109,10 @@ export type TaskMinAggregateInputType = {
   description?: true
   completed?: true
   lastCompleted?: true
-  onComplete?: true
   order?: true
   dueDate?: true
   priority?: true
   status?: true
-  recurrence?: true
   frequency?: true
   nextDueDate?: true
   source?: true
@@ -136,12 +128,10 @@ export type TaskMaxAggregateInputType = {
   description?: true
   completed?: true
   lastCompleted?: true
-  onComplete?: true
   order?: true
   dueDate?: true
   priority?: true
   status?: true
-  recurrence?: true
   frequency?: true
   nextDueDate?: true
   source?: true
@@ -157,12 +147,10 @@ export type TaskCountAggregateInputType = {
   description?: true
   completed?: true
   lastCompleted?: true
-  onComplete?: true
   order?: true
   dueDate?: true
   priority?: true
   status?: true
-  recurrence?: true
   frequency?: true
   nextDueDate?: true
   source?: true
@@ -265,12 +253,10 @@ export type TaskGroupByOutputType = {
   description: string | null
   completed: boolean
   lastCompleted: Date | null
-  onComplete: $Enums.CompleteOptionType | null
   order: number
   dueDate: Date | null
   priority: $Enums.PriorityOption | null
   status: $Enums.TaskStatus | null
-  recurrence: $Enums.RecurrenceOption | null
   frequency: string | null
   nextDueDate: Date | null
   source: string | null
@@ -309,12 +295,10 @@ export type TaskWhereInput = {
   description?: Prisma.StringNullableFilter<"Task"> | string | null
   completed?: Prisma.BoolFilter<"Task"> | boolean
   lastCompleted?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
-  onComplete?: Prisma.EnumCompleteOptionTypeNullableFilter<"Task"> | $Enums.CompleteOptionType | null
   order?: Prisma.IntFilter<"Task"> | number
   dueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   priority?: Prisma.EnumPriorityOptionNullableFilter<"Task"> | $Enums.PriorityOption | null
   status?: Prisma.EnumTaskStatusNullableFilter<"Task"> | $Enums.TaskStatus | null
-  recurrence?: Prisma.EnumRecurrenceOptionNullableFilter<"Task"> | $Enums.RecurrenceOption | null
   frequency?: Prisma.StringNullableFilter<"Task"> | string | null
   nextDueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   source?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -334,12 +318,10 @@ export type TaskOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   completed?: Prisma.SortOrder
   lastCompleted?: Prisma.SortOrderInput | Prisma.SortOrder
-  onComplete?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrderInput | Prisma.SortOrder
-  recurrence?: Prisma.SortOrderInput | Prisma.SortOrder
   frequency?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -362,12 +344,10 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Task"> | string | null
   completed?: Prisma.BoolFilter<"Task"> | boolean
   lastCompleted?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
-  onComplete?: Prisma.EnumCompleteOptionTypeNullableFilter<"Task"> | $Enums.CompleteOptionType | null
   order?: Prisma.IntFilter<"Task"> | number
   dueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   priority?: Prisma.EnumPriorityOptionNullableFilter<"Task"> | $Enums.PriorityOption | null
   status?: Prisma.EnumTaskStatusNullableFilter<"Task"> | $Enums.TaskStatus | null
-  recurrence?: Prisma.EnumRecurrenceOptionNullableFilter<"Task"> | $Enums.RecurrenceOption | null
   frequency?: Prisma.StringNullableFilter<"Task"> | string | null
   nextDueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   source?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -387,12 +367,10 @@ export type TaskOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   completed?: Prisma.SortOrder
   lastCompleted?: Prisma.SortOrderInput | Prisma.SortOrder
-  onComplete?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   priority?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrderInput | Prisma.SortOrder
-  recurrence?: Prisma.SortOrderInput | Prisma.SortOrder
   frequency?: Prisma.SortOrderInput | Prisma.SortOrder
   nextDueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -416,12 +394,10 @@ export type TaskScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
   completed?: Prisma.BoolWithAggregatesFilter<"Task"> | boolean
   lastCompleted?: Prisma.DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
-  onComplete?: Prisma.EnumCompleteOptionTypeNullableWithAggregatesFilter<"Task"> | $Enums.CompleteOptionType | null
   order?: Prisma.IntWithAggregatesFilter<"Task"> | number
   dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
   priority?: Prisma.EnumPriorityOptionNullableWithAggregatesFilter<"Task"> | $Enums.PriorityOption | null
   status?: Prisma.EnumTaskStatusNullableWithAggregatesFilter<"Task"> | $Enums.TaskStatus | null
-  recurrence?: Prisma.EnumRecurrenceOptionNullableWithAggregatesFilter<"Task"> | $Enums.RecurrenceOption | null
   frequency?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
   nextDueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
   source?: Prisma.StringNullableWithAggregatesFilter<"Task"> | string | null
@@ -437,12 +413,10 @@ export type TaskCreateInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -460,12 +434,10 @@ export type TaskUncheckedCreateInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -483,12 +455,10 @@ export type TaskUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -506,12 +476,10 @@ export type TaskUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -529,12 +497,10 @@ export type TaskCreateManyInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -550,12 +516,10 @@ export type TaskUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -569,12 +533,10 @@ export type TaskUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -600,12 +562,10 @@ export type TaskCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   lastCompleted?: Prisma.SortOrder
-  onComplete?: Prisma.SortOrder
   order?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  recurrence?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   source?: Prisma.SortOrder
@@ -625,12 +585,10 @@ export type TaskMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   lastCompleted?: Prisma.SortOrder
-  onComplete?: Prisma.SortOrder
   order?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  recurrence?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   source?: Prisma.SortOrder
@@ -646,12 +604,10 @@ export type TaskMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   completed?: Prisma.SortOrder
   lastCompleted?: Prisma.SortOrder
-  onComplete?: Prisma.SortOrder
   order?: Prisma.SortOrder
   dueDate?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  recurrence?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   nextDueDate?: Prisma.SortOrder
   source?: Prisma.SortOrder
@@ -722,20 +678,12 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type NullableEnumCompleteOptionTypeFieldUpdateOperationsInput = {
-  set?: $Enums.CompleteOptionType | null
-}
-
 export type NullableEnumPriorityOptionFieldUpdateOperationsInput = {
   set?: $Enums.PriorityOption | null
 }
 
 export type NullableEnumTaskStatusFieldUpdateOperationsInput = {
   set?: $Enums.TaskStatus | null
-}
-
-export type NullableEnumRecurrenceOptionFieldUpdateOperationsInput = {
-  set?: $Enums.RecurrenceOption | null
 }
 
 export type TaskCreateNestedOneWithoutChecklistInput = {
@@ -816,12 +764,10 @@ export type TaskCreateWithoutCollectionInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -838,12 +784,10 @@ export type TaskUncheckedCreateWithoutCollectionInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -889,12 +833,10 @@ export type TaskScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Task"> | string | null
   completed?: Prisma.BoolFilter<"Task"> | boolean
   lastCompleted?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
-  onComplete?: Prisma.EnumCompleteOptionTypeNullableFilter<"Task"> | $Enums.CompleteOptionType | null
   order?: Prisma.IntFilter<"Task"> | number
   dueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   priority?: Prisma.EnumPriorityOptionNullableFilter<"Task"> | $Enums.PriorityOption | null
   status?: Prisma.EnumTaskStatusNullableFilter<"Task"> | $Enums.TaskStatus | null
-  recurrence?: Prisma.EnumRecurrenceOptionNullableFilter<"Task"> | $Enums.RecurrenceOption | null
   frequency?: Prisma.StringNullableFilter<"Task"> | string | null
   nextDueDate?: Prisma.DateTimeNullableFilter<"Task"> | Date | string | null
   source?: Prisma.StringNullableFilter<"Task"> | string | null
@@ -910,12 +852,10 @@ export type TaskCreateWithoutChecklistInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -932,12 +872,10 @@ export type TaskUncheckedCreateWithoutChecklistInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -970,12 +908,10 @@ export type TaskUpdateWithoutChecklistInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -992,12 +928,10 @@ export type TaskUncheckedUpdateWithoutChecklistInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1014,12 +948,10 @@ export type TaskCreateWithoutCommentsInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1036,12 +968,10 @@ export type TaskUncheckedCreateWithoutCommentsInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1074,12 +1004,10 @@ export type TaskUpdateWithoutCommentsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1096,12 +1024,10 @@ export type TaskUncheckedUpdateWithoutCommentsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1118,12 +1044,10 @@ export type TaskCreateWithoutUserInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1140,12 +1064,10 @@ export type TaskUncheckedCreateWithoutUserInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1188,12 +1110,10 @@ export type TaskCreateManyCollectionInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1208,12 +1128,10 @@ export type TaskUpdateWithoutCollectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1230,12 +1148,10 @@ export type TaskUncheckedUpdateWithoutCollectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1252,12 +1168,10 @@ export type TaskUncheckedUpdateManyWithoutCollectionInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1272,12 +1186,10 @@ export type TaskCreateManyUserInput = {
   description?: string | null
   completed?: boolean
   lastCompleted?: Date | string | null
-  onComplete?: $Enums.CompleteOptionType | null
   order: number
   dueDate?: Date | string | null
   priority?: $Enums.PriorityOption | null
   status?: $Enums.TaskStatus | null
-  recurrence?: $Enums.RecurrenceOption | null
   frequency?: string | null
   nextDueDate?: Date | string | null
   source?: string | null
@@ -1292,12 +1204,10 @@ export type TaskUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1314,12 +1224,10 @@ export type TaskUncheckedUpdateWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1336,12 +1244,10 @@ export type TaskUncheckedUpdateManyWithoutUserInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastCompleted?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  onComplete?: Prisma.NullableEnumCompleteOptionTypeFieldUpdateOperationsInput | $Enums.CompleteOptionType | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   priority?: Prisma.NullableEnumPriorityOptionFieldUpdateOperationsInput | $Enums.PriorityOption | null
   status?: Prisma.NullableEnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus | null
-  recurrence?: Prisma.NullableEnumRecurrenceOptionFieldUpdateOperationsInput | $Enums.RecurrenceOption | null
   frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextDueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1396,12 +1302,10 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   completed?: boolean
   lastCompleted?: boolean
-  onComplete?: boolean
   order?: boolean
   dueDate?: boolean
   priority?: boolean
   status?: boolean
-  recurrence?: boolean
   frequency?: boolean
   nextDueDate?: boolean
   source?: boolean
@@ -1422,12 +1326,10 @@ export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   completed?: boolean
   lastCompleted?: boolean
-  onComplete?: boolean
   order?: boolean
   dueDate?: boolean
   priority?: boolean
   status?: boolean
-  recurrence?: boolean
   frequency?: boolean
   nextDueDate?: boolean
   source?: boolean
@@ -1445,12 +1347,10 @@ export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   completed?: boolean
   lastCompleted?: boolean
-  onComplete?: boolean
   order?: boolean
   dueDate?: boolean
   priority?: boolean
   status?: boolean
-  recurrence?: boolean
   frequency?: boolean
   nextDueDate?: boolean
   source?: boolean
@@ -1468,12 +1368,10 @@ export type TaskSelectScalar = {
   description?: boolean
   completed?: boolean
   lastCompleted?: boolean
-  onComplete?: boolean
   order?: boolean
   dueDate?: boolean
   priority?: boolean
   status?: boolean
-  recurrence?: boolean
   frequency?: boolean
   nextDueDate?: boolean
   source?: boolean
@@ -1481,7 +1379,7 @@ export type TaskSelectScalar = {
   userId?: boolean
 }
 
-export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "description" | "completed" | "lastCompleted" | "onComplete" | "order" | "dueDate" | "priority" | "status" | "recurrence" | "frequency" | "nextDueDate" | "source" | "collectionId" | "userId", ExtArgs["result"]["task"]>
+export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "title" | "description" | "completed" | "lastCompleted" | "order" | "dueDate" | "priority" | "status" | "frequency" | "nextDueDate" | "source" | "collectionId" | "userId", ExtArgs["result"]["task"]>
 export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   collection?: boolean | Prisma.Task$collectionArgs<ExtArgs>
   checklist?: boolean | Prisma.Task$checklistArgs<ExtArgs>
@@ -1514,12 +1412,10 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     description: string | null
     completed: boolean
     lastCompleted: Date | null
-    onComplete: $Enums.CompleteOptionType | null
     order: number
     dueDate: Date | null
     priority: $Enums.PriorityOption | null
     status: $Enums.TaskStatus | null
-    recurrence: $Enums.RecurrenceOption | null
     frequency: string | null
     nextDueDate: Date | null
     source: string | null
@@ -1959,12 +1855,10 @@ export interface TaskFieldRefs {
   readonly description: Prisma.FieldRef<"Task", 'String'>
   readonly completed: Prisma.FieldRef<"Task", 'Boolean'>
   readonly lastCompleted: Prisma.FieldRef<"Task", 'DateTime'>
-  readonly onComplete: Prisma.FieldRef<"Task", 'CompleteOptionType'>
   readonly order: Prisma.FieldRef<"Task", 'Int'>
   readonly dueDate: Prisma.FieldRef<"Task", 'DateTime'>
   readonly priority: Prisma.FieldRef<"Task", 'PriorityOption'>
   readonly status: Prisma.FieldRef<"Task", 'TaskStatus'>
-  readonly recurrence: Prisma.FieldRef<"Task", 'RecurrenceOption'>
   readonly frequency: Prisma.FieldRef<"Task", 'String'>
   readonly nextDueDate: Prisma.FieldRef<"Task", 'DateTime'>
   readonly source: Prisma.FieldRef<"Task", 'String'>

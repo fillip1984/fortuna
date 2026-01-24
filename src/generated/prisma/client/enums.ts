@@ -18,29 +18,10 @@ export type PriorityOption = (typeof PriorityOption)[keyof typeof PriorityOption
 
 
 export const TaskStatus = {
+  Todo: 'Todo',
   In_Progress: 'In_Progress',
-  Blocked: 'Blocked',
-  Completed: 'Completed'
+  Blocked_Waiting: 'Blocked_Waiting',
+  Complete: 'Complete'
 } as const
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
-
-
-export const RecurrenceOption = {
-  Daily: 'Daily',
-  Weekly: 'Weekly',
-  Monthly: 'Monthly',
-  Yearly: 'Yearly'
-} as const
-
-export type RecurrenceOption = (typeof RecurrenceOption)[keyof typeof RecurrenceOption]
-
-
-export const CompleteOptionType = {
-  Note: 'Note',
-  Weigh_in: 'Weigh_in',
-  Blood_pressure_reading: 'Blood_pressure_reading',
-  Runners_log: 'Runners_log'
-} as const
-
-export type CompleteOptionType = (typeof CompleteOptionType)[keyof typeof CompleteOptionType]

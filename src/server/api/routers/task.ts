@@ -1,10 +1,6 @@
 import z from "zod";
 
-import {
-  CompleteOptionType,
-  PriorityOption,
-  RecurrenceOption,
-} from "~/generated/prisma/client/enums";
+import { PriorityOption, TaskStatus } from "~/generated/prisma/client/enums";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const TaskRouter = createTRPCRouter({
@@ -87,11 +83,10 @@ export const TaskRouter = createTRPCRouter({
         title: z.string(),
         description: z.string().nullable(),
         completed: z.boolean(),
-        onComplete: z.enum(CompleteOptionType).nullable(),
         order: z.number(),
         dueDate: z.date().nullable(),
         priority: z.enum(PriorityOption).nullable(),
-        recurrence: z.enum(RecurrenceOption).nullable(),
+        status: z.enum(TaskStatus).nullable(),
         frequency: z.string().nullable(),
         nextDueDate: z.date().nullable(),
         collectionId: z.string().nullable(),
@@ -104,11 +99,10 @@ export const TaskRouter = createTRPCRouter({
           title: input.title,
           description: input.description,
           completed: input.completed,
-          onComplete: input.onComplete,
           order: input.order,
           dueDate: input.dueDate,
           priority: input.priority,
-          recurrence: input.recurrence,
+          status: input.status,
           frequency: input.frequency,
           nextDueDate: input.nextDueDate,
           collectionId: input.collectionId,

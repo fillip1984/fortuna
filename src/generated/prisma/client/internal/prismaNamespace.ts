@@ -1062,12 +1062,10 @@ export const TaskScalarFieldEnum = {
   description: 'description',
   completed: 'completed',
   lastCompleted: 'lastCompleted',
-  onComplete: 'onComplete',
   order: 'order',
   dueDate: 'dueDate',
   priority: 'priority',
   status: 'status',
-  recurrence: 'recurrence',
   frequency: 'frequency',
   nextDueDate: 'nextDueDate',
   source: 'source',
@@ -1241,20 +1239,6 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'CompleteOptionType'
- */
-export type EnumCompleteOptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompleteOptionType'>
-    
-
-
-/**
- * Reference to a field of type 'CompleteOptionType[]'
- */
-export type ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CompleteOptionType[]'>
-    
-
-
-/**
  * Reference to a field of type 'PriorityOption'
  */
 export type EnumPriorityOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorityOption'>
@@ -1279,20 +1263,6 @@ export type EnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'TaskStatus[]'
  */
 export type ListEnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'RecurrenceOption'
- */
-export type EnumRecurrenceOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurrenceOption'>
-    
-
-
-/**
- * Reference to a field of type 'RecurrenceOption[]'
- */
-export type ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurrenceOption[]'>
     
 
 

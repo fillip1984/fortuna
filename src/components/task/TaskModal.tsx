@@ -4,27 +4,21 @@ import { useContext, useEffect, useState } from "react";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { startOfDay } from "date-fns";
 import { format } from "date-fns/format";
-import { Check, ChevronDownIcon, LucideRepeat } from "lucide-react";
+import { Check, ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { BiCollection } from "react-icons/bi";
 import { FaChevronDown, FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
-import { GrTrophy } from "react-icons/gr";
 import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 
-import type {
-  CompleteOptionType,
-  PriorityOption,
-  RecurrenceOption,
-} from "~/generated/prisma/client/enums";
+import type { PriorityOption } from "~/generated/prisma/client/enums";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
-import { calculateNextDueDate } from "~/utils/date";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -35,11 +29,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "../ui/input-group";
+import LoadingAndRetry from "../ui/my-ui/loading-and-retry";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CopyButton } from "../ui/shadcn-io/copy-button";
 
@@ -51,7 +41,12 @@ export default function TaskModal() {
     editableTaskItem: taskId,
   } = useContext(AppContext);
   const utils = api.useUtils();
-  const { data: task } = api.task.findById.useQuery(
+  const {
+    data: task,
+    isLoading: isTaskLoading,
+    isError: isTaskError,
+    refetch: refetchTask,
+  } = api.task.findById.useQuery(
     { id: taskId ?? "" },
     {
       enabled: !!taskId,
@@ -69,7 +64,25 @@ export default function TaskModal() {
 
   if (!isTaskModalOpen) return null;
 
-  if (!task) return <div>Unable to find task</div>;
+  if (isTaskLoading || isTaskError)
+    return (
+      <Dialog>
+        <DialogContent>
+          <LoadingAndRetry
+            isLoading={isTaskLoading}
+            isError={isTaskError}
+            retry={refetchTask}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+
+  if (!task)
+    return (
+      <Dialog>
+        <DialogContent>No task found.</DialogContent>
+      </Dialog>
+    );
 
   return (
     <Dialog
@@ -135,8 +148,6 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [collectionId, setCollectionId] = useState<string | undefined>(
     undefined,
   );
-  const [onComplete, setOnComplete] = useState<string | null>(null);
-  const [recurrence, setRecurrence] = useState<RecurrenceOption | null>(null);
 
   useEffect(() => {
     if (task) {
@@ -146,16 +157,14 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
       setPriority(task.priority ?? undefined);
       setCollectionId(task.collectionId ?? undefined);
-      setOnComplete(task.onComplete?.replaceAll("_", " ") ?? null);
-      setRecurrence(task.recurrence ?? null);
     }
   }, [task]);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [priorityPickerOpen, setPriorityPickerOpen] = useState(false);
   const [collectionPickerOpen, setCollectionPickerOpen] = useState(false);
-  const [onCompletePickerOpen, setOnCompletePickerOpen] = useState(false);
-  const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
+  // const [onCompletePickerOpen, setOnCompletePickerOpen] = useState(false);
+  // const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
 
   const utils = api.useUtils();
   const { mutateAsync: updateTask } = api.task.update.useMutation({
@@ -436,480 +445,11 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   </PopoverContent>
                 </Popover>
               </div>
-
-              <div className="flex items-center gap-3">
-                <GrTrophy className="h-5 w-5" />
-                <Popover
-                  open={onCompletePickerOpen}
-                  onOpenChange={setOnCompletePickerOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="collection"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {onComplete ? (
-                        <>
-                          {onComplete}
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setOnComplete(null);
-                              setOnCompletePickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                onComplete: null,
-                              });
-                            }}
-                            className="text-muted-foreground"
-                          >
-                            x
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          Select outcome view
-                          <ChevronDownIcon />
-                        </>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-48 overflow-hidden p-2"
-                    align="center"
-                  >
-                    <>
-                      {[
-                        // "Simple",
-                        // "Note",
-                        "Weigh in",
-                        "Blood pressure reading",
-                        // "Runners log",
-                      ].map((option) => (
-                        <div
-                          key={option}
-                          onClick={() => {
-                            setOnComplete(option as CompleteOptionType);
-                            setOnCompletePickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              onComplete: option.replaceAll(
-                                " ",
-                                "_",
-                              ) as CompleteOptionType,
-                            });
-                          }}
-                          className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                        >
-                          {option}
-                          {onComplete === option && (
-                            <Check className="text-muted-foreground" />
-                          )}
-                        </div>
-                      ))}
-                    </>
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <LucideRepeat className="h-5 w-5" />
-                <Popover
-                  open={recurrencePickerOpen}
-                  onOpenChange={setRecurrencePickerOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="collection"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {recurrence ? (
-                        <>
-                          {recurrence}
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setRecurrence(null);
-                              setRecurrencePickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                recurrence: null,
-                                frequency: null,
-                                nextDueDate: null,
-                              });
-                            }}
-                            className="text-muted-foreground"
-                          >
-                            x
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          Select recurrence
-                          <ChevronDownIcon />
-                        </>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-48 overflow-hidden p-2"
-                    align="center"
-                  >
-                    <>
-                      {["Daily", "Weekly", "Monthly", "Yearly"].map(
-                        (option) => (
-                          <div
-                            key={option}
-                            onClick={() => {
-                              setRecurrence(option as RecurrenceOption);
-                              setRecurrencePickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                recurrence: option as RecurrenceOption,
-                                frequency: null,
-                                nextDueDate: null,
-                              });
-                            }}
-                            className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                          >
-                            {option}
-                            {recurrence === option && (
-                              <Check className="text-muted-foreground" />
-                            )}
-                          </div>
-                        ),
-                      )}
-                    </>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              {recurrence && (
-                <RecurrenceSection task={task} recurrence={recurrence} />
-              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  );
-};
-
-const RecurrenceSection = ({
-  task,
-  recurrence,
-}: {
-  task: TaskType;
-  recurrence: RecurrenceOption | null;
-}) => {
-  const [dailyFrequency, setDailyFrequency] = useState<number | null>(null);
-  const [weeklyFrequency, setWeeklyFrequency] = useState([
-    { label: "Sun", selected: false },
-    { label: "Mon", selected: false },
-    { label: "Tue", selected: false },
-    { label: "Wed", selected: false },
-    { label: "Thu", selected: false },
-    { label: "Fri", selected: false },
-    { label: "Sat", selected: false },
-  ]);
-  const [monthlyFrequency, setMonthlyFrequency] = useState(() =>
-    Array.from({ length: 31 }, (_, i) => ({
-      label: String(i + 1),
-      selected: false,
-    })),
-  );
-  const [yearlyFrequency, setYearlyFrequency] = useState({
-    month: "",
-    day: "",
-  });
-  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
-
-  useEffect(() => {
-    if (recurrence === "Daily") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setDailyFrequency(task.frequency ? parseInt(task.frequency) : null);
-    } else if (recurrence === "Weekly") {
-      setWeeklyFrequency((prev) =>
-        prev.map((day) => ({
-          ...day,
-          selected: task.frequency
-            ? task.frequency.split(",").includes(day.label)
-            : false,
-        })),
-      );
-    } else if (recurrence === "Monthly") {
-      setMonthlyFrequency((prev) =>
-        prev.map((day) => ({
-          ...day,
-          selected: task.frequency
-            ? task.frequency.split(",").includes(day.label)
-            : false,
-        })),
-      );
-    } else if (recurrence === "Yearly") {
-      setYearlyFrequency({
-        month: task.frequency?.split("-")[0] ?? "",
-        day: task.frequency?.split("-")[1] ?? "",
-      });
-    }
-  }, [recurrence, task.frequency]);
-
-  const utils = api.useUtils();
-  const { mutateAsync: updateTask } = api.task.update.useMutation({
-    onSuccess: async () => {
-      await Promise.all([
-        utils.task.findAll.invalidate(),
-        utils.collection.findAll.invalidate(),
-      ]);
-    },
-  });
-
-  return (
-    <>
-      {recurrence === "Daily" && (
-        <div className="my-2 flex justify-center gap-2">
-          <InputGroup className="flex w-36 gap-2">
-            <InputGroupAddon align="inline-start">Every</InputGroupAddon>
-            <InputGroupInput
-              value={dailyFrequency ?? ""}
-              onChange={(e) => setDailyFrequency(parseInt(e.target.value))}
-              onBlur={() => {
-                void updateTask({
-                  ...task,
-                  frequency: dailyFrequency?.toString() ?? "",
-                  nextDueDate: calculateNextDueDate({
-                    recurrence: "Daily",
-                    frequency: dailyFrequency?.toString() ?? "",
-                    currentDueDate: task.dueDate ?? new Date(),
-                  }),
-                });
-              }}
-            />
-            <InputGroupAddon align="inline-end">days</InputGroupAddon>
-          </InputGroup>
-        </div>
-      )}
-      {recurrence === "Weekly" && (
-        <div className="my-2 flex justify-center gap-2">
-          {weeklyFrequency.map((day) => (
-            <span
-              key={day.label}
-              onClick={() => {
-                const updatedWeeklyFrequency = weeklyFrequency.map((d) =>
-                  d.label === day.label ? { ...d, selected: !d.selected } : d,
-                );
-                setWeeklyFrequency(updatedWeeklyFrequency);
-
-                const nextDueDate = calculateNextDueDate({
-                  recurrence: "Weekly",
-                  frequency: updatedWeeklyFrequency.reduce<string>(
-                    (acc, d) =>
-                      d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
-                    "",
-                  ),
-                  currentDueDate: task.dueDate ?? new Date(),
-                });
-
-                void updateTask({
-                  ...task,
-                  frequency: updatedWeeklyFrequency.reduce<string>(
-                    (acc, d) =>
-                      d.selected ? (acc ? `${acc},${d.label}` : d.label) : acc,
-                    "",
-                  ),
-                  dueDate: task.dueDate ?? nextDueDate,
-                  nextDueDate: nextDueDate,
-                });
-              }}
-              className={`${day.selected ? "bg-primary text-black" : "text-muted-foreground"} flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
-            >
-              {day.label}
-            </span>
-          ))}
-        </div>
-      )}
-      {recurrence === "Monthly" && (
-        <div className="flex flex-col items-center select-none">
-          <div className="grid w-75 grid-cols-7 justify-center gap-2 text-center">
-            <span>Su</span>
-            <span>Mo</span>
-            <span>Tu</span>
-            <span>We</span>
-            <span>Th</span>
-            <span>Fr</span>
-            <span>Sa</span>
-          </div>
-          <div className="my-2 grid w-75 grid-cols-7 justify-center gap-2">
-            {monthlyFrequency.map((day) => (
-              <span
-                key={day.label}
-                onClick={() => {
-                  const updatedMonthlyFrequency = monthlyFrequency.map((d) =>
-                    d.label === day.label ? { ...d, selected: !d.selected } : d,
-                  );
-                  setMonthlyFrequency(updatedMonthlyFrequency);
-                  const nextDueDate = calculateNextDueDate({
-                    recurrence: "Monthly",
-                    frequency: updatedMonthlyFrequency.reduce<string>(
-                      (acc, d) => {
-                        return d.selected
-                          ? acc
-                            ? `${acc},${d.label}`
-                            : d.label
-                          : acc;
-                      },
-                      "",
-                    ),
-                    currentDueDate: task.dueDate ?? new Date(),
-                  });
-                  void updateTask({
-                    ...task,
-                    frequency: updatedMonthlyFrequency.reduce<string>(
-                      (acc, d) => {
-                        return d.selected
-                          ? acc
-                            ? `${acc},${d.label}`
-                            : d.label
-                          : acc;
-                      },
-                      "",
-                    ),
-                    nextDueDate,
-                    dueDate: task.dueDate ?? nextDueDate,
-                  });
-                }}
-                className={`${
-                  day.selected
-                    ? "bg-primary text-black"
-                    : "text-muted-foreground"
-                } flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-colors duration-300 ease-in-out select-none`}
-              >
-                {day.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-      {recurrence === "Yearly" && (
-        <div className="flex justify-center gap-2">
-          <InputGroup className="w-37.5">
-            <InputGroupAddon align="inline-start">On day</InputGroupAddon>
-            <InputGroupInput
-              value={yearlyFrequency.day}
-              onChange={(e) =>
-                setYearlyFrequency({
-                  ...yearlyFrequency,
-                  day: e.target.value,
-                })
-              }
-              onBlur={() => {
-                if (!yearlyFrequency.month || !yearlyFrequency.day) return;
-                void updateTask({
-                  ...task,
-                  frequency: yearlyFrequency.month + "-" + yearlyFrequency.day,
-                  nextDueDate: calculateNextDueDate({
-                    recurrence: "Yearly",
-                    frequency:
-                      yearlyFrequency.month + "-" + yearlyFrequency.day,
-                    currentDueDate: task.dueDate ?? new Date(),
-                  }),
-                });
-              }}
-            />
-            <InputGroupAddon align="inline-end">of</InputGroupAddon>
-          </InputGroup>
-          <Popover open={monthPickerOpen} onOpenChange={setMonthPickerOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                id="collection"
-                className="w-32 justify-between font-normal"
-              >
-                {yearlyFrequency.month ? (
-                  <>
-                    {yearlyFrequency.month}
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setYearlyFrequency({
-                          ...yearlyFrequency,
-                          month: "",
-                        });
-                        setMonthPickerOpen(false);
-                        void updateTask({
-                          ...task,
-                          frequency:
-                            yearlyFrequency.month + "-" + yearlyFrequency.day,
-                          nextDueDate: null,
-                        });
-                      }}
-                      className="text-muted-foreground"
-                    >
-                      x
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    Select Month
-                    <ChevronDownIcon />
-                  </>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-48 overflow-hidden p-2" align="center">
-              <>
-                {[
-                  "January",
-                  "February",
-                  "March",
-                  "April",
-                  "May",
-                  "June",
-                  "July",
-                  "August",
-                  "September",
-                  "October",
-                  "November",
-                  "December",
-                ].map((m) => (
-                  <div
-                    key={m}
-                    onClick={() => {
-                      setYearlyFrequency({
-                        ...yearlyFrequency,
-                        month: m,
-                      });
-                      setMonthPickerOpen(false);
-                      if (!m || !yearlyFrequency.day) return;
-                      let nextDueDate = null;
-                      if (m && yearlyFrequency.day) {
-                        nextDueDate = calculateNextDueDate({
-                          recurrence: "Yearly",
-                          frequency: m + "-" + yearlyFrequency.day,
-                          currentDueDate: task.dueDate ?? new Date(),
-                        });
-                      }
-                      void updateTask({
-                        ...task,
-                        frequency: m + "-" + yearlyFrequency.day,
-                        nextDueDate,
-                      });
-                    }}
-                    className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                  >
-                    {m}
-                    {yearlyFrequency.month === m && (
-                      <Check className="text-muted-foreground" />
-                    )}
-                  </div>
-                ))}
-              </>
-            </PopoverContent>
-          </Popover>
-        </div>
-      )}
-    </>
   );
 };
 

@@ -35,14 +35,13 @@ model Task {
 
     title         String
     description   String?
-    completed     Boolean             @default(false)
+    completed     Boolean         @default(false)
     lastCompleted DateTime?
-    onComplete    CompleteOptionType?
     order         Int
     dueDate       DateTime?
     priority      PriorityOption?
     status        TaskStatus?
-    recurrence    RecurrenceOption?
+    // recurrence    RecurrenceOption?
     frequency     String?
     nextDueDate   DateTime?
     source        String?
@@ -91,32 +90,27 @@ model Comment {
     @@index([text])
 }
 
+// enums 
 enum PriorityOption {
     Urgent
     Important
 }
 
 enum TaskStatus {
+    Todo
     In_Progress
-    Blocked
-    Completed
+    Blocked_Waiting
+    Complete
 }
 
-enum RecurrenceOption {
-    Daily
-    Weekly
-    Monthly
-    Yearly
-}
+// enum RecurrenceOption {
+//     Daily
+//     Weekly
+//     Monthly
+//     Yearly
+// }
 
-enum CompleteOptionType {
-    Note
-    Weigh_in
-    Blood_pressure_reading
-    Runners_log
-}
-
-// Necessary for Beter auth
+// Necessary for Better auth
 model User {
     id            String    @id
     name          String

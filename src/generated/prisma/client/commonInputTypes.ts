@@ -130,13 +130,6 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
-export type EnumCompleteOptionTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.CompleteOptionType | Prisma.EnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel> | $Enums.CompleteOptionType | null
-}
-
 export type EnumPriorityOptionNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorityOption | Prisma.EnumPriorityOptionFieldRefInput<$PrismaModel> | null
   in?: $Enums.PriorityOption[] | Prisma.ListEnumPriorityOptionFieldRefInput<$PrismaModel> | null
@@ -149,13 +142,6 @@ export type EnumTaskStatusNullableFilter<$PrismaModel = never> = {
   in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel> | $Enums.TaskStatus | null
-}
-
-export type EnumRecurrenceOptionNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.RecurrenceOption | Prisma.EnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel> | $Enums.RecurrenceOption | null
 }
 
 export type SortOrderInput = {
@@ -203,16 +189,6 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
-export type EnumCompleteOptionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CompleteOptionType | Prisma.EnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumCompleteOptionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.CompleteOptionType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel>
-}
-
 export type EnumPriorityOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorityOption | Prisma.EnumPriorityOptionFieldRefInput<$PrismaModel> | null
   in?: $Enums.PriorityOption[] | Prisma.ListEnumPriorityOptionFieldRefInput<$PrismaModel> | null
@@ -231,16 +207,6 @@ export type EnumTaskStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
-}
-
-export type EnumRecurrenceOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RecurrenceOption | Prisma.EnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRecurrenceOptionNullableWithAggregatesFilter<$PrismaModel> | $Enums.RecurrenceOption | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -367,13 +333,6 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
-export type NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.CompleteOptionType | Prisma.EnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel> | $Enums.CompleteOptionType | null
-}
-
 export type NestedEnumPriorityOptionNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorityOption | Prisma.EnumPriorityOptionFieldRefInput<$PrismaModel> | null
   in?: $Enums.PriorityOption[] | Prisma.ListEnumPriorityOptionFieldRefInput<$PrismaModel> | null
@@ -386,13 +345,6 @@ export type NestedEnumTaskStatusNullableFilter<$PrismaModel = never> = {
   in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel> | $Enums.TaskStatus | null
-}
-
-export type NestedEnumRecurrenceOptionNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.RecurrenceOption | Prisma.EnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel> | $Enums.RecurrenceOption | null
 }
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -445,16 +397,6 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumCompleteOptionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.CompleteOptionType | Prisma.EnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.CompleteOptionType[] | Prisma.ListEnumCompleteOptionTypeFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumCompleteOptionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.CompleteOptionType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumCompleteOptionTypeNullableFilter<$PrismaModel>
-}
-
 export type NestedEnumPriorityOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorityOption | Prisma.EnumPriorityOptionFieldRefInput<$PrismaModel> | null
   in?: $Enums.PriorityOption[] | Prisma.ListEnumPriorityOptionFieldRefInput<$PrismaModel> | null
@@ -473,16 +415,6 @@ export type NestedEnumTaskStatusNullableWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
-}
-
-export type NestedEnumRecurrenceOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.RecurrenceOption | Prisma.EnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  in?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.RecurrenceOption[] | Prisma.ListEnumRecurrenceOptionFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumRecurrenceOptionNullableWithAggregatesFilter<$PrismaModel> | $Enums.RecurrenceOption | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumRecurrenceOptionNullableFilter<$PrismaModel>
 }
 
 
