@@ -137,11 +137,11 @@ export type EnumPriorityOptionNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPriorityOptionNullableFilter<$PrismaModel> | $Enums.PriorityOption | null
 }
 
-export type EnumTaskStatusNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.TaskStatus | Prisma.EnumTaskStatusFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel> | $Enums.TaskStatus | null
+export type EnumTaskStatusOptionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaskStatusOption | Prisma.EnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel> | $Enums.TaskStatusOption | null
 }
 
 export type SortOrderInput = {
@@ -199,14 +199,14 @@ export type EnumPriorityOptionNullableWithAggregatesFilter<$PrismaModel = never>
   _max?: Prisma.NestedEnumPriorityOptionNullableFilter<$PrismaModel>
 }
 
-export type EnumTaskStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.TaskStatus | Prisma.EnumTaskStatusFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumTaskStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.TaskStatus | null
+export type EnumTaskStatusOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaskStatusOption | Prisma.EnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTaskStatusOptionNullableWithAggregatesFilter<$PrismaModel> | $Enums.TaskStatusOption | null
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -340,11 +340,11 @@ export type NestedEnumPriorityOptionNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPriorityOptionNullableFilter<$PrismaModel> | $Enums.PriorityOption | null
 }
 
-export type NestedEnumTaskStatusNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.TaskStatus | Prisma.EnumTaskStatusFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel> | $Enums.TaskStatus | null
+export type NestedEnumTaskStatusOptionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaskStatusOption | Prisma.EnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel> | $Enums.TaskStatusOption | null
 }
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -407,14 +407,14 @@ export type NestedEnumPriorityOptionNullableWithAggregatesFilter<$PrismaModel = 
   _max?: Prisma.NestedEnumPriorityOptionNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumTaskStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.TaskStatus | Prisma.EnumTaskStatusFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.TaskStatus[] | Prisma.ListEnumTaskStatusFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumTaskStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.TaskStatus | null
+export type NestedEnumTaskStatusOptionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaskStatusOption | Prisma.EnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.TaskStatusOption[] | Prisma.ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumTaskStatusOptionNullableWithAggregatesFilter<$PrismaModel> | $Enums.TaskStatusOption | null
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumTaskStatusNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaskStatusOptionNullableFilter<$PrismaModel>
 }
 
 

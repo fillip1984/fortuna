@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { FaExclamationTriangle } from "react-icons/fa";
 
-import { Button } from "../button";
-import { Spinner } from "../spinner";
+import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 import Container from "./container";
 
 export default function LoadingAndRetry({

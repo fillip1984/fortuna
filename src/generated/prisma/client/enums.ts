@@ -17,11 +17,11 @@ export const PriorityOption = {
 export type PriorityOption = (typeof PriorityOption)[keyof typeof PriorityOption]
 
 
-export const TaskStatus = {
+export const TaskStatusOption = {
   Todo: 'Todo',
   In_Progress: 'In_Progress',
   Blocked_Waiting: 'Blocked_Waiting',
   Complete: 'Complete'
 } as const
 
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+export type TaskStatusOption = (typeof TaskStatusOption)[keyof typeof TaskStatusOption]

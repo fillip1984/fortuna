@@ -7,18 +7,24 @@ import { format } from "date-fns/format";
 import { Check, ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { BiCollection } from "react-icons/bi";
+import { BsKanban } from "react-icons/bs";
 import { FaChevronDown, FaEllipsisH, FaTrash } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 
-import type { PriorityOption } from "~/generated/prisma/client/enums";
+import type {
+  PriorityOption,
+  TaskStatusOption,
+} from "~/generated/prisma/client/enums";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
 import { api } from "~/trpc/react";
+import Combobox from "../my-ui/combobox";
+import LoadingAndRetry from "../my-ui/loading-and-retry";
 import { Calendar } from "../ui/calendar";
 import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -29,7 +35,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import LoadingAndRetry from "../ui/my-ui/loading-and-retry";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CopyButton } from "../ui/shadcn-io/copy-button";
 
@@ -145,6 +150,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [priority, setPriority] = useState<PriorityOption | undefined>();
+  const [status, setStatus] = useState<TaskStatusOption | null>();
   const [collectionId, setCollectionId] = useState<string | undefined>(
     undefined,
   );
@@ -156,6 +162,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
       setDescription(task.description ?? "");
       setDueDate(task.dueDate ? new Date(task.dueDate) : undefined);
       setPriority(task.priority ?? undefined);
+      setStatus(task.status ?? undefined);
       setCollectionId(task.collectionId ?? undefined);
     }
   }, [task]);
@@ -298,11 +305,6 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                     />
                   </PopoverContent>
                 </Popover>
-                {task.nextDueDate && (
-                  <span className="text-muted-foreground text-sm">
-                    Next Due Date: {task.nextDueDate.toLocaleDateString()}
-                  </span>
-                )}
               </div>
               <div className="flex items-center gap-3">
                 <GiLevelEndFlag className="h-5 w-5" />
@@ -370,6 +372,50 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   </PopoverContent>
                 </Popover>
               </div>
+
+              <div className="flex items-center gap-4">
+                <BsKanban />
+                <Combobox
+                  options={[
+                    { id: "Todo", label: "Todo" },
+                    { id: "In_Progress", label: "In progress" },
+                    { id: "Blocked_Waiting", label: "Blocked/Waiting" },
+                    { id: "Complete", label: "Complete" },
+                  ]}
+                  value={status as string}
+                  setValue={(value) => {
+                    setStatus(value as TaskStatusOption);
+                    void updateTask({
+                      ...task,
+                      status: value as TaskStatusOption,
+                    });
+                  }}
+                  placeholder="Status..."
+                  className="w-48"
+                />
+                {/* TODO: replace custom combobox with shadcn once bugs cool down, currently you can't select items if the combobox is on a dialog */}
+                {/* <Combobox
+                  items={["Todo", "In progress", "Blocked/Waiting", "Complete"]}
+                  defaultValue={""}
+                >
+                  <ComboboxInput
+                    placeholder="Status (optional)"
+                    showClear
+                    className="w-48"
+                  />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No items found.</ComboboxEmpty>
+                    <ComboboxList className="z-100">
+                      {(item) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox> */}
+              </div>
+
               <div className="flex items-center gap-3">
                 <BiCollection className="h-5 w-5" />
                 <Popover

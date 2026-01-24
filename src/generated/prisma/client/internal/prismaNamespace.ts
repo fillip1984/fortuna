@@ -1066,8 +1066,6 @@ export const TaskScalarFieldEnum = {
   dueDate: 'dueDate',
   priority: 'priority',
   status: 'status',
-  frequency: 'frequency',
-  nextDueDate: 'nextDueDate',
   source: 'source',
   collectionId: 'collectionId',
   userId: 'userId'
@@ -1253,16 +1251,16 @@ export type ListEnumPriorityOptionFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
- * Reference to a field of type 'TaskStatus'
+ * Reference to a field of type 'TaskStatusOption'
  */
-export type EnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatus'>
+export type EnumTaskStatusOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatusOption'>
     
 
 
 /**
- * Reference to a field of type 'TaskStatus[]'
+ * Reference to a field of type 'TaskStatusOption[]'
  */
-export type ListEnumTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatus[]'>
+export type ListEnumTaskStatusOptionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaskStatusOption[]'>
     
 
 

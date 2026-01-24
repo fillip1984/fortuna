@@ -35,15 +35,12 @@ model Task {
 
     title         String
     description   String?
-    completed     Boolean         @default(false)
+    completed     Boolean           @default(false)
     lastCompleted DateTime?
     order         Int
     dueDate       DateTime?
     priority      PriorityOption?
-    status        TaskStatus?
-    // recurrence    RecurrenceOption?
-    frequency     String?
-    nextDueDate   DateTime?
+    status        TaskStatusOption?
     source        String?
 
     collection   Collection? @relation(fields: [collectionId], references: [id])
@@ -96,19 +93,12 @@ enum PriorityOption {
     Important
 }
 
-enum TaskStatus {
+enum TaskStatusOption {
     Todo
     In_Progress
     Blocked_Waiting
     Complete
 }
-
-// enum RecurrenceOption {
-//     Daily
-//     Weekly
-//     Monthly
-//     Yearly
-// }
 
 // Necessary for Better auth
 model User {

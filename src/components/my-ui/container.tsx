@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { FaArrowUp } from "react-icons/fa6";
 
 import { cn } from "~/lib/utils";
-import { Button } from "../button";
+import { Button } from "../ui/button";
 
 export const containerVariants = cva("flex grow overflow-y-auto");
 
