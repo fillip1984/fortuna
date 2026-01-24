@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.2.0",
-  "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
+  "clientVersion": "7.3.0",
+  "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client\"\n  engineType    = \"binary\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n  moduleFormat  = \"esm\"\n  output        = \"../src/generated/prisma/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Collection {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  name  String\n  order Int\n  tasks Task[]\n\n  user   User   @relation(fields: [userId], references: [id])\n  userId String\n\n  @@index([name])\n}\n\nmodel Task {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  title         String\n  description   String?\n  completed     Boolean             @default(false)\n  lastCompleted DateTime?\n  onComplete    CompleteOptionType?\n  order         Int\n  dueDate       DateTime?\n  priority      PriorityOption?\n  status        TaskStatus?\n  recurrence    RecurrenceOption?\n  frequency     String?\n  nextDueDate   DateTime?\n  source        String?\n\n  collection   Collection? @relation(fields: [collectionId], references: [id])\n  collectionId String?\n\n  checklist Checklist[]\n\n  comments Comment[]\n\n  user   User   @relation(fields: [userId], references: [id])\n  userId String\n\n  @@index([title])\n  @@index([completed])\n  @@index([dueDate])\n}\n\nmodel Checklist {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  text      String\n  completed Boolean @default(false)\n  order     Int\n\n  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  taskId String\n\n  @@index([text])\n}\n\nmodel Comment {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  text       String\n  postedDate DateTime @default(now())\n\n  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  taskId String\n\n  @@index([text])\n}\n\nenum PriorityOption {\n  Urgent\n  Important\n}\n\nenum TaskStatus {\n  In_Progress\n  Blocked\n  Completed\n}\n\nenum RecurrenceOption {\n  Daily\n  Weekly\n  Monthly\n  Yearly\n}\n\nenum CompleteOptionType {\n  Note\n  Weigh_in\n  Blood_pressure_reading\n  Runners_log\n}\n\n// Necessary for Beter auth\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @default(now()) @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  collections Collection[]\n  tasks       Task[]\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @default(now()) @updatedAt\n}\n",
   "runtimeDataModel": {
@@ -37,12 +37,14 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
     return await decodeBase64AsWasm(wasm)
-  }
+  },
+
+  importName: "./query_compiler_fast_bg.js"
 }
 
 
