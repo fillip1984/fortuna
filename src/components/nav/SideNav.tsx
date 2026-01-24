@@ -235,6 +235,7 @@ const NewCollectionModal = ({
   const handleAddCollection = (e: FormEvent) => {
     e.preventDefault();
     addCollection({ name });
+    setName("");
   };
 
   return (

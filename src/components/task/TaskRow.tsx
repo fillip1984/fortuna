@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { isPast } from "date-fns";
 import { motion } from "motion/react";
 import { BiCollection } from "react-icons/bi";
+import { BsKanban } from "react-icons/bs";
 import { FaComment, FaList } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
 import { TbTargetArrow } from "react-icons/tb";
@@ -58,6 +59,12 @@ export default function TaskRow({ task }: { task: TaskType }) {
             {task.description}
           </span>
           <div className="mt-2 flex gap-2">
+            {task.status && (
+              <Badge variant="secondary">
+                <BsKanban />
+                {task.status.replaceAll("_", " ")}
+              </Badge>
+            )}
             {task.dueDate && (
               <Badge
                 variant={isPast(task.dueDate) ? "destructive" : "secondary"}

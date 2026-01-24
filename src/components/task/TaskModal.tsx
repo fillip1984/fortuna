@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useDragAndDrop } from "@formkit/drag-and-drop/react";
 import { startOfDay } from "date-fns";
 import { format } from "date-fns/format";
-import { Check, ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { BiCollection } from "react-icons/bi";
 import { BsKanban } from "react-icons/bs";
@@ -13,15 +13,15 @@ import { GiLevelEndFlag } from "react-icons/gi";
 import { IoCloseSharp } from "react-icons/io5";
 import { TbTargetArrow } from "react-icons/tb";
 
-import type {
-  PriorityOption,
-  TaskStatusOption,
-} from "~/generated/prisma/client/enums";
 import type { ChecklistItemType, TaskType } from "~/server/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { AppContext } from "~/context/AppContextProvider";
+import {
+  PriorityOption,
+  TaskStatusOption,
+} from "~/generated/prisma/client/enums";
 import { api } from "~/trpc/react";
 import Combobox from "../my-ui/combobox";
 import LoadingAndRetry from "../my-ui/loading-and-retry";
@@ -168,10 +168,6 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
   }, [task]);
 
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [priorityPickerOpen, setPriorityPickerOpen] = useState(false);
-  const [collectionPickerOpen, setCollectionPickerOpen] = useState(false);
-  // const [onCompletePickerOpen, setOnCompletePickerOpen] = useState(false);
-  // const [recurrencePickerOpen, setRecurrencePickerOpen] = useState(false);
 
   const utils = api.useUtils();
   const { mutateAsync: updateTask } = api.task.update.useMutation({
@@ -306,82 +302,35 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   </PopoverContent>
                 </Popover>
               </div>
+
               <div className="flex items-center gap-3">
                 <GiLevelEndFlag className="h-5 w-5" />
-                <Popover
-                  open={priorityPickerOpen}
-                  onOpenChange={setPriorityPickerOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="priority"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {priority ? (
-                        <>
-                          {priority}
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPriority(undefined);
-                              setPriorityPickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                priority: null,
-                              });
-                            }}
-                            className="text-muted-foreground"
-                          >
-                            x
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          Select priority
-                          <ChevronDownIcon />
-                        </>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-48 overflow-hidden p-2"
-                    align="center"
-                  >
-                    <>
-                      {["Urgent", "Important"].map((option) => (
-                        <div
-                          key={option}
-                          onClick={() => {
-                            setPriority(option as PriorityOption);
-                            setPriorityPickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              priority: option as PriorityOption,
-                            });
-                          }}
-                          className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                        >
-                          {option}
-                          {priority === option && (
-                            <Check className="text-muted-foreground" />
-                          )}
-                        </div>
-                      ))}
-                    </>
-                  </PopoverContent>
-                </Popover>
+                <Combobox
+                  options={Object.entries(PriorityOption).map(
+                    ([key, value]) => ({ id: key, label: value }),
+                  )}
+                  value={priority as string}
+                  setValue={(value) => {
+                    setPriority(value as PriorityOption | undefined);
+                    void updateTask({
+                      ...task,
+                      priority: value as PriorityOption | null,
+                    });
+                  }}
+                  placeholder="Priority..."
+                  className="w-48"
+                />
               </div>
 
               <div className="flex items-center gap-4">
                 <BsKanban />
                 <Combobox
-                  options={[
-                    { id: "Todo", label: "Todo" },
-                    { id: "In_Progress", label: "In progress" },
-                    { id: "Blocked_Waiting", label: "Blocked/Waiting" },
-                    { id: "Complete", label: "Complete" },
-                  ]}
+                  options={Object.entries(TaskStatusOption).map(
+                    ([key, value]) => ({
+                      id: key,
+                      label: value.replaceAll("_", " "),
+                    }),
+                  )}
                   value={status as string}
                   setValue={(value) => {
                     setStatus(value as TaskStatusOption);
@@ -393,103 +342,26 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   placeholder="Status..."
                   className="w-48"
                 />
-                {/* TODO: replace custom combobox with shadcn once bugs cool down, currently you can't select items if the combobox is on a dialog */}
-                {/* <Combobox
-                  items={["Todo", "In progress", "Blocked/Waiting", "Complete"]}
-                  defaultValue={""}
-                >
-                  <ComboboxInput
-                    placeholder="Status (optional)"
-                    showClear
-                    className="w-48"
-                  />
-                  <ComboboxContent>
-                    <ComboboxEmpty>No items found.</ComboboxEmpty>
-                    <ComboboxList className="z-100">
-                      {(item) => (
-                        <ComboboxItem key={item} value={item}>
-                          {item}
-                        </ComboboxItem>
-                      )}
-                    </ComboboxList>
-                  </ComboboxContent>
-                </Combobox> */}
               </div>
 
               <div className="flex items-center gap-3">
                 <BiCollection className="h-5 w-5" />
-                <Popover
-                  open={collectionPickerOpen}
-                  onOpenChange={setCollectionPickerOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="collection"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {collectionId ? (
-                        <>
-                          {
-                            collections.find((col) => col.id === collectionId)
-                              ?.name
-                          }
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCollectionId(undefined);
-                              setCollectionPickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                collectionId: null,
-                                order: 9999, // put it at the end of no collection
-                              });
-                            }}
-                            className="text-muted-foreground"
-                          >
-                            x
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          Select collection
-                          <ChevronDownIcon />
-                        </>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-48 overflow-hidden p-2"
-                    align="center"
-                  >
-                    <>
-                      {collections?.map((c) => (
-                        <div
-                          key={c.id}
-                          onClick={() => {
-                            setCollectionId(c.id);
-                            setCollectionPickerOpen(false);
-                            void updateTask({
-                              ...task,
-                              collectionId: c.id,
-                              // Handle putting item at the end of a collection if we move it to a new one
-                              order:
-                                task.collectionId === collectionId
-                                  ? task.order
-                                  : c.tasks.length + 1,
-                            });
-                          }}
-                          className="hover:bg-accent flex items-center justify-between gap-2 rounded-lg p-1"
-                        >
-                          {c.name}
-                          {collectionId === c.id && (
-                            <Check className="text-muted-foreground" />
-                          )}
-                        </div>
-                      ))}
-                    </>
-                  </PopoverContent>
-                </Popover>
+                <Combobox
+                  options={collections.map((col) => ({
+                    id: col.id,
+                    label: col.name,
+                  }))}
+                  value={collectionId}
+                  setValue={(value) => {
+                    setCollectionId(value ?? undefined);
+                    void updateTask({
+                      ...task,
+                      collectionId: value ?? null,
+                    });
+                  }}
+                  placeholder="Collection..."
+                  className="w-48"
+                />
               </div>
             </div>
           </motion.div>

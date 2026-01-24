@@ -96,7 +96,7 @@ enum PriorityOption {
 enum TaskStatusOption {
     Todo
     In_Progress
-    Blocked_Waiting
+    Blocked
     Complete
 }
 
