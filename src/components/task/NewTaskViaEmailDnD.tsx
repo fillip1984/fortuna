@@ -25,7 +25,7 @@ export default function NewTaskViaEmailDnD() {
   useEffect(() => {
     const handleDocumentDragEnter = (e: DragEvent) => {
       console.log("handling drag enter", { e });
-      if (!e.dataTransfer?.types.includes("Files")) {
+      if (!e.dataTransfer?.types.includes("move")) {
         console.log("not files");
         return;
       }
