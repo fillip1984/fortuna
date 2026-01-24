@@ -64,7 +64,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             placeholder="Search tasks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 text-lg outline-none"
+            className="grow text-lg outline-none"
             autoFocus
           />
         </div>

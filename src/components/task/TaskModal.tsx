@@ -129,8 +129,8 @@ export default function TaskModal() {
         </div>
 
         {/* body */}
-        <div className="flex flex-1 overflow-hidden">
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pb-12">
+        <div className="flex grow overflow-hidden">
+          <div className="flex grow flex-col gap-4 overflow-y-auto px-4 pb-12">
             <TaskDetails task={task} />
             <TaskChecklist task={task} />
             <Comments task={task} />

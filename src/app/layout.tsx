@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import type { Metadata } from "next";
+
 import SideNav from "~/components/nav/SideNav";
 import SignInView from "~/components/SignInView";
 import TaskModal from "~/components/task/TaskModal";
@@ -44,7 +45,7 @@ const SignedIn = ({ children }: Readonly<{ children: React.ReactNode }>) => {
       <div className="relative flex h-screen overflow-hidden">
         <SideNav />
 
-        <main className="flex-1">{children}</main>
+        <main className="grow">{children}</main>
         <TaskModal />
       </div>
     </AppContextProvider>
