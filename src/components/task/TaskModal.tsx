@@ -275,7 +275,7 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                         </>
                       ) : (
                         <>
-                          Select due date
+                          Due date...
                           <ChevronDownIcon />
                         </>
                       )}

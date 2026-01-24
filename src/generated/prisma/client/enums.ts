@@ -20,7 +20,7 @@ export type PriorityOption = (typeof PriorityOption)[keyof typeof PriorityOption
 export const TaskStatusOption = {
   Todo: 'Todo',
   In_Progress: 'In_Progress',
-  Blocked_Waiting: 'Blocked_Waiting',
+  Blocked: 'Blocked',
   Complete: 'Complete'
 } as const
 
