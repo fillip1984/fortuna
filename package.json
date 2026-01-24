@@ -18,7 +18,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "prod:db:push": "pnpm dotenv -e .env.prod -- prisma db push",
-    "prod:deploy": "pnpm dotenv -e .env.prod -- sst deploy --stage prod"
+    "prod:deploy": "pnpm dotenv -e .env.prod -- sst deploy --stage prod",
+    "prod:nuke": "pnpm dotenv -e .env.prod -- sst remove --stage prod"
   },
   "dependencies": {
     "@formkit/drag-and-drop": "^0.5.3",
