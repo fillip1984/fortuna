@@ -46,10 +46,16 @@ export default function Combobox({
           className={cn(comboboxVariants({ className }))}
           {...props}
         >
-          {options.find((o) => o.id === value)?.label ??
-            placeholder ??
-            "Select an option"}
+          {/* show placeholder when no value selected */}
+          {value ? (
+            options.find((o) => o.id === value)?.label
+          ) : (
+            <span className="text-muted-foreground">
+              {placeholder ?? "Select an option"}
+            </span>
+          )}
 
+          {/* sets chip at end, either x (to clear value) or chevron (to indicate dropdown) */}
           {value ? (
             <span
               onClick={(e) => {

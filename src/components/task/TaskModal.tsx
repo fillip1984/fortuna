@@ -102,7 +102,7 @@ export default function TaskModal() {
     >
       <DialogContent
         showCloseButton={false}
-        className="m-0 flex h-[90%] flex-col gap-0 overflow-hidden p-0 sm:max-w-1/2 md:max-w-200"
+        className="m-0 flex h-[90%] flex-col gap-0 overflow-hidden p-0 sm:w-3/4 sm:max-w-200"
       >
         {/* header */}
         <div className="flex items-center justify-end px-1 py-1">
@@ -246,122 +246,130 @@ const TaskDetails = ({ task }: { task: TaskType }) => {
                   />
                 </div>
               )}
-              <div className="flex items-center gap-3">
-                <TbTargetArrow className="h-5 w-5" />
-                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      {dueDate ? (
-                        <>
-                          {dueDate.toLocaleDateString()}
-                          <span
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDueDate(undefined);
-                              setDatePickerOpen(false);
-                              void updateTask({
-                                ...task,
-                                dueDate: null,
-                              });
-                            }}
-                            className="text-muted-foreground"
-                          >
-                            x
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          Due date...
-                          <ChevronDownIcon />
-                        </>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto overflow-hidden p-0"
-                    align="start"
+
+              <div className="my-2 grid w-full grid-cols-1 gap-4 sm:mx-auto sm:grid-cols-2">
+                <div className="flex items-center gap-3">
+                  <TbTargetArrow className="h-5 w-5 shrink-0" />
+                  <Popover
+                    open={datePickerOpen}
+                    onOpenChange={setDatePickerOpen}
                   >
-                    <Calendar
-                      mode="single"
-                      selected={dueDate}
-                      endMonth={new Date(2032, 12)}
-                      captionLayout="dropdown"
-                      onSelect={(date) => {
-                        setDueDate(date);
-                        setDatePickerOpen(false);
-                        void updateTask({
-                          ...task,
-                          dueDate: date ? startOfDay(date) : null,
-                        });
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        id="date"
+                        className="grow justify-between font-normal"
+                      >
+                        {dueDate ? (
+                          <>
+                            {dueDate.toLocaleDateString()}
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDueDate(undefined);
+                                setDatePickerOpen(false);
+                                void updateTask({
+                                  ...task,
+                                  dueDate: null,
+                                });
+                              }}
+                              className="text-muted-foreground"
+                            >
+                              x
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            Due date...
+                            <ChevronDownIcon />
+                          </>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={dueDate}
+                        endMonth={new Date(2032, 12)}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          setDueDate(date);
+                          setDatePickerOpen(false);
+                          void updateTask({
+                            ...task,
+                            dueDate: date ? startOfDay(date) : null,
+                          });
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
 
-              <div className="flex items-center gap-3">
-                <GiLevelEndFlag className="h-5 w-5" />
-                <Combobox
-                  options={Object.entries(PriorityOption).map(
-                    ([key, value]) => ({ id: key, label: value }),
-                  )}
-                  value={priority as string}
-                  setValue={(value) => {
-                    setPriority(value as PriorityOption | undefined);
-                    void updateTask({
-                      ...task,
-                      priority: value as PriorityOption | null,
-                    });
-                  }}
-                  placeholder="Priority..."
-                  className="w-48"
-                />
-              </div>
+                <div className="flex items-center gap-3">
+                  <GiLevelEndFlag className="h-5 w-5 shrink-0" />
 
-              <div className="flex items-center gap-4">
-                <BsKanban />
-                <Combobox
-                  options={Object.entries(TaskStatusOption).map(
-                    ([key, value]) => ({
-                      id: key,
-                      label: value.replaceAll("_", " "),
-                    }),
-                  )}
-                  value={status as string}
-                  setValue={(value) => {
-                    setStatus(value as TaskStatusOption);
-                    void updateTask({
-                      ...task,
-                      status: value as TaskStatusOption,
-                    });
-                  }}
-                  placeholder="Status..."
-                  className="w-48"
-                />
-              </div>
+                  <Combobox
+                    options={Object.entries(PriorityOption).map(
+                      ([key, value]) => ({ id: key, label: value }),
+                    )}
+                    value={priority as string}
+                    setValue={(value) => {
+                      setPriority(value as PriorityOption | undefined);
+                      void updateTask({
+                        ...task,
+                        priority: value as PriorityOption | null,
+                      });
+                    }}
+                    placeholder="Priority..."
+                    className="grow"
+                  />
+                </div>
 
-              <div className="flex items-center gap-3">
-                <BiCollection className="h-5 w-5" />
-                <Combobox
-                  options={collections.map((col) => ({
-                    id: col.id,
-                    label: col.name,
-                  }))}
-                  value={collectionId}
-                  setValue={(value) => {
-                    setCollectionId(value ?? undefined);
-                    void updateTask({
-                      ...task,
-                      collectionId: value ?? null,
-                    });
-                  }}
-                  placeholder="Collection..."
-                  className="w-48"
-                />
+                <div className="flex items-center gap-4">
+                  <BsKanban className="h-5 w-5 shrink-0" />
+                  {/* <div className="min-w-0 grow"> */}
+                  <Combobox
+                    options={Object.entries(TaskStatusOption).map(
+                      ([key, value]) => ({
+                        id: key,
+                        label: value.replaceAll("_", " "),
+                      }),
+                    )}
+                    value={status as string}
+                    setValue={(value) => {
+                      setStatus(value as TaskStatusOption);
+                      void updateTask({
+                        ...task,
+                        status: value as TaskStatusOption,
+                      });
+                    }}
+                    placeholder="Status..."
+                    className="grow"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <BiCollection className="h-5 w-5 shrink-0" />
+                  <Combobox
+                    options={collections.map((col) => ({
+                      id: col.id,
+                      label: col.name,
+                    }))}
+                    value={collectionId}
+                    setValue={(value) => {
+                      setCollectionId(value ?? undefined);
+                      void updateTask({
+                        ...task,
+                        collectionId: value ?? null,
+                      });
+                    }}
+                    placeholder="Collection..."
+                    className="grow"
+                  />
+                </div>
               </div>
             </div>
           </motion.div>

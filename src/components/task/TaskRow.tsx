@@ -58,7 +58,7 @@ export default function TaskRow({ task }: { task: TaskType }) {
           <span className="text-muted-foreground line-clamp-2 text-xs wrap-anywhere">
             {task.description}
           </span>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {task.status && (
               <Badge variant="secondary">
                 <BsKanban />
