@@ -41,5 +41,5 @@
     ".next/dev/types/**/*.ts",
     "eslint.config.mjs"
   ],
-  "exclude": ["node_modules", ".next", ".sst", "sst.config.ts"]
+  "exclude": ["node_modules", ".next", ".open-next", ".sst", "sst.config.ts"]
 }

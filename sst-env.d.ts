@@ -6,6 +6,10 @@
 
 declare module "sst" {
   export interface Resource {
+    "fortuna": {
+      "type": "sst.aws.Nextjs"
+      "url": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />
