@@ -4,7 +4,7 @@ Simple reminder app
 
 ## TODOs
 
-- [ ] - add status to indicate if we're waiting, blocked, not started yet
+- [ ] use more to figure out what needs doing next!
 
 ## Longer term TODOs
 
