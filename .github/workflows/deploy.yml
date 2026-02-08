@@ -38,10 +38,10 @@ jobs:
       #       ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       # Waiting on fix for: https://github.com/anomalyco/sst/issues/6314
-      - name: Add SST's bin directory to PATH
-        # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
-        # ensuring SST's version of Pulumi is found before GitHub Actions' version
-        run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
+      # - name: Add SST's bin directory to PATH
+      # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
+      # ensuring SST's version of Pulumi is found before GitHub Actions' version
+      # run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
 
       - name: Build and Deploy
         env:

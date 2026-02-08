@@ -58,7 +58,7 @@
     "react-icons": "^5.5.0",
     "server-only": "^0.0.1",
     "sonner": "^2.0.7",
-    "sst": "3.17.37",
+    "sst": "3.17.38",
     "superjson": "^2.2.6",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"
