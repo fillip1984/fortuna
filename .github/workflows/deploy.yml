@@ -55,4 +55,4 @@ jobs:
           PRODUCTION_URL: "https://fortuna.illizen.com"
           # PRODUCTION_URL: ${{ secrets.PRODUCTION_URL}}
         run: |
-          pnpx sst deploy --stage prod
+          pnpm sst deploy --stage prod
