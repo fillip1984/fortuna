@@ -5,6 +5,7 @@ Simple reminder app
 ## TODOs
 
 - [ ] use more to figure out what needs doing next!
+- [ ] open-next build failing, fix it!
 
 ## Longer term TODOs
 
